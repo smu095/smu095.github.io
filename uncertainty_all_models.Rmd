@@ -808,6 +808,18 @@ layout2 <- matrix(c(2,1), byrow=TRUE)
 multiplot(p14, p15, layout=layout2)
 
 ```
+
+### Uncertainty vs. softmax ouput by classification
+```{r fig.width=5, fig.height=10}
+# Plotting uncertainty against softmax of predicted class, with density estimation contours
+p16 <- df_all %>% 
+  ggplot(aes(x=prob1, y=uncertainty, col=correct)) +
+  geom_point(alpha=.5) +
+  labs(y="softmax output of predicted class") +
+  facet_grid(as.factor(model)~.)
+p16
+```
+
 ### Uncertainty vs. softmax ouput
 ```{r fig.height=10, fig.width=7}
 # Plotting uncertainty against softmax of predicted class, with density estimation contours
