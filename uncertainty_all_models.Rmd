@@ -12,7 +12,7 @@ output:
 
 ***
 # Setup
-In this notebook we use the following R packages: `tidyverse` and `ggplot2`. In addition we use the `multiplot` functionality provided by [Cookbook for R](http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/). In Python we use `fastai`, `numpy` and `pandas`. Full code for training and inference [available at GitHub](link). All code for statistical analysis is included in this document.
+In this notebook we use the following R packages: `tidyverse` and `ggplot2`. In addition we use the `multiplot` functionality provided by [Cookbook for R](http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/). In Python we use `fastai`, `numpy` and `pandas`. Full code for training and inference [available at GitHub](https://github.com/smu095/smu095.github.io/blob/master/dat259.ipynb). All code for statistical analysis is included in this document.
 
 ```{r echo=FALSE, results='hide'}
 # Loading useful packages
@@ -125,7 +125,7 @@ As far as we are aware, there have been no efforts to determine the correlation 
 
 ## Experimental setup{.tabset}
 
-State-of-the-art architectures such as ResNet and DenseNet are very powerful, but they are also complicated and their inner workings are quite convoluted. We are primarily interested in examining the correlation between uncertainty estimation and predictive capabilities. It is arguably better to use a simple network architecture to illustrate the idea of MC dropout. In our approach we use LeNet-5. Click on the tabs for implementation details. Full code is available on [GitHub](link).
+State-of-the-art architectures such as ResNet and DenseNet are very powerful, but they are also complicated and their inner workings are quite convoluted. We are primarily interested in examining the correlation between uncertainty estimation and predictive capabilities. It is arguably better to use a simple network architecture to illustrate the idea of MC dropout. In our approach we use LeNet-5. Click on the tabs for implementation details. Full code is available on [GitHub](https://github.com/smu095/smu095.github.io/blob/master/dat259.ipynb).
 
 ### Model
 
@@ -547,7 +547,7 @@ p10
 
 ## Images associated with high uncertainty {.tabset}
 
-The following plots were generated using Python (code available on [GitHub](link)). On the left hand side we see the unnormalized image with the corresponding ground truth label. The plot in the middle shows the softmax output of the predicted class for each of the $T=100$ stochastic forward passes. $\mu_k$ is given by the solid red line, $\mu_j$ is given by the dashed brown line. The plot title shows both the predicted class and the runner-up class. To the right is a kernel density estimate (using a Gaussian kernel) of the $T=100$ softmax outputs for the predicted class. The plots show the top 5 most uncertain classifications in the entire data set.
+The following plots were generated using Python (code available on [GitHub](https://github.com/smu095/smu095.github.io/blob/master/dat259.ipynb)). On the left hand side we see the unnormalized image with the corresponding ground truth label. The plot in the middle shows the softmax output of the predicted class for each of the $T=100$ stochastic forward passes. $\mu_k$ is given by the solid red line, $\mu_j$ is given by the dashed brown line. The plot title shows both the predicted class and the runner-up class. To the right is a kernel density estimate (using a Gaussian kernel) of the $T=100$ softmax outputs for the predicted class. The plots show the top 5 most uncertain classifications in the entire data set.
 
 ### Incorrect
 ![](Figures/8601.jpeg)
