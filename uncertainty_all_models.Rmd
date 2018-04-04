@@ -18,6 +18,9 @@ In this notebook we use the following R packages: `tidyverse` and `ggplot2`. In 
 # Loading useful packages
 library(tidyverse)
 library(ggplot2)
+library(Hmisc)
+library(knitr)
+#library(kableExtra)
 
 # Multiple plot function
 #
@@ -303,7 +306,6 @@ df <- select(data, -X)
 # Summarizing entire data set
 summary(df)
 ```
-
 For the entire set of classifications, we have the following notable quantities:
 
 * The mean **uncertainty** of the predicted class is `r mean(df$uncertainty)` and the median is `r median(df$uncertainty)`. The minimum value is `r min(df$uncertainty)`, the maximum is `r max(df$uncertainty)`. The interquartile range (IQR) is `r IQR(df$uncertainty)`.
@@ -317,34 +319,35 @@ For the entire set of classifications, we have the following notable quantities:
 * The mean **difference to uncertainty ratio**, or $\tau_{jk}$, is `r mean(df$diff_sd_ratio)` and the median is `r median(df$diff_sd_ratio)`. The minimum value is `r min(df$diff_sd_ratio)`, the maximum is `r max(df$diff_sd_ratio)`. The IQR is `r IQR(df$diff_sd_ratio)`.
 
 ### Summary statistics
-
 ```{r}
 # Aggregating summary statistics by correct/incorrect
 agg_df <- df %>% 
   group_by(correct) %>% 
   summarise(n=n(),
-          mean_uncertainty=mean(uncertainty), 
+            mean_prob1=mean(prob1),
+            mean_prob2=mean(prob2),
+          mean_uncertainty=mean(uncertainty),
+          median_uncertainty=median(uncertainty),
           sd_uncertainty=sd(uncertainty), 
           mean_diff=mean(diff),
+          median_diff=median(diff),
           sd_diff=sd(diff),
           mean_ratio=mean(diff_sd_ratio),
+          median_ratio=median(diff_sd_ratio),
           sd_ratio=sd(diff_sd_ratio))
 agg_df
 ```
+* The model has **incorrectly classified** `r agg_df$n[1]` images.
 
-* The model has **incorrectly classified** `r agg_df$n[1]` images. The mean uncertainty of the predicted class is `r mean(agg_df$mean_uncertainty[1])`.
-
-* The model has **correctly classified** `r agg_df$n[2]` images. The mean estimated uncertainty is `r agg_df$mean_uncertainty[2]`.
+* The model has **correctly classified** `r agg_df$n[2]` images.
 
 ### Incorrect classifications
-
 ```{r}
 # Summarizing incorrect predictions
 incorrect_df <- df %>% 
   filter(correct==0)
 summary(incorrect_df)
 ```
-
 For the entire set of **incorrect classifications**, we have the following notable quantities:
 
 * The mean **uncertainty** of the predicted class is `r mean(incorrect_df$uncertainty)` and the median is `r median(incorrect_df$uncertainty)`. The minimum value is `r min(incorrect_df$uncertainty)`, the maximum is `r max(incorrect_df$uncertainty)`. The interquartile range (IQR) is `r IQR(incorrect_df$uncertainty)`.
@@ -365,7 +368,6 @@ correct_df <- df %>%
   filter(correct==1)
 summary(correct_df)
 ```
-
 For the entire set of **correct classifications**, we have the following notable quantities:
 
 * The mean **uncertainty** of the predicted class is `r mean(correct_df$uncertainty)` and the median is `r median(correct_df$uncertainty)`. The minimum value is `r min(correct_df$uncertainty)`, the maximum is `r max(correct_df$uncertainty)`. The interquartile range (IQR) is `r IQR(correct_df$uncertainty)`.
@@ -397,12 +399,14 @@ p1
 
 ### Uncertainty by prediction
 
-By grouping the uncertainty estimates by `correct` (i.e. if the label was correctly predicted or not), we can find out how the predictions contribute to the uncertainty distribution:
+By grouping the uncertainty estimates by `correct` (i.e. if the label was correctly predicted or not), we can find out how the predictions contribute to the uncertainty distribution.
+
+The blue line corresponds to the correct predictions, the red line corresponds to incorrect predictions. We see that the incorrect predictions are centered around a higher associated uncertainty, whereas far more of the correctly predicted classes are concentrated around a low uncertainty value. The incorrect classifications greatly contribute to the bimodality, but it is also present in the distribution of uncertainty for the correct classifications. 
 
 ```{r}
 #Distribution of estimated uncertainty by prediction
 p2 <- df %>% 
-  ggplot(aes(x=uncertainty, col=as.factor(correct))) +
+  ggplot(aes(x=uncertainty, col=factor(correct))) +
   geom_freqpoly(alpha=.7) +
   ggtitle("Distribution of estimated uncertainty by classification") +
   scale_color_discrete(name="Prediction",
@@ -410,7 +414,6 @@ p2 <- df %>%
                          labels=c("0: Incorrect", "1: Correct"))
 p2
 ```
-The blue line corresponds to the correct predictions, the red line corresponds to incorrect predictions. We see that the incorrect predictions are centered around a higher associated uncertainty, whereas far more of the correctly predicted classes are concentrated around a low uncertainty value. The incorrect classifications greatly contribute to the bimodality, but it is also present in the distribution of uncertainty for the correct classifications. 
 
 ### Kernel density estimates
 
@@ -420,21 +423,21 @@ The following kernel density estimate plot (using a Gaussian kernel) gives us an
 # KDE by correct prediction
 p3 <- df %>% 
   ggplot(aes(x=uncertainty)) +
-  geom_density(data=subset(df, correct==0), fill="red", alpha=I(.2)) +
-  geom_density(data=subset(df, correct==1), fill="turquoise", alpha=I(.2)) +
+  geom_density(data=incorrect_df, fill="red", alpha=I(.2)) +
+  geom_density(data=correct_df, fill="turquoise", alpha=I(.2)) +
   ggtitle("Kernel density estimates of uncertainty distribution")
 p3
 ```
 
 ### Boxplots
 
-The boxplot gives us yet another way to visualize the difference between uncertainty distributions by predictive ability:
+The boxplot gives us yet another way to visualize the difference between uncertainty distributions by predictive ability. It is interesting to note the amount of outliers for the incorrect predictions, indicating som negative skew. It is wrong, but uncertainty is low.
 
 ```{r}
 # Boxplot of uncertainties for correct vs. incorrect
 p4 <- df %>% 
-  ggplot(aes(x=as.factor(correct), y=uncertainty)) +
-  geom_boxplot(aes(fill=as.factor(correct)), alpha=.7) +
+  ggplot(aes(x=factor(correct), y=uncertainty)) +
+  geom_boxplot(aes(fill=factor(correct)), alpha=.7) +
   labs(x="correct") +
   ggtitle("Boxplot of uncertainty distribution by correct/incorrect") +
   scale_fill_discrete(name="Prediction",
@@ -447,7 +450,7 @@ p4
 
 ### Softmax of predicted class
 
-We may also be interested in the relationship between `uncertainty` and other variables. First, we plot `uncertainty` against `prob1` (the prediction's softmax output):
+We may also be interested in the relationship between `uncertainty` and other variables. First, we plot `uncertainty` against `prob1` (the prediction's softmax output). The softmax outputs in the above plot are colour graded. Outputs close to 1 are red, outputs close to 0 are blue. The plot shows a clear parabolic shape:
 
 ```{r}
 # Plotting softmax output of prediction against estimated uncertainty
@@ -460,7 +463,6 @@ p5 <- df %>%
                         palette = "Spectral")
 p5
 ```
-The softmax outputs in the above plot are colour graded. Outputs close to 1 are red, outputs close to 0 are blue. The plot shows a clear parabolic shape. 
 
 ### By classification
 
@@ -477,20 +479,23 @@ p6
 
 ### Predictions and runners-up
 
-We can obtain more information by colouring the points by the value of the runner-up predictions:
+We can obtain more information by colouring the points by the value of the runner-up predictions. This plot is particularly interesting. The softmax outputs of the runner-up classes $\hat{\mu}_j$ in the above plot are colour graded. $\hat{\mu}_j \approx 0.5$ are red, $\hat{\mu}_j \approx 0$ are blue. The round point is the pair mean values of (`prob1`, `prob2`) for the incorrect predictions. The triangular point is the pair mean values for the correct predictions.
+
+We see a clear concentration of red points in the area where the probability of the predictied class $\hat{\mu}_k \approx 0.5$. If the softmax predictions of both the predicted class and the runner-up are close 0.5, then we have a situation analogous to maximum entropy. This points coincide with the largest approximated uncertainty values. 
 
 ```{r}
 # Plotting softmax output of prediction against estimated uncertainty, coloured by softmax output of runner-up
 p7 <- df %>% 
-  ggplot(aes(x=prob1, y=uncertainty, col=prob2)) +
-  geom_point(alpha=.5) +
+  ggplot(aes(x=prob1, y=uncertainty)) +
+  geom_point(aes(col=prob2), shape=21, alpha=.7) +
+  geom_point(data=agg_df, aes(x=mean_prob1, y=mean_prob2, shape=as.logical(correct)), size=2.5) +
+  #geom_point(data=agg_df, aes(y=uncertainty, x=mean_prob1, shape=as.logical(correct)), size=2) +
   ggtitle("Uncertainty vs. softmax output of prediction for all observations") +
-  labs(x="softmax output of predicted class") +
-  scale_color_distiller(name="Runner up",
+  labs(x="softmax output of predicted class", shape="correct") +
+  scale_color_distiller(name="runner up",
                         palette = "Spectral")
 p7
 ```
-This plot is particularly interesting. The softmax outputs of the runner-up classes $\hat{\mu}_j$ in the above plot are colour graded. $\hat{\mu}_j \approx 0.5$ are red, $\hat{\mu}_j \approx 0$ are blue. We see a clear concentration of red points in the area where the probability of the predictied class $\hat{\mu}_k \approx 0.5$. If the softmax predictions of both the predicted class and the runner-up are close 0.5, then we have a situation analogous to maximum entropy. This points coincide with the largest approximated uncertainty values. 
 
 ### Softmax of prediction by classification
 
@@ -498,19 +503,32 @@ In the following plot we split the observations by incorrect/correct predictions
 
 ```{r fig.width=10, fig.height=5}
 # Plotting uncertainty vs. softmax output of prediction
+p8a <- df %>% 
+  ggplot(aes(x=prob1, y=uncertainty)) +
+  geom_point(aes(col=prob2), shape=21, alpha=.7) +
+  ggtitle("Uncertainty vs. softmax output of prediction by incorrect/correct") +
+  labs(x="softmax output of prediction") +
+  facet_grid(.~factor(correct)) +
+  scale_color_distiller(name="Runner up",
+                        palette = "Spectral")
+p8a
+```
+### Softmax of prediction by classification with contours
+
+The black contour lines indicate where most of the points are concentrated. The plot on the left is for incorrect predictions. The right hand plot represents the correct predictions. For the correct predictions, it seems as if far more of the points are concentrated around high predicted output/low runner-up output/low uncertainty. This is not surprising, considering 75% of the correct predictions have a softmax value of approximately 0.7 or above. For the incorrect classifications, most of the points are concentrated around the area of maximum entropy. This indicates that the approximated uncertainty estimates indeed contain valuable information in the incorrect cases.
+```{r fig.width=10, fig.height=5}
+# Plotting uncertainty vs. softmax output of prediction
 p8 <- df %>% 
   ggplot(aes(x=prob1, y=uncertainty)) +
-  geom_point(aes(col=prob2),alpha=0.5) +
+  geom_point(aes(col=prob2), shape=21, alpha=.7) +
   geom_density_2d(col="black", alpha=.3) +
   ggtitle("Uncertainty vs. softmax output of prediction by incorrect/correct") +
   labs(x="softmax output of prediction") +
-  facet_grid(.~as.factor(correct)) +
+  facet_grid(.~factor(correct)) +
   scale_color_distiller(name="Runner up",
                         palette = "Spectral")
 p8
 ```
-
-The black contour lines indicate where most of the points are concentrated. The plot on the left is for incorrect predictions. The right hand plot represents the correct predictions. For the correct predictions, it seems as if far more of the points are concentrated around high predicted output/low runner-up output/low uncertainty. This is not surprising, considering 75% of the correct predictions have a softmax value of approximately 0.7 or above. For the incorrect classifications, most of the points are concentrated around the area of maximum entropy. This indicates that the approximated uncertainty estimates indeed contain valuable information in the incorrect cases.
 
 ### Runner-up predictions
 
@@ -539,26 +557,25 @@ The following plots were generated using Python (code available on [GitHub](link
 ![](Figures/1248.jpeg)
 
 ### Correct
+For some unknown reason, the runner-up prediction for the five most uncertain but correct predictions are all "airplane". One possible explanation is the presence of large areas of blue and/or white, which we might assume would be present as backgrounds in images of planes flying through the sky.
+
 ![](Figures/2579.jpeg)
 ![](Figures/9468.jpeg)
 ![](Figures/8169.jpeg)
 ![](Figures/7778.jpeg)
 ![](Figures/1079.jpeg)
 
-
-For some unknown reason, the runner-up prediction for the five most uncertain but correct predictions are all "airplane". One possible explanation is the presence of large areas of blue and/or white, which we might assume would be present as backgrounds in images of planes flying through the sky.
-
 ## Uncertainty-prediction correlation
 
-As mentioned in section 2.2, the connection established between dropout neural networks and GPs are lost when applied to convolutional neural networks. Performing a logistic regression gives us a simple way of testing if the approximated uncertainty is a significant predictor of the model's ability to predict correctly:
+As mentioned in section 2.2, the connection established between dropout neural networks and GPs are lost when applied to convolutional neural networks. Performing a logistic regression gives us a simple way of testing if the approximated uncertainty is a significant predictor of the model's ability to predict correctly.
+
+The coefficient associated with `uncertainty` is highly significant, indicating that the estimates gathered from performing MC dropout are indeed a useful quantification of predictive uncertainty. Given a unit increase in uncertainty, we expect the probability of predicting correctly to decrease.
 
 ```{r}
 # Fitting logistic regression model to check significance of uncertainty
-model_sd <- glm(as.factor(correct)~uncertainty, data=df, family = binomial(link="logit"))
+model_sd <- glm(factor(correct)~uncertainty, data=df, family = binomial(link="logit"))
 summary(model_sd)
 ```
-
-The coefficient associated with `uncertainty` is highly significant, indicating that the estimates gathered from performing MC dropout are indeed a useful quantification of predictive uncertainty. Given a unit increase in uncertainty, we expect the probability of predicting correctly to decrease.
 
 ## Referral criteria
 
@@ -568,81 +585,19 @@ Naively, we could set the threshold for referral to the mean uncertainty of the 
 
 ```{r}
 # Counting number of correct/incorrect by uncertainty >= .18 
-referral <- df %>% 
+referral_mean <- df %>% 
   filter(uncertainty>=.18) %>% 
   count(correct)
-referral
+referral_mean
 ```
 
-The problem here is apparent: Many of the correctly classified images are associated with a relatively high level of uncertainty (in our case, this is due to the bimodality of the uncertainty distribution in section 3.2.1). We speculate that although uncertainty seems to contain valueable information, the relative uncertainties of the correct/incorrect observations (in this case) may be too small to differentiate which images should be referred to an expert. We may need to amplify the quantification of uncertainty in some way. 
+The problem here is apparent: Many of the correctly classified images are associated with a relatively high level of uncertainty (in our case, this is due to the bimodality of the uncertainty distribution in section 3.2.1). The result of our logistic regression suggests that uncertainty is a significant predictor of a model's ability to predict correctly.
 
-One possible approach is to incorporate information from the value of $\tau_{jk}$, which we introduced in section 2.5. Consider the following cases:
+However, although uncertainty seems to contain valueable information, the relative uncertainties of the correct/incorrect observations (in this case) may be too small to differentiate which images should be referred to an expert. We may need to amplify the quantification of uncertainty in some way.
 
-* $\tau_{kj} \approx 1$ means that `diff` and `uncertainty` are relatively similar. This happens if a) the models have failed to reach a consensus (`diff` is small) but model uncertainty is low, or b) the models have reached a consensus (`diff` is large) but model uncertainty is high. Let's call these **referral predictions**.
+### Usefulness of runner-up predictions
 
-* $\tau_{kj} \to 0$ means that `uncertainty` is much larger than `diff`. These should represent **uncertain predictions**.
-
-* $\tau_{kj} \to \infty$ means that `uncertainty` is much smaller than `diff`. These should represent **non-referral predictions**.
-
-As we saw in table 3.1.2, the mean $\tau_{jk}$ for the incorrectly classified images is `r agg_df$mean_ratio[1]` and `r agg_df$mean_ratio[2]` for the correctly classified images. Setting the referral threshold to the mean $\tau_{jk}$ for the incorrect classifications (`r agg_df$mean_ratio[1]`), we get:
-
-```{r}
-# Counting number of correct/incorrect by tau <= 2.8
-referral <- df %>% 
-  filter(diff_sd_ratio <= 2.8) %>% 
-  count(correct)
-referral
-```
-
-We run into the same problem as when we used the mean uncertainty: Many of the correctly predicted images would be referred, in fact more than when we used the uncertainty estimates. It is interesting to note, however, that we get far more referrals of incorrectly classified images. Again, this may indicate that $\tau_{jk}$ is a useful measure of uncertainty.
-
-Setting the referral rate of the mean $\tau_{jk}$ to 1 gives us the following:
-
-```{r}
-# Counting number of correct/incorrect by tau <= 1
-referral <- df %>% 
-  filter(diff_sd_ratio <= 1) %>% 
-  count(correct)
-referral
-```
-
-This is a clear improvement over our first approach, in terms of the amount of referred images. 161 fewer incorrect images are referred compared to 889 fewer correct images. This could indicate that $\tau_{jk}$ is a useful quantification of uncertainty.
-
-**BRAINSTORMING, USING RUNNERS-UP:** 
-
-```{r}
-# What is accuracy if we use diff_sd_ratio and runner-up as prediction?
-referral <- df %>% 
-  mutate(correct=replace(correct, diff_sd_ratio<=1 & correct==0 & class2==truth, 1)) %>% 
-  count(correct)
-```
-
-
-```{r}
-# What is accuracy if we use uncertainty and runner-up as prediction?
-referral <- df %>% 
-  mutate(correct=replace(correct, uncertainty>=.18 & correct==0 & class2==truth, 1)) %>% 
-  count(correct)
-```
-
-**IDEA:** Using LDA to find best tau.
-
-```{r}
-df %>% 
-  ggplot(aes(x=log(diff_sd_ratio))) +
-  geom_histogram(aes(fill=as.factor(correct)))
-```
-
-```{r}
-library(MASS)
-lda_fit <- lda(as.factor(correct)~log(diff_sd_ratio), data=df)
-lda_fit
-```
-
-
-## Usefulness of runner-up predictions
-
-For the most uncertain incorrectly classified images the runner-up suggestions are non-sensical. Still, is there any information to be obtained from the runner-up predictions? What would happen to our overall accuracy if we used the runner-up predictions for all incorrect classifications?
+For the most uncertain incorrectly classified images in section 3.4.1 the runner-up suggestions are non-sensical. Still, is there any information to be obtained from the runner-up predictions? What would happen to our overall accuracy if we used the runner-up predictions for all incorrect classifications?
 
 ```{r}
 # Counting classification accuracy if runner-up is equal to ground truth
@@ -652,19 +607,108 @@ class2_df <- df %>%
 class2_df
 ```
 
-Accuracy would rise to `r class2_df$n[2]/(sum(class2_df$n))`. This indicates that there may be some valuable information to be gathered from the runner-up predictions. So how do we determine which images to take a closer look at?
+Accuracy would rise to `r class2_df$n[2]/(sum(class2_df$n))`. This indicates that there may be some valuable information to be gathered from the runner-up predictions.
 
-## Using the difference-uncertainty ratio
+### A revised quantification of uncertainty
+
+One possible approach is to use the value of $\tau_{jk}$ introduced in section 2.5. Recall that $\tau_{jk}$ incorporates information about the runner-up prediction into our quantification of uncertainty. Consider the following cases:
+
+* $\tau_{kj} \approx 1$ means that `diff` and `uncertainty` are relatively similar. This happens if a) the models have failed to reach a consensus (`diff` is small) but model uncertainty is low, or b) the models have reached a consensus (`diff` is large) but model uncertainty is high. Let's call these **referral predictions**.
+
+* $\tau_{kj} \to 0$ means that `uncertainty` is much larger than `diff`. These should represent **uncertain predictions**.
+
+* $\tau_{kj} \to \infty$ means that `uncertainty` is much smaller than `diff`. These should represent **non-referral predictions**.
+
+As we saw in table 3.1.2, the mean $\tau_{jk}$ for the incorrectly classified images is `r agg_df$mean_ratio[1]` and `r agg_df$mean_ratio[2]` for the correctly classified images. The respective medians are `r agg_df$median_ratio[1]` and `r agg_df$median_ratio[2]`.
+
+As a first step, setting the referral threshold to $\tau_{jk} \leq 2.81$ (the mean uncertainty of the incorrect classifications) gives:
+
+```{r}
+# Counting number of correct/incorrect by tau <= 2.8
+referral_meantau <- df %>% 
+  filter(diff_sd_ratio <= 2.81) %>% 
+  count(correct)
+referral_meantau
+```
+
+We run into the same problem as when we used the mean uncertainty: Many of the correctly predicted images would be referred, in fact more than when we used the uncertainty estimates. It is interesting to note, however, that we get far more referrals of incorrectly classified images.
+
+Upon inspection, the boxplot of the log-transformed $\tau_{jk}$ clearly shows the presence of extreme values (outliers marked in red) in both tails. For incorrect predictions, the distribution seems to be negatively skewed. The distribution of the correct predictions appear to be positively skewed. 
+
+```{r}
+pt <- df %>% 
+  ggplot(aes(x=factor(correct), y=log(diff_sd_ratio))) +
+  geom_boxplot(aes(fill=factor(correct)), outlier.colour = "red", outlier.alpha = .15) +
+  xlab("correct") +
+  ylab("log-transformed tau")  +
+  ggtitle("Presence of extreme uncertainty values") +
+  labs(fill="correct")
+pt
+```
+
+
+Perhaps a more robust measure of the central tendency of $\tau_{jk}$ is the median. Setting the referral rate of $\tau_{jk} \leq 1.2$ gives the following:
+
+```{r}
+# Counting number of correct/incorrect by tau <= 1
+referral_medtau <- df %>% 
+  filter(diff_sd_ratio <= 1.2) %>% 
+  count(correct)
+referral_medtau
+```
+
+This is a clear improvement over our the mean approach, in terms of the amount of referred images. `r abs(referral_medtau$n[1]-referral_meantau$n[1])` fewer incorrect images are referred compared to `r abs(referral_medtau$n[2]-referral_meantau$n[2])` fewer correct images.
+
+When compared to using the mean of $\hat{\sigma}_k$ as a cut-off for referral, the median of $\tau_{jk}$ results in `r abs(referral_medtau$n[1]-referral_mean$n[1])` fewer incorrect images are referred compared to `r abs(referral_medtau$n[2]-referral_mean$n[2])` fewer correct images. This could indicate that $\tau_{jk}$ is a useful quantification of uncertainty.
+
+***
+
+**BRAINSTORMING, USING RUNNERS-UP:** 
+
+```{r}
+# What is accuracy if we use diff_sd_ratio and runner-up as prediction?
+ref1 <- df %>% 
+  mutate(correct=replace(correct, diff_sd_ratio<=1.2 & correct==0 & class2==truth, 1)) %>% 
+  count(correct)
+ref1
+```
+
+
+```{r}
+# What is accuracy if we use uncertainty and runner-up as prediction?
+ref2 <- df %>% 
+  mutate(correct=replace(correct, uncertainty>=.18 & correct==0 & class2==truth, 1)) %>% 
+  count(correct)
+ref2
+```
+
+**IDEA:** Using LDA to find best tau.
+
+```{r}
+df %>% 
+  ggplot(aes(x=log(diff_sd_ratio))) +
+  geom_histogram(aes(fill=factor(correct))) +
+  facet_grid(.~factor(correct))
+```
+
+```{r}
+library(MASS)
+lda_fit <- lda(factor(correct)~log(diff_sd_ratio), data=df)
+lda_fit
+```
+***
+
+## Tau-prediction correlation
 
 ```{r}
 # Fitting logistic regression model check significance of log-transformed diff_sd_ratio
-model_ratio <- glm(as.factor(correct)~log(diff_sd_ratio), data=df, family = binomial(link="logit"))
+model_ratio <- glm(factor(correct)~log(diff_sd_ratio), data=df, family = binomial(link="logit"))
 summary(model_ratio)
 ```
 
 ```{r}
 # Checking for interactions between uncertainty and log-transformed diff_sd_ratio
-model_inter <- glm(as.factor(correct)~uncertainty*log(diff_sd_ratio), data=df, family = binomial(link="logit"))
+model_inter <- glm(factor(correct)~uncertainty*log(diff_sd_ratio), data=df, family = binomial(link="logit"))
 summary(model_inter)
 ```
 
