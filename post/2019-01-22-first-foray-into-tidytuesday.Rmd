@@ -179,9 +179,14 @@ learning_to_fly <- function(df, variable, names = c()){
 }
 ```
 
-For example, if I want to plot the learning curves (if you will) of the American and Soviet/Russian space programs, I make the following function call:
+For example, if I want to plot the learning curves (if you will) of the American and Soviet/Russian space programs, I can do the following:
 
 ```{r eval = FALSE}
+success_rates <- processed %>% 
+  group_by(state_name, launch_year) %>% 
+  summarise(success_rate = 100 * sum(category == "O") / (sum(category == "O") + sum(category == "F")),
+            number_launches = n())
+
 learning_to_fly(success_rates, state_name, names = c("Russia", "United States"))
 ```
 
