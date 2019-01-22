@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Biased</title>
+    <link>https://smu095.github.io/post/</link>
+    <description>Recent content in Posts on Biased</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Sean Meling Murray</copyright>
+    <lastBuildDate>Tue, 22 Jan 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://smu095.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>First foray into Tidy Tuesday</title>
+      <link>https://smu095.github.io/2019/01/22/2019-01-22-first-foray-into-tidytuesday/</link>
+      <pubDate>Tue, 22 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://smu095.github.io/2019/01/22/2019-01-22-first-foray-into-tidytuesday/</guid>
+      <description>This week was my Tidy Tuesday debut! Tidy Tuesday is a weekly data project which is aimed at R users who want to practice their wrangling and visualisation skills within the tidyverse. This week’s data set features a historical record of rocket launches, and formed the basis for the article “The space race is dominated by new contenders”.
+My goals for this week were to:
+ Expose myself to gganimate, a really nifty package that extends ggplot2 to include animations.</description>
+    </item>
+    
+  </channel>
+</rss>
