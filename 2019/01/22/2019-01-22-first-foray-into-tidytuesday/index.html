@@ -126,8 +126,8 @@ if (!doNotTrack) {
 <p>This week was my <a href="https://github.com/rfordatascience/tidytuesday">Tidy Tuesday</a> debut! Tidy Tuesday is a weekly data project which is aimed at R users who want to practice their wrangling and visualisation skills within the <code>tidyverse</code>. <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-01-15">This week’s data set</a> features a historical record of rocket launches, and formed the basis for the article <a href="https://www.economist.com/graphic-detail/2018/10/18/the-space-race-is-dominated-by-new-contenders">“The space race is dominated by new contenders”</a>.</p>
 <p>My goals for this week were to:</p>
 <ul>
-<li><p>Expose myself to <code>gganimate</code>, a really nifty package that extends <code>ggplot2</code> to include animations.</p></li>
-<li><p>Practice <strong>tidy evaluation</strong> by building a few reusable functions for plotting.</p></li>
+<li>Expose myself to <code>gganimate</code>, a really nifty package that extends <code>ggplot2</code> to include animations.</li>
+<li>Practice <a href="https://dplyr.tidyverse.org/articles/programming.html">tidy evaluation</a> by building a few reusable functions for plotting.</li>
 </ul>
 <p>I won’t focus on the details of the data wrangling in this post. I recommend you watch <a href="https://twitter.com/drob">David Robinson’s</a> excellent <a href="https://www.youtube.com/watch?v=ZyPrP_Yo1BA">Tidy Tuesday screencast</a>, where I picked up some cool tricks. One that I would like to highlight, and that I will definitely add to my toolbox, is the use of <code>fct_collapse</code> and <code>fct_lump</code> from the <code>forcats</code> package. It allows us to easily collapse several factors into manually defined groups. To see how this works, first consider the unprocessed data:</p>
 <pre class="r"><code>library(tidyverse)
@@ -292,12 +292,12 @@ UK
 </tr>
 </tbody>
 </table>
-<p>The table above shows the number of launcher by nation. Some of these are actually not nations (such as I-ESA, which represents the <a href="http://www.esa.int/ESA">European Space Agency</a>), we will deal with in a bit. Given the table above, we would like to:</p>
+<p>The table above shows the number of launches by nation. Some of these are actually not nations (such as I-ESA, which represents the <a href="http://www.esa.int/ESA">European Space Agency</a>). We will deal with these shortly. Given the table above, we would like to:</p>
 <ol style="list-style-type: decimal">
-<li><p>Collapse SU (Sovjet Union) and RU (Russia) into one factor.</p></li>
-<li><p>Correct the state abbreviations so that we can conveniently fetch state names using the <code>countrycode</code> package.</p></li>
-<li><p>Keep the top six nations, and lump the rest into a group called <code>Other</code>.</p></li>
-<li><p>Deal with missing values resulting from step 2.</p></li>
+<li>Collapse SU (Soviet Union) and RU (Russia) into one factor.</li>
+<li>Correct the state abbreviations so that we can conveniently fetch state names using the <code>countrycode</code> package.</li>
+<li>Keep the top six nations, and lump the rest into a group called <code>Other</code>.</li>
+<li>Deal with missing values resulting from abbreviations which do not correspond to a country in step 2.</li>
 </ol>
 <p>The following chunk shows how to do all of the above:</p>
 <pre class="r"><code>processed &lt;- launch_data %&gt;% 
@@ -395,6 +395,7 @@ Other
   labs(title = &quot;Number of yearly launches&quot;, x = &quot;Year&quot;, y = &quot;Launches&quot;) +
   theme_minimal() +
   theme(legend.title = element_blank())</code></pre>
+<p><img src="/post/2019-01-22-first-foray-into-tidytuesday_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>The next step was to use <code>gganimate</code> to liven things up a bit. Following the <a href="https://github.com/thomasp85/gganimate/wiki/Temperature-time-series">time series example</a> from the <code>gganimate</code> documentation, I ended up with the following:</p>
 <pre class="r"><code>processed %&gt;% 
   count(agency_type, launch_year) %&gt;% 
@@ -408,10 +409,7 @@ Other
   labs(title = &quot;Number of yearly launches&quot;, x = &quot;Year&quot;, y = &quot;Launches&quot;) + 
   theme_minimal() +
   theme(plot.margin = margin(5.5, 40, 5.5, 5.5))</code></pre>
-<div class="figure">
-<img src="/post/2019-01-22-first-foray-into-tidytuesday_files/p1.gif" alt="Animated yearly launches" />
-<p class="caption">Animated yearly launches</p>
-</div>
+<p><img src="/post/2019-01-22-first-foray-into-tidytuesday_files/p1.gif" /></p>
 <p>Now we’re talking! Next, I wanted to define a relatively general function that allowed me to use the same framework to visualise the growing influence of the private sector in space travel. I would also like the option to set a lower bound for time period I’m interested in, and I would like to be able to specify which countries I’m interested in plotting. Using tidy evaluation, I ended up with the following:</p>
 <pre class="r"><code>launches_per_year &lt;- function(df, variable, countries = c(), from.year = NA, size.margin = 50){
   
@@ -438,22 +436,13 @@ Other
 }</code></pre>
 <p>Now I can call <code>launches_per_year</code> with different arguments to generate different plots. For instance, we can see how the private sector gets increasingly involved in space flight…</p>
 <pre class="r"><code>launches_per_year(processed, agency_type)</code></pre>
-<div class="figure">
-<img src="/post/2019-01-22-first-foray-into-tidytuesday_files/p2.gif" alt="Yearly launches by agency type" />
-<p class="caption">Yearly launches by agency type</p>
-</div>
+<p><img src="/post/2019-01-22-first-foray-into-tidytuesday_files/p2.gif" /></p>
 <p>… or we could look at the same plot for the last 20 years instead.</p>
 <pre class="r"><code>launches_per_year(processed, agency_type, from.year = 2000)</code></pre>
-<div class="figure">
-<img src="/post/2019-01-22-first-foray-into-tidytuesday_files/p3.gif" alt="Yearly launches by agency type after 2000" />
-<p class="caption">Yearly launches by agency type after 2000</p>
-</div>
-<p>Maybe we’re interested in visualising how China has become a spacefaring nation to be reckoned with:</p>
+<p><img src="/post/2019-01-22-first-foray-into-tidytuesday_files/p3.gif" /></p>
+<p>Maybe we’re interested in visualising how China has become a spacefaring nation to be reckoned with…</p>
 <pre class="r"><code>launches_per_year(processed, state_name, countries = c(&quot;United States&quot;, &quot;Russia&quot;, &quot;China&quot;), from.year = 1990)</code></pre>
-<div class="figure">
-<img src="/post/2019-01-22-first-foray-into-tidytuesday_files/p4.gif" alt="China’s growing influence in space" />
-<p class="caption">China’s growing influence in space</p>
-</div>
+<p><img src="/post/2019-01-22-first-foray-into-tidytuesday_files/p4.gif" /></p>
 <p>I was also interested in the yearly success rates of nations and agency types (public/private/startups). Again, building a relatively general function allows me to explore different options:</p>
 <pre class="r"><code>learning_to_fly &lt;- function(df, variable, names = c()){
   
@@ -479,7 +468,7 @@ Other
   
   return(p)
 }</code></pre>
-<p>For example, if I want to plot the learning curves (if you will) of the American and Sovjet/Russian space programs, I make the following function call:</p>
+<p>For example, if I want to plot the learning curves (if you will) of the American and Soviet/Russian space programs, I make the following function call:</p>
 <pre class="r"><code>learning_to_fly(success_rates, state_name, names = c(&quot;Russia&quot;, &quot;United States&quot;))</code></pre>
 <div class="figure">
 <img src="/post/2019-01-22-first-foray-into-tidytuesday_files/p8.gif" alt="Yearly success rate" />

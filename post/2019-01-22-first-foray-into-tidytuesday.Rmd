@@ -19,8 +19,7 @@ This week was my [Tidy Tuesday](https://github.com/rfordatascience/tidytuesday) 
 My goals for this week were to:
 
 * Expose myself to `gganimate`, a really nifty package that extends `ggplot2` to include animations.
-
-* Practice **tidy evaluation** by building a few reusable functions for plotting.
+* Practice [tidy evaluation](https://dplyr.tidyverse.org/articles/programming.html) by building a few reusable functions for plotting.
 
 I won't focus on the details of the data wrangling in this post. I recommend you watch [David Robinson's](https://twitter.com/drob) excellent [Tidy Tuesday screencast](https://www.youtube.com/watch?v=ZyPrP_Yo1BA), where I picked up some cool tricks. One that I would like to highlight, and that I will definitely add to my toolbox, is the use of `fct_collapse` and `fct_lump` from the `forcats` package. It allows us to easily collapse several factors into manually defined groups. To see how this works, first consider the unprocessed data:
 
@@ -39,15 +38,12 @@ launch_data %>%
   kable("html")
 ```
 
-The table above shows the number of launcher by nation. Some of these are actually not nations (such as I-ESA, which represents the [European Space Agency](http://www.esa.int/ESA)), we will deal with in a bit. Given the table above, we would like to:
+The table above shows the number of launches by nation. Some of these are actually not nations (such as I-ESA, which represents the [European Space Agency](http://www.esa.int/ESA)). We will deal with these shortly. Given the table above, we would like to:
 
-1. Collapse SU (Sovjet Union) and RU (Russia) into one factor.
-
+1. Collapse SU (Soviet Union) and RU (Russia) into one factor.
 2. Correct the state abbreviations so that we can conveniently fetch state names using the `countrycode` package.
-
 3. Keep the top six nations, and lump the rest into a group called `Other`.
-
-4. Deal with missing values resulting from step 2.
+4. Deal with missing values resulting from abbreviations which do not correspond to a country in step 2.
 
 The following chunk shows how to do all of the above:
 
@@ -73,7 +69,7 @@ processed %>%
 
 Pretty cool! Anyway, on to the visualisations. Following Robinson's screencast, I ended up with the following plot:
 
-```{r eval = FALSE}
+```{r}
 processed %>% 
   count(state_name, launch_year) %>% 
   ggplot(aes(x = launch_year, y = n, group = state_name)) + 
@@ -100,7 +96,7 @@ processed %>%
   theme(plot.margin = margin(5.5, 40, 5.5, 5.5))
 ```
 
-![Animated yearly launches](/post/2019-01-22-first-foray-into-tidytuesday_files/p1.gif)
+![](/post/2019-01-22-first-foray-into-tidytuesday_files/p1.gif)
 
 Now we're talking! Next, I wanted to define a relatively general function that allowed me to use the same framework to visualise the growing influence of the private sector in space travel. I would also like the option to set a lower bound for time period I'm interested in, and I would like to be able to specify which countries I'm interested in plotting. Using tidy evaluation, I ended up with the following:
 
@@ -136,7 +132,7 @@ Now I can call `launches_per_year` with different arguments to generate differen
 launches_per_year(processed, agency_type)
 ```
 
-![Yearly launches by agency type](/post/2019-01-22-first-foray-into-tidytuesday_files/p2.gif)
+![](/post/2019-01-22-first-foray-into-tidytuesday_files/p2.gif)
 
 ... or we could look at the same plot for the last 20 years instead.
 
@@ -144,15 +140,15 @@ launches_per_year(processed, agency_type)
 launches_per_year(processed, agency_type, from.year = 2000)
 ```
 
-![Yearly launches by agency type after 2000](/post/2019-01-22-first-foray-into-tidytuesday_files/p3.gif)
+![](/post/2019-01-22-first-foray-into-tidytuesday_files/p3.gif)
 
-Maybe we're interested in visualising how China has become a spacefaring nation to be reckoned with:
+Maybe we're interested in visualising how China has become a spacefaring nation to be reckoned with...
 
 ```{r eval = FALSE}
 launches_per_year(processed, state_name, countries = c("United States", "Russia", "China"), from.year = 1990)
 ```
 
-![China’s growing influence in space](/post/2019-01-22-first-foray-into-tidytuesday_files/p4.gif)
+![](/post/2019-01-22-first-foray-into-tidytuesday_files/p4.gif)
 
 I was also interested in the yearly success rates of nations and agency types (public/private/startups). Again, building a relatively general function allows me to explore different options:
 
@@ -183,7 +179,7 @@ learning_to_fly <- function(df, variable, names = c()){
 }
 ```
 
-For example, if I want to plot the learning curves (if you will) of the American and Sovjet/Russian space programs, I make the following function call:
+For example, if I want to plot the learning curves (if you will) of the American and Soviet/Russian space programs, I make the following function call:
 
 ```{r eval = FALSE}
 learning_to_fly(success_rates, state_name, names = c("Russia", "United States"))
