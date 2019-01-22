@@ -1,6 +1,6 @@
 ---
 title: First foray into Tidy Tuesday
-author: Sean Meling Murray
+author: Sean
 date: '2019-01-22'
 slug: first-foray-into-tidytuesday
 categories:
