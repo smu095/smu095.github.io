@@ -24,7 +24,7 @@ My goals for this week were to:
 
 I won't focus on the details of the data wrangling in this post. I recommend you watch [David Robinson's](https://twitter.com/drob) excellent [Tidy Tuesday screencast](https://www.youtube.com/watch?v=ZyPrP_Yo1BA), where I picked up some cool tricks. One that I would like to highlight, and that I will definitely add to my toolbox, is the use of `fct_collapse` and `fct_lump` from the `forcats` package. It allows us to easily collapse several factors into manually defined groups. To see how this works, first consider the unprocessed data:
 
-```{r, message = FALSE}
+```{r message = FALSE, warning=FALSE}
 library(tidyverse)
 library(gganimate)
 library(countrycode)
@@ -51,7 +51,7 @@ The table above shows the number of launcher by nation. Some of these are actual
 
 The following chunk shows how to do all of the above:
 
-```{r}
+```{r warning = FALSE}
 processed <- launch_data %>% 
   mutate(state_code_cleaned = fct_collapse(
     state_code,
