@@ -185,8 +185,8 @@ For example, if I want to plot the learning curves (if you will) of the American
 learning_to_fly(success_rates, state_name, names = c("Russia", "United States"))
 ```
 
-![Yearly success rate](/post/2019-01-22-first-foray-into-tidytuesday_files/p8.gif)
+![](/post/2019-01-22-first-foray-into-tidytuesday_files/p8.gif)
 
-Note how the size of the points shrinks and expands. The size is relative to the number of launches for a given year. Also note the abrupt dip in the number of successful American launches in 1986. This is a consequence of the [Challenger disaster](https://en.wikipedia.org/wiki/Space_Shuttle_Challenger_disaster) on January 28, which dealt a significant blow to the US manned space program.
+Note how the size of the points shrinks and expands. The size is relative to the number of launches for a given year, adding an extra dimension to the visualisation. Also note the abrupt dip in the number of successful American launches in 1986. This is a consequence of the [Challenger disaster](https://en.wikipedia.org/wiki/Space_Shuttle_Challenger_disaster) on January 28, which dealt a significant blow to the US manned space program.
 
 That concludes this week's Tidy Tuesday. Thanks for reading!
