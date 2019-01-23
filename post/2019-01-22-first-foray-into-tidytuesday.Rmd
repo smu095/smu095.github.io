@@ -37,7 +37,7 @@ launch_data <- read_csv(paste(dir, launches_csv, sep=""))
 launch_data %>% 
   count(state_code, sort = TRUE) %>% 
   kable() %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+  kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
 The table above shows the number of launches by nation. Some of these are actually not nations (such as I-ESA, which represents the [European Space Agency](http://www.esa.int/ESA)). We will deal with these shortly. Given the table above, we would like to:
@@ -67,7 +67,7 @@ processed <- launch_data %>%
 processed %>% 
   count(state_name, sort = TRUE) %>% 
   kable() %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+  kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
 Pretty cool! Anyway, on to the visualisations. Following Robinson's screencast, I ended up with the following plot:
