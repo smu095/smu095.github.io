@@ -128,156 +128,83 @@ launch_data &lt;- read_csv(paste(dir, launches_csv, sep=&quot;&quot;))
 
 launch_data %&gt;% 
   count(state_code, sort = TRUE) %&gt;% 
-  kable(&quot;html&quot;) %&gt;% 
-  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;),
-                full_width = FALSE)</code></pre>
-<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+  kable() %&gt;% 
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;))</code></pre>
+<table>
 <thead>
-<tr>
-<th style="text-align:left;">
-state_code
-</th>
-<th style="text-align:right;">
-n
-</th>
+<tr class="header">
+<th align="left">state_code</th>
+<th align="right">n</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-SU
-</td>
-<td style="text-align:right;">
-2444
-</td>
+<tr class="odd">
+<td align="left">SU</td>
+<td align="right">2444</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-US
-</td>
-<td style="text-align:right;">
-1716
-</td>
+<tr class="even">
+<td align="left">US</td>
+<td align="right">1716</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-RU
-</td>
-<td style="text-align:right;">
-734
-</td>
+<tr class="odd">
+<td align="left">RU</td>
+<td align="right">734</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-CN
-</td>
-<td style="text-align:right;">
-302
-</td>
+<tr class="even">
+<td align="left">CN</td>
+<td align="right">302</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-F
-</td>
-<td style="text-align:right;">
-291
-</td>
+<tr class="odd">
+<td align="left">F</td>
+<td align="right">291</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-J
-</td>
-<td style="text-align:right;">
-115
-</td>
+<tr class="even">
+<td align="left">J</td>
+<td align="right">115</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-IN
-</td>
-<td style="text-align:right;">
-65
-</td>
+<tr class="odd">
+<td align="left">IN</td>
+<td align="right">65</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-I-ESA
-</td>
-<td style="text-align:right;">
-13
-</td>
+<tr class="even">
+<td align="left">I-ESA</td>
+<td align="right">13</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-IL
-</td>
-<td style="text-align:right;">
-10
-</td>
+<tr class="odd">
+<td align="left">IL</td>
+<td align="right">10</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-I
-</td>
-<td style="text-align:right;">
-9
-</td>
+<tr class="even">
+<td align="left">I</td>
+<td align="right">9</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-IR
-</td>
-<td style="text-align:right;">
-8
-</td>
+<tr class="odd">
+<td align="left">IR</td>
+<td align="right">8</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-KP
-</td>
-<td style="text-align:right;">
-5
-</td>
+<tr class="even">
+<td align="left">KP</td>
+<td align="right">5</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-CYM
-</td>
-<td style="text-align:right;">
-4
-</td>
+<tr class="odd">
+<td align="left">CYM</td>
+<td align="right">4</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-I-ELDO
-</td>
-<td style="text-align:right;">
-3
-</td>
+<tr class="even">
+<td align="left">I-ELDO</td>
+<td align="right">3</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-KR
-</td>
-<td style="text-align:right;">
-3
-</td>
+<tr class="odd">
+<td align="left">KR</td>
+<td align="right">3</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-BR
-</td>
-<td style="text-align:right;">
-2
-</td>
+<tr class="even">
+<td align="left">BR</td>
+<td align="right">2</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-UK
-</td>
-<td style="text-align:right;">
-2
-</td>
+<tr class="odd">
+<td align="left">UK</td>
+<td align="right">2</td>
 </tr>
 </tbody>
 </table>
@@ -305,76 +232,43 @@ UK
 
 processed %&gt;% 
   count(state_name, sort = TRUE) %&gt;% 
-  kable(&quot;html&quot;) %&gt;% 
-  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;),
-                full_width = FALSE)</code></pre>
-<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+  kable() %&gt;% 
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;))</code></pre>
+<table>
 <thead>
-<tr>
-<th style="text-align:left;">
-state_name
-</th>
-<th style="text-align:right;">
-n
-</th>
+<tr class="header">
+<th align="left">state_name</th>
+<th align="right">n</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-Russia
-</td>
-<td style="text-align:right;">
-3178
-</td>
+<tr class="odd">
+<td align="left">Russia</td>
+<td align="right">3178</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-United States
-</td>
-<td style="text-align:right;">
-1716
-</td>
+<tr class="even">
+<td align="left">United States</td>
+<td align="right">1716</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-China
-</td>
-<td style="text-align:right;">
-302
-</td>
+<tr class="odd">
+<td align="left">China</td>
+<td align="right">302</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-France
-</td>
-<td style="text-align:right;">
-291
-</td>
+<tr class="even">
+<td align="left">France</td>
+<td align="right">291</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-Japan
-</td>
-<td style="text-align:right;">
-115
-</td>
+<tr class="odd">
+<td align="left">Japan</td>
+<td align="right">115</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-India
-</td>
-<td style="text-align:right;">
-65
-</td>
+<tr class="even">
+<td align="left">India</td>
+<td align="right">65</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-59
-</td>
+<tr class="odd">
+<td align="left">Other</td>
+<td align="right">59</td>
 </tr>
 </tbody>
 </table>
