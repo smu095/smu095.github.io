@@ -1,0 +1,136 @@
+---
+title: '#tidytuesday: Exploring (missing) data with maps'
+author: Sean
+date: '2019-01-26'
+slug: tidytuesday-plotting-prison-data-on-maps
+categories:
+  - data science
+tags:
+  - R
+  - gganimate
+  - ggplot2
+  - tidytuesday
+  - tidyverse
+  - maps
+description: 'This week we visualise missing values using gganimate'
+---
+
+[This week's #tidytuesday data](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-01-22) is the [incarceration trends](http://trends.vera.org/incarceration-rates?data=pretrial) data set from the [Vera Institute of Justice](https://www.vera.org/), which contains county-level jail data (1970-2015) and prison data (1983-2015). Vera is a non-profit research and policy organisation focusing on "the causes and consequences of mass incarceration, racial disparities, and the loss of public trust in law enforcement" ([see the Wikipedia](https://en.wikipedia.org/wiki/Vera_Institute_of_Justice) for more). 
+
+I've been thinking about exploring maps in R but never gotten around to it, so this seemed like a great opportuniy. I was a bit bewildered to start with, and ended up checking out the following alternatives:
+
+* [**ggmap**](https://github.com/dkahle/ggmap): a package that leverages mapping services like [Google Maps](https://www.google.com/maps) to obtain map tiles.
+* [**tmap**](https://github.com/mtennekes/tmap): a library for drawing thematic maps, with an API similar to `ggplot2`.
+* [**tigris**](https://github.com/walkerke/tigris): allows users to directly download and use [TIGER/Line shapefiles](https://www.census.gov/geo/maps-data/data/tiger-line.html) from the US Census Bureau.
+* [**urbnmapr**](https://github.com/UrbanInstitute/urbnmapr): a package providing state and county shapefiles that are compatible with `ggplot2`.
+
+Ultimately, I found myself spending way too much time reading documentation instead of plotting interesting stuff, and was almost about to abandon the entire project for this week. Thankfully, [David Robinson's #tinytuesday screencast](https://www.youtube.com/watch?v=78kv808ZU6o) (once again) came to the rescue. 
+
+It turns out that `ggplot2` comes with a handy function that leverages data from the [**maps**](https://cran.r-project.org/web/packages/maps/maps.pdf) package (of which I was unaware) and makes it suitable for plotting. Let's load the relevant packages and show an example.
+
+# Plotting maps with `ggplot2`
+
+```{r message = FALSE, warning = FALSE, results = "hide"}
+# Loading useful packages
+library(tidyverse)
+library(gganimate)
+library(maps)
+library(knitr)
+library(kableExtra)
+
+# Loading data from GitHub
+raw_data <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-01-22/prison_population.csv")
+```
+
+Now, let's plot a map of the contiguous United States:
+
+```{r}
+map_data("usa") %>% 
+  tbl_df() %>% 
+  ggplot(aes(x = long, y = lat, group = group)) + 
+  geom_polygon() +
+  coord_map()
+```
+
+What `map_data` essentially does is that it returns a dataframe consisting of a series of points which are grouped together. The grouping tells the `geom_polygon` layer which dots to connect in order to get an outline of the US. To include the states, we simply pass `"state"` as an argument...
+
+```{r}
+map_data("state") %>% 
+  tbl_df() %>% 
+  ggplot(aes(x = long, y = lat, group = group)) + 
+  geom_polygon() +
+  coord_map()
+```
+
+... and likewise with counties:
+
+```{r}
+map_data("county") %>% 
+  tbl_df() %>% 
+  ggplot(aes(x = long, y = lat, group = group)) + 
+  geom_polygon() +
+  coord_map()
+```
+
+There are of course other maps available. See the [documentation](https://cran.r-project.org/web/packages/maps/maps.pdf) for more info. Also, if you're interested in some more details about how `map_data` works, please check out [this excellent guide](http://eriqande.github.io/rep-res-web/lectures/making-maps-with-R.html).
+
+# Visualising missing data
+
+While I was (unsuccessfully) experimenting with `tmap`, it became clear that plotting maps wasn't my only challenge this week. The data has a lot of missing values:
+
+```{r warning=FALSE}
+# Checking which columns have missing values
+raw_data %>% 
+  summarise_all(funs(sum(is.na(.)))) %>% 
+  select_if(function(x) x > 0) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"))
+```
+
+In fact, over half the rows have missing values for prison populations. This is clearly a problem, and may require a significant amount of time to deal with ([David briefly describes](https://www.youtube.com/watch?v=78kv808ZU6o) techniques for dealing with missing data that I found quite useful).
+
+Instead of dealing with the intricacies associated with addressing the missing values problem, I decided to turn the problem on its head and visualise them as a function of time. First I calculated the percentage of missing values for each state in every year:
+
+```{r warning = FALSE}
+state_missing_data <- raw_data %>% 
+  filter(pop_category == "Total") %>% 
+  group_by(year, state) %>%
+  summarise(missing_data = round(100*mean(is.na(prison_population)), 2)) %>% 
+  ungroup()
+```
+
+We can take a closer look at, say, Texas, to get an idea of what the results of the previous chunk are:
+
+```{r warning = FALSE}
+state_missing_data %>% 
+  filter(state == "TX") %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"))
+```
+
+There are no values for the prison population in Texas until 1983. Following this there is a relatively stable period with much more data, until 1996. From then on there is a dramatic increase in the amount of missing data, which lasts until 2003. Then things look quite good for a while, until we reach the last year of the data set for which there are no recorded values for the prison population.
+
+Next, I used `gganimate` to visualise the percentage of missing values for each state by year:
+
+```{r eval = FALSE}
+state_missing_data %>% 
+  mutate(region = str_to_lower(state.name[match(state, state.abb)])) %>% # Cool trick!
+  right_join(map_data("state"), by = "region") %>% 
+  ggplot(aes(x = long, y = lat, group = group, fill = missing_data)) +
+  geom_polygon() +
+  ggthemes::theme_map() +
+  coord_map() +
+  scale_fill_viridis_c(guide = guide_legend(title = "Percent")) + 
+  transition_manual(year) +
+  labs(title = "Percentage of counties with missing data (per state)", 
+       subtitle = "Year: {current_frame}") +
+  theme(legend.position = "right",
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+        plot.subtitle = element_text(hjust = 0.5))
+```
+
+![](/post/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2_files/missing_data.gif)
+
+Note the cool little trick I picked up (once again) from [David's screencast](https://www.youtube.com/watch?v=78kv808ZU6o): In order to join our prison data with the map data, David makes clever use of the function `match` and the base R dataset `state`. Try it out for yourself to see how it works!
+
+That's it for this week's' #tidytuesday. Thanks for reading!

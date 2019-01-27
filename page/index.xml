@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Pages on Biased</title>
-    <link>https://smu095.github.io/page/</link>
+    <link>/page/</link>
     <description>Recent content in Pages on Biased</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Sean Meling Murray</copyright>
     <lastBuildDate>Fri, 03 Apr 2015 02:13:50 +0000</lastBuildDate>
     
-	<atom:link href="https://smu095.github.io/page/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/page/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>About</title>
-      <link>https://smu095.github.io/page/about/</link>
+      <link>/page/about/</link>
       <pubDate>Fri, 03 Apr 2015 02:13:50 +0000</pubDate>
       
-      <guid>https://smu095.github.io/page/about/</guid>
+      <guid>/page/about/</guid>
       <description>About Hi! My name is Sean and I work as a research scientist at the Norwegian Computing Center. I have a B.A. in media studies, a B.A. in journalism and an M.Sc. in statistics. I used to be in the newspaper business, but now I work with applications of deep learning in image processing. I&amp;rsquo;m interested in pretty much everything. I&amp;rsquo;m particularly fond of wrangling and visualising data (although I consider myself a novice).</description>
     </item>
     
     <item>
       <title>Contact</title>
-      <link>https://smu095.github.io/page/contact/</link>
+      <link>/page/contact/</link>
       <pubDate>Fri, 03 Apr 2015 02:13:50 +0000</pubDate>
       
-      <guid>https://smu095.github.io/page/contact/</guid>
+      <guid>/page/contact/</guid>
       <description>Contact Aenean ipsum justo, semper eu nisl ut, pretium tincidunt sem. Praesent et diam sit amet lacus lobortis dictum a id lacus. Quisque hendrerit sit amet turpis eu varius. Ut id lorem ac felis ultrices tincidunt. Pellentesque consequat arcu ac fringilla imperdiet. Phasellus pellentesque, sapien non pulvinar blandit, sapien ante aliquet felis, vel porttitor sapien ante in lacus. Fusce non urna aliquet, malesuada nibh vel, luctus urna. Phasellus ut lacus molestie, varius purus quis, malesuada lorem.</description>
     </item>
     

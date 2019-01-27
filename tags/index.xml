@@ -2,58 +2,67 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Biased</title>
-    <link>https://smu095.github.io/tags/</link>
+    <link>/tags/</link>
     <description>Recent content in Tags on Biased</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Sean Meling Murray</copyright>
-    <lastBuildDate>Tue, 22 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 26 Jan 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://smu095.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Gganimate</title>
-      <link>https://smu095.github.io/tags/gganimate/</link>
-      <pubDate>Tue, 22 Jan 2019 00:00:00 +0000</pubDate>
+      <link>/tags/gganimate/</link>
+      <pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://smu095.github.io/tags/gganimate/</guid>
+      <guid>/tags/gganimate/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Ggplot2</title>
-      <link>https://smu095.github.io/tags/ggplot2/</link>
-      <pubDate>Tue, 22 Jan 2019 00:00:00 +0000</pubDate>
+      <link>/tags/ggplot2/</link>
+      <pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://smu095.github.io/tags/ggplot2/</guid>
+      <guid>/tags/ggplot2/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Maps</title>
+      <link>/tags/maps/</link>
+      <pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/maps/</guid>
       <description></description>
     </item>
     
     <item>
       <title>R</title>
-      <link>https://smu095.github.io/tags/r/</link>
-      <pubDate>Tue, 22 Jan 2019 00:00:00 +0000</pubDate>
+      <link>/tags/r/</link>
+      <pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://smu095.github.io/tags/r/</guid>
+      <guid>/tags/r/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tidytuesday</title>
-      <link>https://smu095.github.io/tags/tidytuesday/</link>
-      <pubDate>Tue, 22 Jan 2019 00:00:00 +0000</pubDate>
+      <link>/tags/tidytuesday/</link>
+      <pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://smu095.github.io/tags/tidytuesday/</guid>
+      <guid>/tags/tidytuesday/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tidyverse</title>
-      <link>https://smu095.github.io/tags/tidyverse/</link>
-      <pubDate>Tue, 22 Jan 2019 00:00:00 +0000</pubDate>
+      <link>/tags/tidyverse/</link>
+      <pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://smu095.github.io/tags/tidyverse/</guid>
+      <guid>/tags/tidyverse/</guid>
       <description></description>
     </item>
     

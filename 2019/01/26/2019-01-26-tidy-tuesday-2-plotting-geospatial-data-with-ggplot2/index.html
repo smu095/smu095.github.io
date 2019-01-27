@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>#tidytuesday: Exploring (missing) data with maps &middot; Sean Meling Murray</title>
+        <meta name="description" content="This week we visualise missing values using gganimate">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.53" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="#tidytuesday: Exploring (missing) data with maps">
+<meta property="og:description" content="This week we visualise missing values using gganimate">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/2019/01/26/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2/">
+        <link rel="stylesheet" href="/dist/styles.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        
+        
+        
+    </head>
+    <body>
+        
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Biased" href="/">Biased</a>
+                            </h1>
+                        
+                        <a class="button-square" href="/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/mattemagisk">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/smu095">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/10951783/mattemagisk">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/sean-meling-murray/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Email" title="Email" href="mailto:sean.meling@gmail.com">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">#tidytuesday: Exploring (missing) data with maps</h1>
+    
+        <p class="post-description" itemprop="description">This week we visualise missing values using gganimate</p>
+    
+    <p class="post-date">
+        <span>Published <time datetime="2019-01-26" itemprop="datePublished">Sat, Jan 26, 2019</time></span>
+        <span>by</span>
+        <span itemscope="" itemprop="author" itemtype="https://schema.org/Person">
+            <span itemprop="name">
+                <a href="#" itemprop="url" rel="author">Sean</a>
+            </span>
+        </span>
+    </p>
+    
+        <p class="post-reading post-line">
+            <span>Estimated reading time: 5 min</span>
+        </p>
+    
+</header>
+
+        <div class="post-content clearfix" itemprop="articleBody">
+    
+
+    
+
+
+<p><a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-01-22">This week’s #tidytuesday data</a> is the <a href="http://trends.vera.org/incarceration-rates?data=pretrial">incarceration trends</a> data set from the <a href="https://www.vera.org/">Vera Institute of Justice</a>, which contains county-level jail data (1970-2015) and prison data (1983-2015). Vera is a non-profit research and policy organisation focusing on “the causes and consequences of mass incarceration, racial disparities, and the loss of public trust in law enforcement” (<a href="https://en.wikipedia.org/wiki/Vera_Institute_of_Justice">see the Wikipedia</a> for more).</p>
+<p>I’ve been thinking about exploring maps in R but never gotten around to it, so this seemed like a great opportuniy. I was a bit bewildered to start with, and ended up checking out the following alternatives:</p>
+<ul>
+<li><a href="https://github.com/dkahle/ggmap"><strong>ggmap</strong></a>: a package that leverages mapping services like <a href="https://www.google.com/maps">Google Maps</a> to obtain map tiles.</li>
+<li><a href="https://github.com/mtennekes/tmap"><strong>tmap</strong></a>: a library for drawing thematic maps, with an API similar to <code>ggplot2</code>.</li>
+<li><a href="https://github.com/walkerke/tigris"><strong>tigris</strong></a>: allows users to directly download and use <a href="https://www.census.gov/geo/maps-data/data/tiger-line.html">TIGER/Line shapefiles</a> from the US Census Bureau.</li>
+<li><a href="https://github.com/UrbanInstitute/urbnmapr"><strong>urbnmapr</strong></a>: a package providing state and county shapefiles that are compatible with <code>ggplot2</code>.</li>
+</ul>
+<p>Ultimately, I found myself spending way too much time reading documentation instead of plotting interesting stuff, and was almost about to abandon the entire project for this week. Thankfully, <a href="https://www.youtube.com/watch?v=78kv808ZU6o">David Robinson’s #tinytuesday screencast</a> (once again) came to the rescue.</p>
+<p>It turns out that <code>ggplot2</code> comes with a handy function that leverages data from the <a href="https://cran.r-project.org/web/packages/maps/maps.pdf"><strong>maps</strong></a> package (of which I was unaware) and makes it suitable for plotting. Let’s load the relevant packages and show an example.</p>
+<div id="plotting-maps-with-ggplot2" class="section level1">
+<h1>Plotting maps with <code>ggplot2</code></h1>
+<pre class="r"><code># Loading useful packages
+library(tidyverse)
+library(gganimate)
+library(maps)
+library(knitr)
+library(kableExtra)
+
+# Loading data from GitHub
+raw_data &lt;- read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-01-22/prison_population.csv&quot;)</code></pre>
+<p>Now, let’s plot a map of the contiguous United States:</p>
+<pre class="r"><code>map_data(&quot;usa&quot;) %&gt;% 
+  tbl_df() %&gt;% 
+  ggplot(aes(x = long, y = lat, group = group)) + 
+  geom_polygon() +
+  coord_map()</code></pre>
+<p><img src="/post/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>What <code>map_data</code> essentially does is that it returns a dataframe consisting of a series of points which are grouped together. The grouping tells the <code>geom_polygon</code> layer which dots to connect in order to get an outline of the US. To include the states, we simply pass <code>&quot;state&quot;</code> as an argument…</p>
+<pre class="r"><code>map_data(&quot;state&quot;) %&gt;% 
+  tbl_df() %&gt;% 
+  ggplot(aes(x = long, y = lat, group = group)) + 
+  geom_polygon() +
+  coord_map()</code></pre>
+<p><img src="/post/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>… and likewise with counties:</p>
+<pre class="r"><code>map_data(&quot;county&quot;) %&gt;% 
+  tbl_df() %&gt;% 
+  ggplot(aes(x = long, y = lat, group = group)) + 
+  geom_polygon() +
+  coord_map()</code></pre>
+<p><img src="/post/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>There are of course other maps available. See the <a href="https://cran.r-project.org/web/packages/maps/maps.pdf">documentation</a> for more info. Also, if you’re interested in some more details about how <code>map_data</code> works, please check out <a href="http://eriqande.github.io/rep-res-web/lectures/making-maps-with-R.html">this excellent guide</a>.</p>
+</div>
+<div id="visualising-missing-data" class="section level1">
+<h1>Visualising missing data</h1>
+<p>While I was (unsuccessfully) experimenting with <code>tmap</code>, it became clear that plotting maps wasn’t my only challenge this week. The data has a lot of missing values:</p>
+<pre class="r"><code># Checking which columns have missing values
+raw_data %&gt;% 
+  summarise_all(funs(sum(is.na(.)))) %&gt;% 
+  select_if(function(x) x &gt; 0) %&gt;% 
+  kable() %&gt;% 
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;condensed&quot;))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">population</th>
+<th align="right">prison_population</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">273093</td>
+<td align="right">751787</td>
+</tr>
+</tbody>
+</table>
+<p>In fact, over half the rows have missing values for prison populations. This is clearly a problem, and may require a significant amount of time to deal with (<a href="https://www.youtube.com/watch?v=78kv808ZU6o">David briefly describes</a> techniques for dealing with missing data that I found quite useful).</p>
+<p>Instead of dealing with the intricacies associated with addressing the missing values problem, I decided to turn the problem on its head and visualise them as a function of time. First I calculated the percentage of missing values for each state in every year:</p>
+<pre class="r"><code>state_missing_data &lt;- raw_data %&gt;% 
+  filter(pop_category == &quot;Total&quot;) %&gt;% 
+  group_by(year, state) %&gt;%
+  summarise(missing_data = round(100*mean(is.na(prison_population)), 2)) %&gt;% 
+  ungroup()</code></pre>
+<p>We can take a closer look at, say, Texas, to get an idea of what the results of the previous chunk are:</p>
+<pre class="r"><code>state_missing_data %&gt;% 
+  filter(state == &quot;TX&quot;) %&gt;% 
+  kable() %&gt;% 
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;condensed&quot;))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">year</th>
+<th align="left">state</th>
+<th align="right">missing_data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1970</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="even">
+<td align="right">1971</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="odd">
+<td align="right">1972</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="even">
+<td align="right">1973</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="odd">
+<td align="right">1974</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="even">
+<td align="right">1975</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="odd">
+<td align="right">1976</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="even">
+<td align="right">1977</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="odd">
+<td align="right">1978</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="even">
+<td align="right">1979</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="odd">
+<td align="right">1980</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="even">
+<td align="right">1981</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="odd">
+<td align="right">1982</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="even">
+<td align="right">1983</td>
+<td align="left">TX</td>
+<td align="right">8.27</td>
+</tr>
+<tr class="odd">
+<td align="right">1984</td>
+<td align="left">TX</td>
+<td align="right">6.69</td>
+</tr>
+<tr class="even">
+<td align="right">1985</td>
+<td align="left">TX</td>
+<td align="right">5.51</td>
+</tr>
+<tr class="odd">
+<td align="right">1986</td>
+<td align="left">TX</td>
+<td align="right">4.33</td>
+</tr>
+<tr class="even">
+<td align="right">1987</td>
+<td align="left">TX</td>
+<td align="right">3.54</td>
+</tr>
+<tr class="odd">
+<td align="right">1988</td>
+<td align="left">TX</td>
+<td align="right">5.91</td>
+</tr>
+<tr class="even">
+<td align="right">1989</td>
+<td align="left">TX</td>
+<td align="right">4.72</td>
+</tr>
+<tr class="odd">
+<td align="right">1990</td>
+<td align="left">TX</td>
+<td align="right">5.91</td>
+</tr>
+<tr class="even">
+<td align="right">1991</td>
+<td align="left">TX</td>
+<td align="right">5.91</td>
+</tr>
+<tr class="odd">
+<td align="right">1992</td>
+<td align="left">TX</td>
+<td align="right">5.12</td>
+</tr>
+<tr class="even">
+<td align="right">1993</td>
+<td align="left">TX</td>
+<td align="right">4.72</td>
+</tr>
+<tr class="odd">
+<td align="right">1994</td>
+<td align="left">TX</td>
+<td align="right">4.72</td>
+</tr>
+<tr class="even">
+<td align="right">1995</td>
+<td align="left">TX</td>
+<td align="right">3.15</td>
+</tr>
+<tr class="odd">
+<td align="right">1996</td>
+<td align="left">TX</td>
+<td align="right">85.04</td>
+</tr>
+<tr class="even">
+<td align="right">1997</td>
+<td align="left">TX</td>
+<td align="right">85.04</td>
+</tr>
+<tr class="odd">
+<td align="right">1998</td>
+<td align="left">TX</td>
+<td align="right">64.57</td>
+</tr>
+<tr class="even">
+<td align="right">1999</td>
+<td align="left">TX</td>
+<td align="right">85.04</td>
+</tr>
+<tr class="odd">
+<td align="right">2000</td>
+<td align="left">TX</td>
+<td align="right">85.04</td>
+</tr>
+<tr class="even">
+<td align="right">2001</td>
+<td align="left">TX</td>
+<td align="right">64.57</td>
+</tr>
+<tr class="odd">
+<td align="right">2002</td>
+<td align="left">TX</td>
+<td align="right">85.04</td>
+</tr>
+<tr class="even">
+<td align="right">2003</td>
+<td align="left">TX</td>
+<td align="right">85.04</td>
+</tr>
+<tr class="odd">
+<td align="right">2004</td>
+<td align="left">TX</td>
+<td align="right">2.36</td>
+</tr>
+<tr class="even">
+<td align="right">2005</td>
+<td align="left">TX</td>
+<td align="right">2.36</td>
+</tr>
+<tr class="odd">
+<td align="right">2006</td>
+<td align="left">TX</td>
+<td align="right">2.76</td>
+</tr>
+<tr class="even">
+<td align="right">2007</td>
+<td align="left">TX</td>
+<td align="right">2.36</td>
+</tr>
+<tr class="odd">
+<td align="right">2008</td>
+<td align="left">TX</td>
+<td align="right">1.57</td>
+</tr>
+<tr class="even">
+<td align="right">2009</td>
+<td align="left">TX</td>
+<td align="right">2.76</td>
+</tr>
+<tr class="odd">
+<td align="right">2010</td>
+<td align="left">TX</td>
+<td align="right">2.36</td>
+</tr>
+<tr class="even">
+<td align="right">2011</td>
+<td align="left">TX</td>
+<td align="right">1.57</td>
+</tr>
+<tr class="odd">
+<td align="right">2012</td>
+<td align="left">TX</td>
+<td align="right">1.57</td>
+</tr>
+<tr class="even">
+<td align="right">2013</td>
+<td align="left">TX</td>
+<td align="right">1.18</td>
+</tr>
+<tr class="odd">
+<td align="right">2014</td>
+<td align="left">TX</td>
+<td align="right">0.79</td>
+</tr>
+<tr class="even">
+<td align="right">2015</td>
+<td align="left">TX</td>
+<td align="right">1.18</td>
+</tr>
+<tr class="odd">
+<td align="right">2016</td>
+<td align="left">TX</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<p>There are no values for the prison population in Texas until 1983. Following this there is a relatively stable period with much more data, until 1996. From then on there is a dramatic increase in the amount of missing data, which lasts until 2003. Then things look quite good for a while, until we reach the last year of the data set for which there are no recorded values for the prison population.</p>
+<p>Next, I used <code>gganimate</code> to visualise the percentage of missing values for each state by year:</p>
+<pre class="r"><code>state_missing_data %&gt;% 
+  mutate(region = str_to_lower(state.name[match(state, state.abb)])) %&gt;% # Cool trick!
+  right_join(map_data(&quot;state&quot;), by = &quot;region&quot;) %&gt;% 
+  ggplot(aes(x = long, y = lat, group = group, fill = missing_data)) +
+  geom_polygon() +
+  ggthemes::theme_map() +
+  coord_map() +
+  scale_fill_viridis_c(guide = guide_legend(title = &quot;Percent&quot;)) + 
+  transition_manual(year) +
+  labs(title = &quot;Percentage of counties with missing data (per state)&quot;, 
+       subtitle = &quot;Year: {current_frame}&quot;) +
+  theme(legend.position = &quot;right&quot;,
+        plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;),
+        plot.subtitle = element_text(hjust = 0.5))</code></pre>
+<p><img src="/post/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2_files/missing_data.gif" /></p>
+<p>Note the cool little trick I picked up (once again) from <a href="https://www.youtube.com/watch?v=78kv808ZU6o">David’s screencast</a>: In order to join our prison data with the map data, David makes clever use of the function <code>match</code> and the base R dataset <code>state</code>. Try it out for yourself to see how it works!</p>
+<p>That’s it for this week’s’ #tidytuesday. Thanks for reading!</p>
+</div>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+            
+                <a href="/tags/r/">R</a>, 
+            
+                <a href="/tags/gganimate/">gganimate</a>, 
+            
+                <a href="/tags/ggplot2/">ggplot2</a>, 
+            
+                <a href="/tags/tidytuesday/">tidytuesday</a>, 
+            
+                <a href="/tags/tidyverse/">tidyverse</a>, 
+            
+                <a href="/tags/maps/">maps</a>
+            
+        </p>
+    
+
+    <div class="share">
+        
+            <a class="icon-twitter" href="https://twitter.com/share?text=%23tidytuesday%3a%20Exploring%20%28missing%29%20data%20with%20maps&url=%2f2019%2f01%2f26%2f2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2%2f"
+                onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fa fa-twitter"></i>
+                <span class="hidden">Twitter</span>
+            </a>
+        
+
+        
+            <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=%2f2019%2f01%2f26%2f2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2%2f"
+                onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                <i class="fa fa-facebook"></i>
+                <span class="hidden">Facebook</span>
+            </a>
+        
+
+        
+            <a class="icon-google-plus" href="https://plus.google.com/share?url=%2f2019%2f01%2f26%2f2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2%2f"
+              onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+              <i class="fa fa-google-plus"></i>
+                <span class="hidden">Google+</span>
+            </a>
+        
+        
+    </div>
+</footer>
+
+        
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Biased" href="/">Biased</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2019 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="/js/jquery-1.11.3.min.js"></script>
+        <script src="/js/jquery.fitvids.js"></script>
+        
+        
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        
+        
+        <script src="/js/scripts.js"></script>
+    </body>
+</html>
+

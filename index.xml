@@ -2,22 +2,32 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Biased</title>
-    <link>https://smu095.github.io/</link>
+    <link>/</link>
     <description>Recent content on Biased</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Sean Meling Murray</copyright>
-    <lastBuildDate>Tue, 22 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 26 Jan 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://smu095.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>#tidytuesday: Exploring (missing) data with maps</title>
+      <link>/2019/01/26/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2/</link>
+      <pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/01/26/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2/</guid>
+      <description>This week’s #tidytuesday data is the incarceration trends data set from the Vera Institute of Justice, which contains county-level jail data (1970-2015) and prison data (1983-2015). Vera is a non-profit research and policy organisation focusing on “the causes and consequences of mass incarceration, racial disparities, and the loss of public trust in law enforcement” (see the Wikipedia for more).
+I’ve been thinking about exploring maps in R but never gotten around to it, so this seemed like a great opportuniy.</description>
+    </item>
+    
+    <item>
       <title>First foray into Tidy Tuesday</title>
-      <link>https://smu095.github.io/2019/01/22/2019-01-22-first-foray-into-tidytuesday/</link>
+      <link>/2019/01/22/2019-01-22-first-foray-into-tidytuesday/</link>
       <pubDate>Tue, 22 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://smu095.github.io/2019/01/22/2019-01-22-first-foray-into-tidytuesday/</guid>
+      <guid>/2019/01/22/2019-01-22-first-foray-into-tidytuesday/</guid>
       <description>This week was my Tidy Tuesday debut! Tidy Tuesday is a weekly data project which is aimed at R users who want to practice their wrangling and visualisation skills within the tidyverse. This week’s data set features a historical record of rocket launches, and formed the basis for the article “The space race is dominated by new contenders”.
 My goals for this week were to:
  Expose myself to gganimate, a really nifty package that extends ggplot2 to include animations.</description>
@@ -25,19 +35,19 @@ My goals for this week were to:
     
     <item>
       <title>About</title>
-      <link>https://smu095.github.io/page/about/</link>
+      <link>/page/about/</link>
       <pubDate>Fri, 03 Apr 2015 02:13:50 +0000</pubDate>
       
-      <guid>https://smu095.github.io/page/about/</guid>
+      <guid>/page/about/</guid>
       <description>About Hi! My name is Sean and I work as a research scientist at the Norwegian Computing Center. I have a B.A. in media studies, a B.A. in journalism and an M.Sc. in statistics. I used to be in the newspaper business, but now I work with applications of deep learning in image processing. I&amp;rsquo;m interested in pretty much everything. I&amp;rsquo;m particularly fond of wrangling and visualising data (although I consider myself a novice).</description>
     </item>
     
     <item>
       <title>Contact</title>
-      <link>https://smu095.github.io/page/contact/</link>
+      <link>/page/contact/</link>
       <pubDate>Fri, 03 Apr 2015 02:13:50 +0000</pubDate>
       
-      <guid>https://smu095.github.io/page/contact/</guid>
+      <guid>/page/contact/</guid>
       <description>Contact Aenean ipsum justo, semper eu nisl ut, pretium tincidunt sem. Praesent et diam sit amet lacus lobortis dictum a id lacus. Quisque hendrerit sit amet turpis eu varius. Ut id lorem ac felis ultrices tincidunt. Pellentesque consequat arcu ac fringilla imperdiet. Phasellus pellentesque, sapien non pulvinar blandit, sapien ante aliquet felis, vel porttitor sapien ante in lacus. Fusce non urna aliquet, malesuada nibh vel, luctus urna. Phasellus ut lacus molestie, varius purus quis, malesuada lorem.</description>
     </item>
     
