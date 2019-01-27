@@ -7,19 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Sean Meling Murray</copyright>
-    <lastBuildDate>Sat, 26 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 27 Jan 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/tidytuesday/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>#tidytuesday: Exploring (missing) data with maps</title>
-      <link>/2019/01/26/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2/</link>
-      <pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
+      <link>/2019/01/27/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2/</link>
+      <pubDate>Sun, 27 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>/2019/01/26/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2/</guid>
-      <description>This week’s #tidytuesday data is the incarceration trends data set from the Vera Institute of Justice, which contains county-level jail data (1970-2015) and prison data (1983-2015). Vera is a non-profit research and policy organisation focusing on “the causes and consequences of mass incarceration, racial disparities, and the loss of public trust in law enforcement” (see the Wikipedia for more).
-I’ve been thinking about exploring maps in R but never gotten around to it, so this seemed like a great opportuniy.</description>
+      <guid>/2019/01/27/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2/</guid>
+      <description>This week’s #tidytuesday data is the incarceration trends data set from the Vera Institute of Justice, which contains county-level jail data (1970-2015) and prison data (1983-2015). Vera is a non-profit research and policy organisation focusing on “the causes and consequences of mass incarceration, racial disparities, and the loss of public trust in law enforcement” (see the Wikipedia article for more).
+I’ve been thinking about exploring maps in R but never gotten around to it, so this seemed like a great opportunity.</description>
     </item>
     
     <item>

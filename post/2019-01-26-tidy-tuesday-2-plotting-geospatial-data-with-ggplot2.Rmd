@@ -1,7 +1,7 @@
 ---
 title: '#tidytuesday: Exploring (missing) data with maps'
 author: Sean
-date: '2019-01-26'
+date: '2019-01-27'
 slug: tidytuesday-plotting-prison-data-on-maps
 categories:
   - data science
@@ -15,18 +15,18 @@ tags:
 description: 'This week we visualise missing values using gganimate'
 ---
 
-[This week's #tidytuesday data](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-01-22) is the [incarceration trends](http://trends.vera.org/incarceration-rates?data=pretrial) data set from the [Vera Institute of Justice](https://www.vera.org/), which contains county-level jail data (1970-2015) and prison data (1983-2015). Vera is a non-profit research and policy organisation focusing on "the causes and consequences of mass incarceration, racial disparities, and the loss of public trust in law enforcement" ([see the Wikipedia](https://en.wikipedia.org/wiki/Vera_Institute_of_Justice) for more). 
+[This week's #tidytuesday data](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-01-22) is the [incarceration trends](http://trends.vera.org/incarceration-rates?data=pretrial) data set from the [Vera Institute of Justice](https://www.vera.org/), which contains county-level jail data (1970-2015) and prison data (1983-2015). Vera is a non-profit research and policy organisation focusing on "the causes and consequences of mass incarceration, racial disparities, and the loss of public trust in law enforcement" (see the [Wikipedia article](https://en.wikipedia.org/wiki/Vera_Institute_of_Justice) for more). 
 
-I've been thinking about exploring maps in R but never gotten around to it, so this seemed like a great opportuniy. I was a bit bewildered to start with, and ended up checking out the following alternatives:
+I've been thinking about exploring maps in R but never gotten around to it, so this seemed like a great opportunity. I ended up checking out the following alternatives:
 
 * [**ggmap**](https://github.com/dkahle/ggmap): a package that leverages mapping services like [Google Maps](https://www.google.com/maps) to obtain map tiles.
 * [**tmap**](https://github.com/mtennekes/tmap): a library for drawing thematic maps, with an API similar to `ggplot2`.
 * [**tigris**](https://github.com/walkerke/tigris): allows users to directly download and use [TIGER/Line shapefiles](https://www.census.gov/geo/maps-data/data/tiger-line.html) from the US Census Bureau.
 * [**urbnmapr**](https://github.com/UrbanInstitute/urbnmapr): a package providing state and county shapefiles that are compatible with `ggplot2`.
 
-Ultimately, I found myself spending way too much time reading documentation instead of plotting interesting stuff, and was almost about to abandon the entire project for this week. Thankfully, [David Robinson's #tinytuesday screencast](https://www.youtube.com/watch?v=78kv808ZU6o) (once again) came to the rescue. 
+Ultimately, I found myself spending way too much time reading documentation instead of plotting interesting stuff, and was almost about to abandon the entire project for this week. Thankfully [David Robinson's #tinytuesday screencast](https://www.youtube.com/watch?v=78kv808ZU6o) (once again) came to the rescue. 
 
-It turns out that `ggplot2` comes with a handy function that leverages data from the [**maps**](https://cran.r-project.org/web/packages/maps/maps.pdf) package (of which I was unaware) and makes it suitable for plotting. Let's load the relevant packages and show an example.
+It turns out that `ggplot2` comes with a handy function that leverages data from the [**maps**](https://cran.r-project.org/web/packages/maps/maps.pdf) package (which I was unaware of) and makes it suitable for plotting. Let's load the relevant packages and show an example.
 
 # Plotting maps with `ggplot2`
 
@@ -42,7 +42,7 @@ library(kableExtra)
 raw_data <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-01-22/prison_population.csv")
 ```
 
-Now, let's plot a map of the contiguous United States:
+Let's plot a map of the contiguous United States:
 
 ```{r}
 map_data("usa") %>% 
@@ -52,7 +52,7 @@ map_data("usa") %>%
   coord_map()
 ```
 
-What `map_data` essentially does is that it returns a dataframe consisting of a series of points which are grouped together. The grouping tells the `geom_polygon` layer which dots to connect in order to get an outline of the US. To include the states, we simply pass `"state"` as an argument...
+What `map_data` essentially does is that it returns a dataframe consisting of a series of points (longitudes and latitudes) which are grouped together. The grouping tells the `geom_polygon` layer which dots to connect in order to get an outline of the US. To include the states, we simply pass `"state"` as an argument...
 
 ```{r}
 map_data("state") %>% 
@@ -72,7 +72,7 @@ map_data("county") %>%
   coord_map()
 ```
 
-There are of course other maps available. See the [documentation](https://cran.r-project.org/web/packages/maps/maps.pdf) for more info. Also, if you're interested in some more details about how `map_data` works, please check out [this excellent guide](http://eriqande.github.io/rep-res-web/lectures/making-maps-with-R.html).
+There are of course other maps available (see the [documentation](https://cran.r-project.org/web/packages/maps/maps.pdf) for more info). Also, if you're interested in some more details about how `map_data` works, please check out [this excellent guide](http://eriqande.github.io/rep-res-web/lectures/making-maps-with-R.html).
 
 # Visualising missing data
 
@@ -99,7 +99,7 @@ state_missing_data <- raw_data %>%
   ungroup()
 ```
 
-We can take a closer look at, say, Texas, to get an idea of what the results of the previous chunk are:
+We can take a closer look at e.g. Texas to get an idea of what the results of the previous chunk are:
 
 ```{r warning = FALSE}
 state_missing_data %>% 
@@ -129,7 +129,9 @@ state_missing_data %>%
         plot.subtitle = element_text(hjust = 0.5))
 ```
 
-![](/post/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2_files/missing_data.gif)
+<center>
+![](/post/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2_files/missing_data_final.gif)
+</center>
 
 Note the cool little trick I picked up (once again) from [David's screencast](https://www.youtube.com/watch?v=78kv808ZU6o): In order to join our prison data with the map data, David makes clever use of the function `match` and the base R dataset `state`. Try it out for yourself to see how it works!
 
