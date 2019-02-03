@@ -202,7 +202,7 @@ fluid_milk_sales %>%
   kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
-First, I'll do some spreading and gathering to separate the `Total Production` factor into it's own column. Next I'll calculate the fraction of each milk type sold on make a bar plot. `bbplot` contains a function called `finalise_plot`. Calling it will output your plot to an image file, and if you specify the `source_name` and `logo_image_path` arguments you will get a nifty looking plot with a footer containing the source of the data and your logo of choice.
+First, I'll do some spreading and gathering to separate the `Total Production` factor into it's own column. Next, I'll calculate the fraction of each milk type sold and make a bar plot. `bbplot` contains a function called `finalise_plot`. Calling it will output your plot to an image file, and if you specify the `source_name` and `logo_image_path` arguments you will get a nifty looking plot with a footer containing the source of the data and your logo of choice.
 
 ```{r eval=FALSE}
 # Wrangling

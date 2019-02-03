@@ -349,7 +349,7 @@ fluid_milk_sales %&gt;%
 </tr>
 </tbody>
 </table>
-<p>First, I’ll do some spreading and gathering to separate the <code>Total Production</code> factor into it’s own column. Next I’ll calculate the fraction of each milk type sold on make a bar plot. <code>bbplot</code> contains a function called <code>finalise_plot</code>. Calling it will output your plot to an image file, and if you specify the <code>source_name</code> and <code>logo_image_path</code> arguments you will get a nifty looking plot with a footer containing the source of the data and your logo of choice.</p>
+<p>First, I’ll do some spreading and gathering to separate the <code>Total Production</code> factor into it’s own column. Next, I’ll calculate the fraction of each milk type sold and make a bar plot. <code>bbplot</code> contains a function called <code>finalise_plot</code>. Calling it will output your plot to an image file, and if you specify the <code>source_name</code> and <code>logo_image_path</code> arguments you will get a nifty looking plot with a footer containing the source of the data and your logo of choice.</p>
 <pre class="r"><code># Wrangling
 fluid_milk_sales_pct &lt;- fluid_milk_sales %&gt;% 
   spread(milk_type, pounds) %&gt;% 
