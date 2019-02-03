@@ -1,0 +1,230 @@
+---
+title: '#tidytuesday: Making BBC style plots with bbplot'
+author: Sean
+date: '2019-02-03'
+slug: tidytuesday-making-bbc-style-plots-with-bbplot
+categories:
+  - data science
+tags:
+  - R
+  - ggplot2
+  - tidytuesday
+  - tidyverse
+  - bbplot
+description: 'This week we play with a package developed by the British broadcasting giant'
+---
+
+I must admit that I wasn't too excited about [this week's #tidytuesday dataset](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-01-29) from the [United States Department of Agriculture (USDA)](https://www.usda.gov/) concerning cows and milk products. I thought I might give it a rest this week, but then I stumbled across a post on [r/rstats](https://www.reddit.com/r/rstats/) linking to [this Medium post](https://medium.com/bbc-visual-and-data-journalism/how-the-bbc-visual-and-data-journalism-team-works-with-graphics-in-r-ed0b35693535) by the folks at the [BBC's](https://www.bbc.com/) department for visual and data journalism. 
+
+In brief, the post describes how the team transitioned from exploring data using `ggplot2`, to using the tidyverse to produce publication-ready plots. In their own words:
+
+> We used R and in particular R’s data visualisation package ggplot2 for data exploration, to visualise patterns and help us understand the data and find stories. But we stopped short of building charts in the BBC News graphics style ready for publication on the site. [...] To create graphics to accompany stories on the BBC News website, we had two main options: if there was enough time, we could commission graphics from our design team. If we needed a quick turnaround, opt for our in-house chart tool instead.
+
+I used to work at a fairly large newspaper before I got into mathematics and statistics, and we had the same basic approach to graphics (except that the initial exploration was usually not done in R). So I was fascinated to learn about the recent approach to graphics production taken by the BBC:
+
+> In the first months of 2018 some curious members of the data team started experimenting, diving deep into the internals of the ggplot2 package in a bid to figure out how close we could get to replicating the BBC’s in house style. In March last year, we published our first chart made from start to finish using ggplot2. [...] In short, it was a game changer, so we quickly turned our attention to how best manage this newly-discovered power.
+
+Their work resulted in a package called [**bbplot**](https://github.com/bbc/bbplot), which leverages `ggplot2` to make production-grade graphics in the BBC's in-house aesthetic style. As a former journalist I think it's really cool that one of the largest and most respected broadcasters in the world is using the capabilites of `ggplot2` to streamline their journalism. The authors have also written a really nice [plotting cookbook](https://bbc.github.io/rcookbook/) that deals with frequently asked questions.
+
+# Setup
+
+Install `bbplot` by typing `devtools::install_github('bbc/bbplot')` into your console.
+
+```{r warning=FALSE, message=FALSE}
+library(bbplot)
+library(tidyverse)
+library(forcats)
+library(knitr)
+library(kableExtra)
+
+DIR <- "~/Documents/GitHub/tidytuesday/data/2019/2019-01-29/"
+
+read_files <- function(file) {
+  read_csv(paste0(DIR, file))
+}
+
+files <- list.files(DIR, pattern = "*.csv")
+print(files)
+```
+
+In this post we'll focus on `milkcow_facts.csv`, `milk_products_facts.csv` and `fluid_milk_sales.csv`.
+
+# Milk cow data
+
+`milkcow_facts.csv` unsurprisingly contains facts about milk cows. 
+
+```{r message=FALSE, warning=FALSE}
+milkcow_facts <- read_files(files[4])
+glimpse(milkcow_facts)
+```
+
+We can start by making a few simple line plots and adding `bbc_style`:
+
+```{r}
+source <- "Source: United States Department of Agriculture (2017)"
+
+milkcow_facts %>% 
+  ggplot(aes(x = year, y = milk_per_cow)) +
+  geom_line(color = "#1380A1", lwd=2) +
+  labs(title = "More milk...", subtitle = "Average amount of milk per cow (in lbs)", x = "Year", y = "Milk (lbs)") +
+  bbc_style()
+```
+
+```{r}
+milkcow_facts %>% 
+  ggplot(aes(x = year, y = avg_price_milk)) +
+  geom_line(color="#1380A1", lwd=2) +
+  labs(title = "... and pricier milk...", subtitle = "Average cost of milk (USD per lbs)") +
+  bbc_style()
+```
+
+```{r}
+milkcow_facts %>% 
+  ggplot(aes(x = year, y = avg_milk_cow_number)) +
+  geom_line(color = "#1380A1", lwd=2) +
+  labs(title = "... along with less cows...", subtitle = "Average number of milk cows", x = "Year", y = "Milk (lbs)") +
+  bbc_style()
+```
+
+
+```{r warning=FALSE}
+milkcow_facts %>% 
+  mutate(earnings = avg_price_milk*milk_per_cow) %>% 
+  gather(key, usd, c("earnings", "milk_cow_cost_per_animal")) %>% 
+  select(year, key, usd) %>% 
+  ggplot(aes(x = year, y = usd, color = key)) +
+  geom_line(lwd=2) +
+  scale_color_manual(values = c("earnings" = "#1380A1", "milk_cow_cost_per_animal" = "#FAAB18"),
+                       labels = c("Avg. income", "Avg. expenses")) + 
+  labs(title = "... increases margins", subtitle = "Producing more milk with less cows\nmeans more cash") +
+  bbc_style()
+```
+
+I'm really digging the aesthetics so far; clean, clear and simple. Let's see what we can learn about the consumption of milk products next.
+
+# Milk product data
+
+`milk_products_data.csv` gives an overview of the average yearly consumption (in lbs) of dairy products.
+
+```{r message=FALSE, warning=FALSE}
+# Importing data
+milk_products <- read_files(files[3])
+glimpse(milk_products)
+```
+
+So there are quite a lot of different kinds of products here. I'd like to replicate the [relative population growth plot](https://bbc.github.io/rcookbook/#free_scales) in the BBC cookbook for a subset of these. 
+
+To simplify things a bit and to keep the plots uncluttered I'll use a trick I picked up during my [first week of #tidytuesday](https://smu095.github.io/2019/01/22/2019-01-22-first-foray-into-tidytuesday/): Combining levels with `fct_collapse`. Also, I'll `gather` the different product types in order to easily group them during plotting. To smooth the plots out a bit I'll downsample the data somewhat and only include every seventh year:
+
+```{r}
+# Wrangling data
+years = seq(1975, 2017, 7)
+
+milk_products_gathered <- milk_products %>% 
+  filter(year %in% years) %>%
+  gather(product, lbs, fluid_milk:dry_whey) %>% 
+  mutate(product = fct_collapse(product,
+    "cheese" = c("cheese_american", "cheese_other", "cheese_cottage"),
+    "evap_milk" = c("evap_cnd_canned_whole_milk", "evap_cnd_bulk_whole_milk",
+                    "evap_cnd_bulk_and_can_skim_milk"),
+    "ice_cream" = c("frozen_ice_cream_regular", "frozen_ice_cream_reduced_fat"),
+    "dry_milk" = c("dry_whole_milk", "dry_nonfat_milk", "dry_buttermilk")
+  )) %>% 
+  group_by(year, product) %>% 
+  summarise(lbs = sum(lbs)) %>% 
+  ungroup()
+
+products <- c("butter", "cheese", "fluid_milk", "fluid_yogurt", "ice_cream")
+names <- str_replace(str_to_title(str_remove(products, pattern = "fluid_")), "_", " ")
+
+milk_products_selection <- milk_products_gathered %>% 
+  filter(product %in% products) %>% 
+  mutate(product = factor(product, labels = names)) # Changing factor names so they'll look nicer in plot
+
+# Plotting
+milk_products_selection %>% 
+  ggplot(aes(x = year, y = lbs, group = product, fill = product)) +
+  geom_area() +
+  geom_hline(yintercept = 0) + 
+  facet_wrap(~product, scales = "free", nrow = 2) +
+  labs(title = "Yogurt bonanza!",
+       subtitle = "Relative change in consumption (lbs), 1975-2017") +
+  bbc_style() +
+  theme(legend.position = "none",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank())
+```
+
+Evidently, the yogurt business is booming. Cheese consumption is also increasing, whereas the average consumption of milk and ice cream is decreasing. Butter consumption has increased somewhat after dipping down slightly. 
+
+Next I'd like to look at this from a different perspective, by using a [grouped bar chart](https://bbc.github.io/rcookbook/#make_a_grouped_bar_chart). Since milk dwarfs the other products in terms of average amount consumed, we will plot milk consumption separately. First, the non-milk products...
+
+```{r}
+milk_products_selection %>% 
+  filter(year == 1975 | year == 2017,
+         product != "Milk") %>% 
+  ggplot(aes(x = product, y = lbs, fill = as.factor(year))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_hline(yintercept = 0, size = 1) +
+  scale_fill_manual(values = c("#1380A1", "#FAAB18")) +
+  labs(title = "Consumer habits", subtitle = "Avg. consumption per person (lbs)") +
+  bbc_style()
+```
+
+
+... and onto milk:
+
+```{r}
+milk_products_selection %>% 
+  filter(year == 1975 | year == 2017,
+         product == "Milk") %>% 
+  ggplot(aes(x = product, y = lbs, fill = as.factor(year))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_hline(yintercept = 0, size = 1) +
+  scale_fill_manual(values = c("#1380A1", "#FAAB18")) +
+  labs(title = "We're drinking less milk", subtitle = "Avg. consumption per person (lbs)") +
+  bbc_style()
+```
+
+Cool! Finally, let's move on to our final dataset for this week.
+
+# Fluid milk sales data
+
+`fluid_milk_sales.csv` contains the total amount (in lbs) of different kinds of milk types sold per year. To get an idea of what this looks like, let's take a look at the data from 1975:
+
+```{r message=FALSE, warning=FALSE}
+#Importing data
+fluid_milk_sales <- read_files(files[2])
+
+fluid_milk_sales %>% 
+  filter(year == 1975) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"))
+```
+
+First, I'll do some spreading and gathering to separate the `Total Production` factor into it's own column. Next I'll calculate the fraction of each milk type sold on make a bar plot. `bbplot` contains a function called `finalise_plot`. Calling it will output your plot to an image file, and if you specify the `source_name` and `logo_image_path` arguments you will get a nifty looking plot with a footer containing the source of the data and your logo of choice.
+
+```{r eval=FALSE}
+# Wrangling
+fluid_milk_sales_pct <- fluid_milk_sales %>% 
+  spread(milk_type, pounds) %>% 
+  gather(milk_type, pounds, -c("year", "Total Production")) %>% 
+  group_by(year) %>% 
+  mutate(pct_sold = pounds/`Total Production`)
+
+# Plotting 
+p1 <- fluid_milk_sales_pct %>% 
+  ggplot(aes(x = year, y = pct_sold, fill = milk_type)) +
+  geom_bar(stat="identity") +
+  scale_y_continuous(labels = scales::percent) + 
+  labs(title = "Reducing fat and adding flavor", subtitle = "Percentage of milk type sold per year, 1975-2017") +
+  bbc_style()
+
+finalise_plot(p1, save_filepath = "milk_sales.png", source_name = source, logo_image_path = "logo.png")
+```
+
+![](/post/2019-02-03-tidytuesday-making-bbc-style-plots-with-bbplot_files/milk_sales.png)
+
+There we go! A publishable plot in the style of the BBC, with your own personal logo. Nice!
+
+That's it for this week, I hope you enjoyed it!

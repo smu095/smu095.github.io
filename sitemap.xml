@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/2019/02/03/2019-02-03-tidytuesday-making-bbc-style-plots-with-bbplot/</loc>
+    <lastmod>2019-02-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/2019/01/27/2019-01-26-tidy-tuesday-2-plotting-geospatial-data-with-ggplot2/</loc>
     <lastmod>2019-01-27T00:00:00+00:00</lastmod>
   </url>
@@ -23,8 +28,14 @@
   </url>
   
   <url>
+    <loc>/tags/bbplot/</loc>
+    <lastmod>2019-02-03T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/</loc>
-    <lastmod>2019-01-27T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -36,7 +47,7 @@
   
   <url>
     <loc>/tags/ggplot2/</loc>
-    <lastmod>2019-01-27T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -54,31 +65,31 @@
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2019-01-27T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/r/</loc>
-    <lastmod>2019-01-27T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/</loc>
-    <lastmod>2019-01-27T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/tidytuesday/</loc>
-    <lastmod>2019-01-27T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/tidyverse/</loc>
-    <lastmod>2019-01-27T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

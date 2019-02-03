@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Bbplot on Biased</title>
+    <link>/tags/bbplot/</link>
+    <description>Recent content in Bbplot on Biased</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Sean Meling Murray</copyright>
+    <lastBuildDate>Sun, 03 Feb 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/bbplot/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>#tidytuesday: Making BBC style plots with bbplot</title>
+      <link>/2019/02/03/2019-02-03-tidytuesday-making-bbc-style-plots-with-bbplot/</link>
+      <pubDate>Sun, 03 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/02/03/2019-02-03-tidytuesday-making-bbc-style-plots-with-bbplot/</guid>
+      <description>I must admit that I wasn’t too excited about this week’s #tidytuesday dataset from the United States Department of Agriculture (USDA) concerning cows and milk products. I thought I might give it a rest this week, but then I stumbled across a post on r/rstats linking to this Medium post by the folks at the BBC’s department for visual and data journalism.
+In brief, the post describes how the team transitioned from exploring data using ggplot2, to using the tidyverse to produce publication-ready plots.</description>
+    </item>
+    
+  </channel>
+</rss>
