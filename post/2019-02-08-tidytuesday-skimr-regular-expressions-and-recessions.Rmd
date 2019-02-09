@@ -104,7 +104,7 @@ I'd like to retain the `name` and `period` columns of `recessions`, because I'd 
 
 I didn't really know anything about regexes prior to writing this post, so a small disclaimer is appropriate before we move on: This isn't meant to be a regex tutorial, for that I would advise you to start with the resources listed below and google your way from there.
 
-* The [strings chapter](https://r4ds.had.co.nz/strings.html) of R for Data Science.
+* The [strings chapter](https://r4ds.had.co.nz/strings.html) of R for Data Science
 * [Regex crosswords](https://regexcrossword.com/)
 
 I particularly recommend the regex crosswords. They really force you to think about what's happening. I used [this online regex tester](https://regex101.com/) to check my reasoning, but was recently made aware of [a similar functionality in RStudio](https://twitter.com/rstudiotips):
@@ -155,7 +155,7 @@ recessions_clean %>%
   kableExtra::kable_styling(bootstrap_options = c("condensed", "striped"))
 ```
 
-Looking good! First, let's plot the HPI:
+Looking good! First, let's plot the HPI. I really liked the [simplicity and clarity of exposition](https://smu095.github.io/2019/02/03/2019-02-03-tidytuesday-making-bbc-style-plots-with-bbplot/) of the BBC's [**bbplot**](https://github.com/bbc/bbplot) package, so I'll use it this week as well.
 
 ```{r eval = FALSE}
 hpi_index %>% 

@@ -228,7 +228,7 @@ map_if(data, ~ nrow(.x) &gt; 0, skim)</code></pre>
 <p>I’d like to retain the <code>name</code> and <code>period</code> columns of <code>recessions</code>, because I’d like to use <code>geom_rect</code> to visualise the periods when plotting our time series. We see that each row in <code>period</code> has a relevant interval of the format [Month abbreviation Year]-[Month abbreviation Year]. We can use regexes to extract these.</p>
 <p>I didn’t really know anything about regexes prior to writing this post, so a small disclaimer is appropriate before we move on: This isn’t meant to be a regex tutorial, for that I would advise you to start with the resources listed below and google your way from there.</p>
 <ul>
-<li>The <a href="https://r4ds.had.co.nz/strings.html">strings chapter</a> of R for Data Science.</li>
+<li>The <a href="https://r4ds.had.co.nz/strings.html">strings chapter</a> of R for Data Science</li>
 <li><a href="https://regexcrossword.com/">Regex crosswords</a></li>
 </ul>
 <p>I particularly recommend the regex crosswords. They really force you to think about what’s happening. I used <a href="https://regex101.com/">this online regex tester</a> to check my reasoning, but was recently made aware of <a href="https://twitter.com/rstudiotips">a similar functionality in RStudio</a>:</p>
@@ -378,7 +378,7 @@ recessions_clean %&gt;%
 </tr>
 </tbody>
 </table>
-<p>Looking good! First, let’s plot the HPI:</p>
+<p>Looking good! First, let’s plot the HPI. I really liked the <a href="https://smu095.github.io/2019/02/03/2019-02-03-tidytuesday-making-bbc-style-plots-with-bbplot/">simplicity and clarity of exposition</a> of the BBC’s <a href="https://github.com/bbc/bbplot"><strong>bbplot</strong></a> package, so I’ll use it this week as well.</p>
 <pre class="r"><code>hpi_index %&gt;% 
   unite(date, year, month, sep = &quot;-&quot;) %&gt;% 
   mutate(date = ymd(paste(date, &quot;1&quot;, sep=&quot;-&quot;))) %&gt;% 
