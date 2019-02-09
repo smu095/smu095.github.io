@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>#tidytuesday: Skimr, regular expressions and recessions &middot; Sean Meling Murray</title>
+        <meta name="description" content="This week’s post will mark the start of my experimentation with purrr and regular expressions (regex). I’ll also take a look at a package called skimr, which looks like a pretty efficient way to get a quick overview of our data.
+In case you don’t know, purrr essentially abstracts away the need for many kinds of for loops used to iterate over lists or atomic vectors. As Hadley writes in R for Data Science, the apply family of functions solve a similar problem, but purrr provides a more consistent and easier-to-learn approach.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.53" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="#tidytuesday: Skimr, regular expressions and recessions">
+<meta property="og:description" content="This week’s post will mark the start of my experimentation with purrr and regular expressions (regex). I’ll also take a look at a package called skimr, which looks like a pretty efficient way to get a quick overview of our data.
+In case you don’t know, purrr essentially abstracts away the need for many kinds of for loops used to iterate over lists or atomic vectors. As Hadley writes in R for Data Science, the apply family of functions solve a similar problem, but purrr provides a more consistent and easier-to-learn approach.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/2019/02/08/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions/">
+        <link rel="stylesheet" href="/dist/styles.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        
+        
+        
+    </head>
+    <body>
+        
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Biased" href="/">Biased</a>
+                            </h1>
+                        
+                        <a class="button-square" href="/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/mattemagisk">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/smu095">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/10951783/mattemagisk">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/sean-meling-murray/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Email" title="Email" href="mailto:sean.meling@gmail.com">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">#tidytuesday: Skimr, regular expressions and recessions</h1>
+    
+    <p class="post-date">
+        <span>Published <time datetime="2019-02-08" itemprop="datePublished">Fri, Feb 8, 2019</time></span>
+        <span>by</span>
+        <span itemscope="" itemprop="author" itemtype="https://schema.org/Person">
+            <span itemprop="name">
+                <a href="#" itemprop="url" rel="author">Sean</a>
+            </span>
+        </span>
+    </p>
+    
+        <p class="post-reading post-line">
+            <span>Estimated reading time: 8 min</span>
+        </p>
+    
+</header>
+
+        <div class="post-content clearfix" itemprop="articleBody">
+    
+
+    
+
+
+<p>This week’s post will mark the start of my experimentation with <a href="https://purrr.tidyverse.org/"><strong>purrr</strong></a> and regular expressions (regex). I’ll also take a look at a package called <a href="https://github.com/ropensci/skimr"><strong>skimr</strong></a>, which looks like a pretty efficient way to get a quick overview of our data.</p>
+<p>In case you don’t know, <strong>purrr</strong> essentially abstracts away the need for many kinds of for loops used to iterate over lists or atomic vectors. As <a href="https://r4ds.had.co.nz/iteration.html">Hadley writes in R for Data Science</a>, the <code>apply</code> family of functions solve a similar problem, but <strong>purrr</strong> provides a more consistent and easier-to-learn approach.</p>
+<p>So, the goal for the next few weeks is to try to use a couple of different functions from the <strong>purrr</strong> package every time I write a post. There’s a nice list of <a href="https://paulvanderlaken.com/2018/12/05/learning-functional-programming-purrr/"><strong>purrr</strong> resources here</a>. Whenever possible, I’ll also try to make use of regexes in the data wrangling process.</p>
+<div id="housing-price-index-data" class="section level1">
+<h1>Housing Price Index data</h1>
+<p>This week we’ll take a look at the <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-02-05">Housing Price Index data set</a> provided by <a href="http://www.freddiemac.com/research/indices/house-price-index.html">Freddie Mac</a>, which</p>
+<blockquote>
+<p>is a broad measure of the movement of single-family house prices. The HPI is a weighted, repeat-sales index, meaning that it measures average price changes in repeat sales or refinancings on the same properties.</p>
+</blockquote>
+<p>We’ll also take a look at the accompanying mortgage rates and recession data. We’ll use the <code>map</code> function from <strong>purrr</strong> in conjunction with <code>skim</code> from <strong>skimr</strong> to concisely write code that lets us get an overview of many data sets simultaneously.</p>
+<pre class="r"><code># Loading useful packages
+library(tidyverse)
+library(lubridate)
+library(skimr)
+
+PATH &lt;- &quot;~/Documents/GitHub/tidytuesday/data/2019/2019-02-05&quot;
+files &lt;- list.files(path = PATH, pattern = &quot;*.csv&quot;)
+data &lt;- map(file.path(PATH, files), read_csv)
+
+# Data
+mortgages &lt;- data[[1]]
+recessions &lt;- data[[2]]
+hpi_index &lt;- data[[3]]</code></pre>
+<p><code>map</code> applies a function to every element of a list or a vector and returns a list. In the preceding chunk I’ve mapped the function <code>read_csv</code> to every element of the vector <code>files</code>, which (after appended to <code>PATH</code> with the <code>file.path</code> function) contains the paths to this week’s data. The result is a list where each element is a tibble.</p>
+</div>
+<div id="skimming-the-data" class="section level1">
+<h1>Skimming the data</h1>
+<p>There are many different kinds of <code>map</code> functions in <strong>purrr</strong>. One that seems particularly useful is <code>map_if</code>, which applies a function to every element of a list or a vector if some condition is met. So, for example, <code>skim</code> won’t work if a data set is empty. To make sure that <code>skim</code> is only mapped to appropriate data sets, we can use <code>map_if</code> to make sure that it is applied only to tibbles that contain one or more rows:</p>
+<pre class="r"><code># Previewing data using purrr and skimr
+map_if(data, ~ nrow(.x) &gt; 0, skim)</code></pre>
+<p>The <a href="https://rmarkdown.rstudio.com/lesson-1.html">Markdown</a> output in <a href="https://bookdown.org/yihui/blogdown/">blogdown</a> is kind of messy, so the following is what you would see in your console if you ran the chunk above:</p>
+<p><img src="/post/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions_files/Skjermbilde%202019-02-09%20kl.%2000.11.17.png" /></p>
+<p><img src="/post/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions_files/Skjermbilde%202019-02-09%20kl.%2000.11.43.png" /></p>
+<p><img src="/post/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions_files/Skjermbilde%202019-02-09%20kl.%2000.11.53.png" /></p>
+<p>I think this is really cool. As you can see, <code>skimr</code> groups our data by variable type and summarises them accordingly. One line of code gives us an overview of three different data sets (corresponding to the elements of <code>files</code>), allowing us to diagnose problems pretty quickly. For instance, it’s clear that the character variables in our first data set (<code>mortgage.csv</code>) probably should be numerics. <code>mutate_at</code> lets us apply <code>as.numeric</code> to several columns:</p>
+<pre class="r"><code>mortgages_fixed &lt;- mortgages %&gt;% 
+  mutate_at(vars(-date, -fixed_rate_30_yr, -fees_and_pts_30_yr), as.numeric)</code></pre>
+<p>Let’s skim the data again:</p>
+<pre class="r"><code>mortgages_fixed %&gt;% 
+  skim()</code></pre>
+<p><img src="/post/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions_files/Skjermbilde%202019-02-09%20kl.%2000.24.40.png" /></p>
+<p>Much better!</p>
+</div>
+<div id="regex-and-recessions" class="section level1">
+<h1>Regex and recessions</h1>
+<p>I’d like to try to make some interesting visualisations of the price index and recession data. Clearly, <code>recessions</code> needs some work:</p>
+<pre class="r"><code>recessions %&gt;% 
+  select(name, period_range) %&gt;% 
+  knitr::kable() %&gt;% 
+    kableExtra::kable_styling(bootstrap_options = c(&quot;condensed&quot;, &quot;striped&quot;))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">name</th>
+<th align="left">period_range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Great Depression</td>
+<td align="left">Aug 1929-Mar 1933ct 1929-Dec 1941</td>
+</tr>
+<tr class="even">
+<td align="left">Recession of 1937–1938</td>
+<td align="left">1937May 1937-June 1938</td>
+</tr>
+<tr class="odd">
+<td align="left">Recession of 1945</td>
+<td align="left">1945Feb 1945-Oct 1945</td>
+</tr>
+<tr class="even">
+<td align="left">Recession of 1949</td>
+<td align="left">1948Nov 1948-Oct 1949</td>
+</tr>
+<tr class="odd">
+<td align="left">Recession of 1953</td>
+<td align="left">1953July 1953-May 1954</td>
+</tr>
+<tr class="even">
+<td align="left">Recession of 1958</td>
+<td align="left">1957Aug 1957-April 1958</td>
+</tr>
+<tr class="odd">
+<td align="left">Recession of 1960–61</td>
+<td align="left">1960Apr 1960-Feb 1961</td>
+</tr>
+<tr class="even">
+<td align="left">Recession of 1969–70</td>
+<td align="left">1969Dec 1969-Nov 1970</td>
+</tr>
+<tr class="odd">
+<td align="left">1973–75 recession</td>
+<td align="left">1973Nov 1973-Mar 1975</td>
+</tr>
+<tr class="even">
+<td align="left">1980 recession</td>
+<td align="left">1980Jan 1980-July 1980</td>
+</tr>
+<tr class="odd">
+<td align="left">1981–1982 recession</td>
+<td align="left">1981July 1981-Nov 1982</td>
+</tr>
+<tr class="even">
+<td align="left">Early 1990s recession in the United States</td>
+<td align="left">1990July 1990-Mar 1991</td>
+</tr>
+<tr class="odd">
+<td align="left">Early 2000s recession</td>
+<td align="left">2001Mar 2001-Nov 2001</td>
+</tr>
+<tr class="even">
+<td align="left">Great Recession</td>
+<td align="left">2007Dec 2007-June 2009[69][70]</td>
+</tr>
+</tbody>
+</table>
+<p>I’d like to retain the <code>name</code> and <code>period</code> columns of <code>recessions</code>, because I’d like to use <code>geom_rect</code> to visualise the periods when plotting our time series. We see that each row in <code>period</code> has a relevant interval of the format [Month abbreviation Year]-[Month abbreviation Year]. We can use regexes to extract these.</p>
+<p>I didn’t really know anything about regexes prior to writing this post, so a small disclaimer is appropriate before we move on: This isn’t meant to be a regex tutorial, for that I would advise you to start with the resources listed below and google your way from there.</p>
+<ul>
+<li>The <a href="https://r4ds.had.co.nz/strings.html">strings chapter</a> of R for Data Science.</li>
+<li><a href="https://regexcrossword.com/">Regex crosswords</a></li>
+</ul>
+<p>I particularly recommend the regex crosswords. They really force you to think about what’s happening. I used <a href="https://regex101.com/">this online regex tester</a> to check my reasoning, but was recently made aware of <a href="https://twitter.com/rstudiotips">a similar functionality in RStudio</a>:</p>
+<blockquote class="twitter-tweet" data-lang="no">
+<p lang="en" dir="ltr">
+Our <a href="https://twitter.com/rstudio?ref_src=twsrc%5Etfw"><span class="citation">@rstudio</span></a> add-in of the day: <a href="https://t.co/dnt9gmsUZM">https://t.co/dnt9gmsUZM</a> by <a href="https://twitter.com/grrrck?ref_src=twsrc%5Etfw"><span class="citation">@grrrck</span></a>. Create, visualize, and test regular expressions right inside RStudio, cheat sheets included. <a href="https://t.co/Ebgle6qojG">pic.twitter.com/Ebgle6qojG</a>
+</p>
+— RStudio Tips (<span class="citation">@rstudiotips</span>) <a href="https://twitter.com/rstudiotips/status/1093938376762261504?ref_src=twsrc%5Etfw">8. februar 2019</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>This seems pretty useful, I’ll have to check it out later.</p>
+</div>
+<div id="matching-strings" class="section level1">
+<h1>Matching strings</h1>
+<p>After some trial and error, I ended up with the following regex to extract the relevant parts of the strings in the <code>period</code> columns:</p>
+<p><code>(?:[A-Z][a-z]+\\s[0-9]{4})-(?:[A-Z][a-z]+\\s[0-9]{4})</code></p>
+<p>Please note, there are probably simpler and more clever approaches than mine. My general philosophy is to make things work first, and try to be clever later.</p>
+<p>So, let’s break this down. The parenthesis <code>(</code> starts to group an expression and captures it so that it can be referenced later. We won’t bother with that here. In fact, that is why I start with <code>?:</code>. This explicitly tells the regex machine to <em>not</em> capture the grouped match. Next, the regex machine searches for a single upper case letter (<code>[A-Z]</code>) followed by at least one lower case letter (<code>[a-z]+</code>). Next the regex machine searches for a single whitespace (<code>\\s</code>) followed by exactly four numbers (<code>[0-9]{4}</code>). The grouped expression is closed with <code>)</code>, and the search for a single dash <code>-</code> starts. Then, we repeat the grouped pattern. This should give use what we want:</p>
+<pre class="r"><code>regex &lt;- &quot;(?:[A-Z][a-z]+\\s[0-9]{4})-(?:[A-Z][a-z]+\\s[0-9]{4})&quot;
+
+recessions_clean &lt;- recessions %&gt;% 
+  mutate_at(&quot;period_range&quot;, funs(str_match(., regex))) %&gt;% 
+  select(name, period_range)
+
+recessions_clean %&gt;% 
+  knitr::kable() %&gt;% 
+  kableExtra::kable_styling(bootstrap_options = c(&quot;condensed&quot;, &quot;striped&quot;))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">name</th>
+<th align="left">period_range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Great Depression</td>
+<td align="left">Aug 1929-Mar 1933</td>
+</tr>
+<tr class="even">
+<td align="left">Recession of 1937–1938</td>
+<td align="left">May 1937-June 1938</td>
+</tr>
+<tr class="odd">
+<td align="left">Recession of 1945</td>
+<td align="left">Feb 1945-Oct 1945</td>
+</tr>
+<tr class="even">
+<td align="left">Recession of 1949</td>
+<td align="left">Nov 1948-Oct 1949</td>
+</tr>
+<tr class="odd">
+<td align="left">Recession of 1953</td>
+<td align="left">July 1953-May 1954</td>
+</tr>
+<tr class="even">
+<td align="left">Recession of 1958</td>
+<td align="left">Aug 1957-April 1958</td>
+</tr>
+<tr class="odd">
+<td align="left">Recession of 1960–61</td>
+<td align="left">Apr 1960-Feb 1961</td>
+</tr>
+<tr class="even">
+<td align="left">Recession of 1969–70</td>
+<td align="left">Dec 1969-Nov 1970</td>
+</tr>
+<tr class="odd">
+<td align="left">1973–75 recession</td>
+<td align="left">Nov 1973-Mar 1975</td>
+</tr>
+<tr class="even">
+<td align="left">1980 recession</td>
+<td align="left">Jan 1980-July 1980</td>
+</tr>
+<tr class="odd">
+<td align="left">1981–1982 recession</td>
+<td align="left">July 1981-Nov 1982</td>
+</tr>
+<tr class="even">
+<td align="left">Early 1990s recession in the United States</td>
+<td align="left">July 1990-Mar 1991</td>
+</tr>
+<tr class="odd">
+<td align="left">Early 2000s recession</td>
+<td align="left">Mar 2001-Nov 2001</td>
+</tr>
+<tr class="even">
+<td align="left">Great Recession</td>
+<td align="left">Dec 2007-June 2009</td>
+</tr>
+</tbody>
+</table>
+<p>Cool! This looks a lot better. Now we can do some plotting.</p>
+</div>
+<div id="plotting-recessions-and-loan-rates" class="section level1">
+<h1>Plotting recessions and loan rates</h1>
+<p>I’m going to create two date columns by separating <code>period</code> into a <code>start</code> date and an <code>end</code> date. Since I don’t know the exact date a recession starts or ends, I’ll simply set the dates to be the middle of the month. Furthermore, I’m only interested in the recessions after 1971, so I filter out those before. I’ll use <code>ymd</code> from <strong>lubridate</strong> to transform the strings to dates:</p>
+<pre class="r"><code>recessions_clean &lt;- recessions_clean %&gt;% 
+  separate(period_range, into = c(&quot;start&quot;, &quot;end&quot;), sep = &quot;-&quot;) %&gt;% 
+  mutate_at(vars(start, end), funs(dmy(paste(&quot;15&quot;, .)))) %&gt;% 
+  mutate(name = str_replace(name, &quot;Early 1990s recession in the United States&quot;, &quot;Early 1990s recession (US)&quot;)) %&gt;% 
+  filter(year(start) &gt;= 1971) %&gt;% 
+  select(name, start, end)
+
+recessions_clean %&gt;% 
+  knitr::kable() %&gt;% 
+  kableExtra::kable_styling(bootstrap_options = c(&quot;condensed&quot;, &quot;striped&quot;))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">name</th>
+<th align="left">start</th>
+<th align="left">end</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1973–75 recession</td>
+<td align="left">1973-11-15</td>
+<td align="left">1975-03-15</td>
+</tr>
+<tr class="even">
+<td align="left">1980 recession</td>
+<td align="left">1980-01-15</td>
+<td align="left">1980-07-15</td>
+</tr>
+<tr class="odd">
+<td align="left">1981–1982 recession</td>
+<td align="left">1981-07-15</td>
+<td align="left">1982-11-15</td>
+</tr>
+<tr class="even">
+<td align="left">Early 1990s recession (US)</td>
+<td align="left">1990-07-15</td>
+<td align="left">1991-03-15</td>
+</tr>
+<tr class="odd">
+<td align="left">Early 2000s recession</td>
+<td align="left">2001-03-15</td>
+<td align="left">2001-11-15</td>
+</tr>
+<tr class="even">
+<td align="left">Great Recession</td>
+<td align="left">2007-12-15</td>
+<td align="left">2009-06-15</td>
+</tr>
+</tbody>
+</table>
+<p>Looking good! First, let’s plot the HPI:</p>
+<pre class="r"><code>hpi_index %&gt;% 
+  unite(date, year, month, sep = &quot;-&quot;) %&gt;% 
+  mutate(date = ymd(paste(date, &quot;1&quot;, sep=&quot;-&quot;))) %&gt;% 
+  ggplot() +
+  geom_rect(data = recessions_clean,
+          aes(xmin = start, xmax = end,
+              ymin = 0, ymax = Inf,
+              group = name, fill = name), alpha = 0.2) +
+  geom_line(aes(x = date, y = price_index, group = state), lwd = 2, alpha = 0.6, color = &quot;#1380A1&quot;) +
+  geom_line(aes(x = date, y = us_avg), color = &quot;#FAAB18&quot;, lwd = 2) +
+  annotate(geom = &quot;text&quot;, x = ymd(&quot;2014-01-01&quot;), y = 45, 
+           label = &quot;US average&quot;, size = 6) +
+  geom_curve(aes(x = ymd(&quot;2010-12-01&quot;), y = 57,
+                 xend = ymd(&quot;2010-12-01&quot;), yend = 115),
+             size=0.5, curvature = -0.2,
+             arrow = arrow(length = unit(0.03, &quot;npc&quot;))) + 
+  labs(title = &quot;Bubbles and recessions&quot;, subtitle = &quot;Housing Price Index (HPI), 1975-2018&quot;) +
+  bbplot::bbc_style()</code></pre>
+<p><img src="/post/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions_files/hpi-final.png" /></p>
+<p>The blue lines are the HPIs for the different US states and the orange line is the national average. The <a href="https://en.wikipedia.org/wiki/United_States_housing_bubble">housing bubble of 2007</a> is clearly visible. The collapse of the housing market was followed by a major credit crisis which ultimately led to the Great Recession. A more dramatic way of visualising this is to approximate the derivative of the HPI by calculating the monthly differences:</p>
+<pre class="r"><code>hpi_index %&gt;% 
+  group_by(state, year) %&gt;% 
+  mutate(index_change = price_index - lag(price_index), # Approx. the derivative
+         us_avg_change = us_avg - lag(us_avg)) %&gt;% # Approx. the derivative
+  ungroup() %&gt;% 
+  na.omit() %&gt;% 
+  unite(date, year, month, sep = &quot;-&quot;) %&gt;% 
+  mutate(date = ymd(paste(date, &quot;1&quot;, sep=&quot;-&quot;))) %&gt;% 
+  ggplot() +
+  geom_rect(data = recessions_clean,
+          aes(xmin = start, xmax = end,
+              ymin = -Inf, ymax = Inf,
+              group = name, fill = name), alpha = 0.2) +
+  geom_line(aes(x = date, y = index_change, group = state), lwd = 1, alpha = 0.4, color = &quot;#1380A1&quot;) +
+  geom_hline(yintercept = 0, lwd = 0.5) +
+  geom_line(aes(x = date, y = us_avg_change), color = &quot;#FAAB18&quot;, lwd = 2) +
+  labs(title = &quot;Rate of change of HPI&quot;, subtitle = &quot;Monthly finite differences, 1975-2018&quot;) +
+  bbplot::bbc_style() </code></pre>
+<p><img src="/post/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions_files/rochpi-final.png" /></p>
+<p>That’s it for this week. Thanks for reading, I hope you enjoyed it!</p>
+</div>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+            
+                <a href="/tags/bbplot/">bbplot</a>, 
+            
+                <a href="/tags/ggplot2/">ggplot2</a>, 
+            
+                <a href="/tags/r/">R</a>, 
+            
+                <a href="/tags/tidytuesday/">tidytuesday</a>, 
+            
+                <a href="/tags/tidyverse/">tidyverse</a>, 
+            
+                <a href="/tags/skimr/">skimr</a>, 
+            
+                <a href="/tags/regex/">regex</a>
+            
+        </p>
+    
+
+    <div class="share">
+        
+            <a class="icon-twitter" href="https://twitter.com/share?text=%23tidytuesday%3a%20Skimr%2c%20regular%20expressions%20and%20recessions&url=%2f2019%2f02%2f08%2f2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions%2f"
+                onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fa fa-twitter"></i>
+                <span class="hidden">Twitter</span>
+            </a>
+        
+
+        
+            <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=%2f2019%2f02%2f08%2f2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions%2f"
+                onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                <i class="fa fa-facebook"></i>
+                <span class="hidden">Facebook</span>
+            </a>
+        
+
+        
+            <a class="icon-google-plus" href="https://plus.google.com/share?url=%2f2019%2f02%2f08%2f2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions%2f"
+              onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+              <i class="fa fa-google-plus"></i>
+                <span class="hidden">Google+</span>
+            </a>
+        
+        
+    </div>
+</footer>
+
+        
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Biased" href="/">Biased</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2019 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="/js/jquery-1.11.3.min.js"></script>
+        <script src="/js/jquery.fitvids.js"></script>
+        
+        
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        
+        
+        <script src="/js/scripts.js"></script>
+    </body>
+</html>
+
