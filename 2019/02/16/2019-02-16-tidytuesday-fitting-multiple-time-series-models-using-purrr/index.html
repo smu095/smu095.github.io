@@ -165,7 +165,7 @@ data$fed_r_d_spending %&gt;%
 <p>With that disclaimer out of the way, let’s start with a <a href="https://en.wikipedia.org/wiki/Simple_linear_regression">simple linear regression</a>. A linear model is obviously not sufficiently flexible to capture the complexity of the different time-series (although they may give us an idea of general trends), but starting simple is always helpful when learning new stuff.</p>
 <div id="nested-data-sets" class="section level2">
 <h2>Nested data sets</h2>
-<p>In the following chunk we use the <code>nest</code> function to create a new list column. Each element in this list corresponds a tibble containing the time-series data for a given department.</p>
+<p>In the following chunk we use the <code>nest</code> function to create a new list column. Each element in this list corresponds to a tibble containing the time-series data for a given department.</p>
 <pre class="r"><code># Nesting data
 nested_data &lt;- data$fed_r_d_spending %&gt;% 
   group_by(department) %&gt;% 
@@ -189,7 +189,7 @@ nested_data</code></pre>
 ## 12 DHS        &lt;tibble [42 x 5]&gt;
 ## 13 VA         &lt;tibble [42 x 5]&gt;
 ## 14 Other      &lt;tibble [42 x 5]&gt;</code></pre>
-<p>From <a href="https://smu095.github.io/2019/02/08/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions/">last week</a>, we remember that the <code>map</code> function iterates over the elements of a list. This allows us to use <code>map</code> to fit a linear model to each data set in the <code>data</code> column.</p>
+<p>Now we can use <code>map</code> to fit a linear model to each data set in the <code>data</code> column:</p>
 <pre class="r"><code># Fitting linear models
 nested_models &lt;- nested_data %&gt;% 
   mutate(model = map(data, ~ lm(rd_budget ~ year, data = .x)))
@@ -212,7 +212,7 @@ nested_models</code></pre>
 ## 12 DHS        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
 ## 13 VA         &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
 ## 14 Other      &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;</code></pre>
-<p>The <code>models</code> column contains a separate simple linear regression model fitted to the corresponding data set in the <code>data</code> column. We can extract meaningful information from each model and output the information in a tidy way using <a href="https://cran.r-project.org/web/packages/broom/vignettes/broom.html"><strong>broom</strong></a>.</p>
+<p>The newly created <code>models</code> column contains a separate simple linear regression model fitted to the corresponding data set in the <code>data</code> column. We can extract meaningful information from each model and output the information in a tidy way using <a href="https://cran.r-project.org/web/packages/broom/vignettes/broom.html"><strong>broom</strong></a>.</p>
 </div>
 <div id="tidying-up-with-broom" class="section level2">
 <h2>Tidying up with broom</h2>
