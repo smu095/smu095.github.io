@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Skimr on Biased</title>
-    <link>/tags/skimr/</link>
-    <description>Recent content in Skimr on Biased</description>
+    <title>Purrr on Biased</title>
+    <link>/tags/purrr/</link>
+    <description>Recent content in Purrr on Biased</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Sean Meling Murray</copyright>
     <lastBuildDate>Sat, 16 Feb 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/skimr/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/purrr/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -20,16 +20,6 @@
       <guid>/2019/02/16/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr/</guid>
       <description>This week I want to try to use purrr to model many data sets efficiently. There are many great resources available; in this post we primarily rely on the following sources:
  Managing Many Models with tidyr, purrr and broom. Purrr - tips and tricks. Many models (chapter 25 in R for Data Science).  Most of my modelling experience comes from using scikit-learn in Python. In R, the parsnip package from tidymodels seems like an extremely promising approach that I will try to explore in future posts.</description>
-    </item>
-    
-    <item>
-      <title>#tidytuesday: Skimr, regular expressions and recessions</title>
-      <link>/2019/02/08/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions/</link>
-      <pubDate>Fri, 08 Feb 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/2019/02/08/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions/</guid>
-      <description>This week’s post will mark the start of my experimentation with purrr and regular expressions (regex). I’ll also take a look at a package called skimr, which looks like a pretty efficient way to get a quick overview of our data.
-In case you don’t know, purrr essentially abstracts away the need for many kinds of for loops used to iterate over lists or atomic vectors. As Hadley writes in R for Data Science, the apply family of functions solve a similar problem, but purrr provides a more consistent and easier-to-learn approach.</description>
     </item>
     
   </channel>

@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/2019/02/16/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr/</loc>
+    <lastmod>2019-02-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/2019/02/08/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions/</loc>
     <lastmod>2019-02-08T00:00:00+00:00</lastmod>
   </url>
@@ -40,7 +45,13 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2019-02-08T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-16T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/caret/</loc>
+    <lastmod>2019-02-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -52,7 +63,7 @@
   
   <url>
     <loc>/tags/ggplot2/</loc>
-    <lastmod>2019-02-08T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -70,13 +81,19 @@
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2019-02-08T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-16T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/purrr/</loc>
+    <lastmod>2019-02-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/r/</loc>
-    <lastmod>2019-02-08T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -88,7 +105,7 @@
   
   <url>
     <loc>/tags/skimr/</loc>
-    <lastmod>2019-02-08T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -100,13 +117,13 @@
   
   <url>
     <loc>/tags/tidytuesday/</loc>
-    <lastmod>2019-02-08T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/tidyverse/</loc>
-    <lastmod>2019-02-08T00:00:00+00:00</lastmod>
+    <lastmod>2019-02-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

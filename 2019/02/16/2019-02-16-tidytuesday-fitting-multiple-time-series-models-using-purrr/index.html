@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>#tidytuesday: Fitting multiple time-series models using purrr &middot; Sean Meling Murray</title>
+        <meta name="description" content="This week I want to try to use purrr to model many data sets efficiently. There are many great resources available; in this post we primarily rely on the following sources:
+ Managing Many Models with tidyr, purrr and broom. Purrr - tips and tricks. Many models (chapter 25 in R for Data Science).  Most of my modelling experience comes from using scikit-learn in Python. In R, the parsnip package from tidymodels seems like an extremely promising approach that I will try to explore in future posts.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.53" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="#tidytuesday: Fitting multiple time-series models using purrr">
+<meta property="og:description" content="This week I want to try to use purrr to model many data sets efficiently. There are many great resources available; in this post we primarily rely on the following sources:
+ Managing Many Models with tidyr, purrr and broom. Purrr - tips and tricks. Many models (chapter 25 in R for Data Science).  Most of my modelling experience comes from using scikit-learn in Python. In R, the parsnip package from tidymodels seems like an extremely promising approach that I will try to explore in future posts.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/2019/02/16/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr/">
+        <link rel="stylesheet" href="/dist/styles.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        
+        
+        
+    </head>
+    <body>
+        
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Biased" href="/">Biased</a>
+                            </h1>
+                        
+                        <a class="button-square" href="/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/mattemagisk">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/smu095">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/10951783/mattemagisk">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/sean-meling-murray/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Email" title="Email" href="mailto:sean.meling@gmail.com">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">#tidytuesday: Fitting multiple time-series models using purrr</h1>
+    
+    <p class="post-date">
+        <span>Published <time datetime="2019-02-16" itemprop="datePublished">Sat, Feb 16, 2019</time></span>
+        <span>by</span>
+        <span itemscope="" itemprop="author" itemtype="https://schema.org/Person">
+            <span itemprop="name">
+                <a href="#" itemprop="url" rel="author">Sean</a>
+            </span>
+        </span>
+    </p>
+    
+        <p class="post-reading post-line">
+            <span>Estimated reading time: 14 min</span>
+        </p>
+    
+</header>
+
+        <div class="post-content clearfix" itemprop="articleBody">
+    
+
+    
+
+
+<p>This week I want to try to use <a href="https://purrr.tidyverse.org/"><strong>purrr</strong></a> to model many data sets efficiently. There are many great resources available; in this post we primarily rely on the following sources:</p>
+<ul>
+<li><a href="https://www.kaggle.com/timib1203/managing-many-models-with-tidyr-purrr-and-broom">Managing Many Models with tidyr, purrr and broom</a>.</li>
+<li><a href="https://www.hvitfeldt.me/blog/purrr-tips-and-tricks/">Purrr - tips and tricks</a>.</li>
+<li><a href="https://r4ds.had.co.nz/many-models.html">Many models (chapter 25 in R for Data Science)</a>.</li>
+</ul>
+<p>Most of my modelling experience comes from using <a href="https://scikit-learn.org/stable/"><strong>scikit-learn</strong></a> in <a href="https://www.python.org/">Python</a>. In R, the <a href="https://github.com/tidymodels/parsnip"><strong>parsnip</strong></a> package from <a href="https://www.tidyverse.org/articles/2018/08/tidymodels-0-0-1/"><strong>tidymodels</strong></a> seems like an extremely promising approach that I will try to explore in future posts. For now we will use the excellent <a href="https://topepo.github.io/caret/index.html"><strong>caret</strong></a> (<strong>c</strong>lassification <strong>a</strong>nd <strong>re</strong>gression <strong>t</strong>raining) package by <a href="https://twitter.com/topepos">Max Kuhn</a>.</p>
+<pre class="r"><code># Setup
+library(tidyverse)
+library(broom)
+library(skimr)
+library(caret)
+library(rsample)</code></pre>
+<div id="importing-and-skimming-the-data" class="section level1">
+<h1>Importing and skimming the data</h1>
+<p>We import the data like we did last week, using <code>map</code>. Recall that <code>map</code> iterates over the list or vector <code>.x</code> and applies <code>.f</code> to every element. In the following chunk we use <a href="https://jennybc.github.io/purrr-tutorial/ls03_map-function-syntax.html">formula notation</a> to define <code>.f</code> as <code>~ read_csv(file.path(PATH, .x))</code>. We also rename the elements of the resulting list to correspond to the names of the CSV-files, using the <code>set_names</code> function from <strong>purrr</strong>.</p>
+<pre class="r"><code># Importing data
+PATH &lt;- &quot;~/Documents/GitHub/tidytuesday/data/2019/2019-02-12&quot;
+csvs &lt;- list.files(PATH, pattern=&quot;*.csv&quot;)
+
+# Creating vector with file names
+file_names &lt;- str_remove(csvs, &quot;.csv&quot;)
+
+# Reading files
+files &lt;- map(csvs, ~ read_csv(file.path(PATH, .x)))
+
+# Naming elements in list after file name
+data &lt;- set_names(files, file_names)</code></pre>
+<p><a href="https://smu095.github.io/2019/02/08/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions/">Like last week</a>, we <code>skim</code> the data to get a quick first impression of the different data sets:</p>
+<pre class="r"><code># Skimming data
+data %&gt;% 
+  map(skim)</code></pre>
+<p><img src="/post/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr_files/Skjermbilde%202019-02-17%20kl.%2011.37.14.png" /></p>
+<p><img src="/post/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr_files/Skjermbilde%202019-02-17%20kl.%2011.37.24.png" /></p>
+<p><img src="/post/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr_files/Skjermbilde%202019-02-17%20kl.%2011.37.44.png" /></p>
+<p>This week we’ll be working with <code>fed_r_d_spending</code>, which (among other things) contains the yearly research and development budgets for different departments and branches of the US government. Let’s start by plotting the time-series of budget dollars for each department:</p>
+<pre class="r"><code># Plotting time-series
+data$fed_r_d_spending %&gt;% 
+  ggplot(aes(year, rd_budget, color = department)) +
+  geom_line() +
+  facet_wrap(~department, scales = &quot;free_y&quot;, ncol = 4) + 
+  labs(title = &quot;Research and development budget by department&quot;,
+       subtitle = &quot;1976-2017&quot;,
+       x = &quot;Year&quot;, y = &quot;Research and development budget (USD)&quot;) + 
+  scale_y_continuous(labels = scales::unit_format(unit = &quot;billion&quot;, scale = 1e-9, accuracy = 0.1)) + 
+  theme_minimal() +
+  theme(legend.position = &quot;none&quot;,
+        axis.text.x = element_text(angle = 45))</code></pre>
+<p><img src="/post/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="many-models-with-purrr" class="section level1">
+<h1>Many models with purrr</h1>
+<p>Remember, the purpose of this post is to try to learn how to use <strong>purrr</strong> to create multiple models, not to make the best possible predictions. Therefore, we won’t necessarily follow best practices (like preprocessing the input) or choose the optimal models for this particular problem.</p>
+<p>With that disclaimer out of the way, let’s start with a <a href="https://en.wikipedia.org/wiki/Simple_linear_regression">simple linear regression</a>. A linear model is obviously not sufficiently flexible to capture the complexity of the different time-series (although they may give us an idea of general trends), but starting simple is always helpful when learning new stuff.</p>
+<div id="nested-data-sets" class="section level2">
+<h2>Nested data sets</h2>
+<p>In the following chunk we use the <code>nest</code> function to create a new list column. Each element in this list corresponds a tibble containing the time-series data for a given department.</p>
+<pre class="r"><code># Nesting data
+nested_data &lt;- data$fed_r_d_spending %&gt;% 
+  group_by(department) %&gt;% 
+  nest()
+
+nested_data</code></pre>
+<pre><code>## # A tibble: 14 x 2
+##    department data             
+##    &lt;chr&gt;      &lt;list&gt;           
+##  1 DOD        &lt;tibble [42 x 5]&gt;
+##  2 NASA       &lt;tibble [42 x 5]&gt;
+##  3 DOE        &lt;tibble [42 x 5]&gt;
+##  4 HHS        &lt;tibble [42 x 5]&gt;
+##  5 NIH        &lt;tibble [42 x 5]&gt;
+##  6 NSF        &lt;tibble [42 x 5]&gt;
+##  7 USDA       &lt;tibble [42 x 5]&gt;
+##  8 Interior   &lt;tibble [42 x 5]&gt;
+##  9 DOT        &lt;tibble [42 x 5]&gt;
+## 10 EPA        &lt;tibble [42 x 5]&gt;
+## 11 DOC        &lt;tibble [42 x 5]&gt;
+## 12 DHS        &lt;tibble [42 x 5]&gt;
+## 13 VA         &lt;tibble [42 x 5]&gt;
+## 14 Other      &lt;tibble [42 x 5]&gt;</code></pre>
+<p>From <a href="https://smu095.github.io/2019/02/08/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions/">last week</a>, we remember that the <code>map</code> function iterates over the elements of a list. This allows us to use <code>map</code> to fit a linear model to each data set in the <code>data</code> column.</p>
+<pre class="r"><code># Fitting linear models
+nested_models &lt;- nested_data %&gt;% 
+  mutate(model = map(data, ~ lm(rd_budget ~ year, data = .x)))
+
+nested_models</code></pre>
+<pre><code>## # A tibble: 14 x 3
+##    department data              model   
+##    &lt;chr&gt;      &lt;list&gt;            &lt;list&gt;  
+##  1 DOD        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+##  2 NASA       &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+##  3 DOE        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+##  4 HHS        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+##  5 NIH        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+##  6 NSF        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+##  7 USDA       &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+##  8 Interior   &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+##  9 DOT        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+## 10 EPA        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+## 11 DOC        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+## 12 DHS        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+## 13 VA         &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;
+## 14 Other      &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;</code></pre>
+<p>The <code>models</code> column contains a separate simple linear regression model fitted to the corresponding data set in the <code>data</code> column. We can extract meaningful information from each model and output the information in a tidy way using <a href="https://cran.r-project.org/web/packages/broom/vignettes/broom.html"><strong>broom</strong></a>.</p>
+</div>
+<div id="tidying-up-with-broom" class="section level2">
+<h2>Tidying up with broom</h2>
+<p>The <strong>broom</strong> package transforms the output of <code>lm</code> into tidy data frames. For example, we can extract the estimated model parameters and their associated statistics for each department using the <code>tidy</code> function. Setting <code>conf.int = TRUE</code> returns 95 % confidence intervals for the parameter estimates. Alternatively, one could set <code>quick = TRUE</code> to return only the estimated regression coefficients. The aptly named <code>unnest</code> function lets us unpack the contents of a list column and display it as a tidy dataframe:</p>
+<pre class="r"><code># Display estimated parameters, associated statistics, confidence intervals
+nested_models %&gt;% 
+  mutate(coefs = map(model, tidy, conf.int = TRUE)) %&gt;% 
+  unnest(coefs)</code></pre>
+<pre><code>## # A tibble: 28 x 8
+##    department term  estimate std.error statistic  p.value conf.low
+##    &lt;chr&gt;      &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+##  1 DOD        (Int~ -1.93e12   3.13e11    -6.17  2.75e- 7 -2.57e12
+##  2 DOD        year   1.00e 9   1.57e 8     6.37  1.41e- 7  6.83e 8
+##  3 NASA       (Int~ -9.01e10   5.86e10    -1.54  1.32e- 1 -2.09e11
+##  4 NASA       year   5.12e 7   2.94e 7     1.74  8.88e- 2 -8.13e 6
+##  5 DOE        (Int~  3.81e10   4.67e10     0.816 4.19e- 1 -5.62e10
+##  6 DOE        year  -1.31e 7   2.34e 7    -0.562 5.78e- 1 -6.04e 7
+##  7 HHS        (Int~ -1.59e12   9.71e10   -16.4   2.21e-19 -1.79e12
+##  8 HHS        year   8.10e 8   4.86e 7    16.7   1.36e-19  7.12e 8
+##  9 NIH        (Int~ -1.55e12   9.23e10   -16.8   9.63e-20 -1.74e12
+## 10 NIH        year   7.88e 8   4.62e 7    17.1   5.98e-20  6.95e 8
+## # ... with 18 more rows, and 1 more variable: conf.high &lt;dbl&gt;</code></pre>
+<p>We could use these parameter estimates and confidence intervals to plot the different models. In the case of linear regression, however, we can simply use <code>geom_smooth</code> and pass <code>method = &quot;lm&quot;</code> and <strong>ggplot</strong> will take care of the rest:</p>
+<pre class="r"><code># Plotting linear models
+data$fed_r_d_spending %&gt;% 
+  ggplot(aes(year, rd_budget, color = department)) +
+  geom_line() +
+  geom_smooth(method = &quot;lm&quot;, color = &quot;black&quot;, lwd = .5) +
+  facet_wrap(~department, scales = &quot;free_y&quot;, ncol = 4) + 
+  labs(title = &quot;Simple linear regression&quot;, x = &quot;Year&quot;, y = &quot;Research and development budget (USD)&quot;) + 
+  scale_y_continuous(labels = scales::unit_format(unit = &quot;billion&quot;, scale = 1e-9, accuracy = 0.1)) + 
+  theme_minimal() +
+  theme(legend.position = &quot;none&quot;,
+        axis.text.x = element_text(angle = 45))</code></pre>
+<p><img src="/post/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Similarly, we can use the <code>glance</code> function (as <a href="https://r4ds.had.co.nz/many-models.html">described here</a>) to extract different quality metrics for each model. So, for example, we can arrange the models by largest <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">coefficient of determination</a> (R squared):</p>
+<pre class="r"><code># Extracting R squared statistic for each model
+nested_models %&gt;% 
+  mutate(metrics = map(model, glance)) %&gt;% 
+  unnest(metrics) %&gt;% 
+  select(department:r.squared) %&gt;% 
+  arrange(desc(r.squared)) # Arranging by &quot;best&quot; R squared</code></pre>
+<pre><code>## # A tibble: 14 x 4
+##    department data              model    r.squared
+##    &lt;chr&gt;      &lt;list&gt;            &lt;list&gt;       &lt;dbl&gt;
+##  1 NSF        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.948  
+##  2 NIH        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.879  
+##  3 HHS        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.874  
+##  4 VA         &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.860  
+##  5 DOC        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.667  
+##  6 USDA       &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.656  
+##  7 DHS        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.545  
+##  8 DOD        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.504  
+##  9 EPA        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.257  
+## 10 Interior   &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.145  
+## 11 NASA       &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.0707 
+## 12 Other      &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.0422 
+## 13 DOT        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.0130 
+## 14 DOE        &lt;tibble [42 x 5]&gt; &lt;S3: lm&gt;   0.00782</code></pre>
+</div>
+</div>
+<div id="modelling-with-caret" class="section level1">
+<h1>Modelling with caret</h1>
+<p>Even though the simple linear model works quite well for some of the departments (e.g. NSF), more complex models will probably do a better job at capturing the wiggliness of our time-series data. In this part I’ll</p>
+<ol style="list-style-type: decimal">
+<li>Try some different approaches to <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_sets">splitting the data into training and test sets</a>.</li>
+<li>Try to fit a couple of <a href="https://topepo.github.io/caret/train-models-by-tag.html">different models</a> from the <strong>caret</strong> package.</li>
+</ol>
+<p>If you’re unfamiliar with the reasoning behind splitting data sets into training and test sets, a good place to start is <a href="https://www-bcf.usc.edu/~gareth/ISL/">An Introduction to Statistical Learning</a> (freely available online).</p>
+<div id="partitioning-the-data" class="section level2">
+<h2>Partitioning the data</h2>
+<p>In R, one possible approach is to use the <a href="https://tidymodels.github.io/rsample/"><strong>rsample</strong></a> package (also by Max Kuhn):</p>
+<pre class="r"><code>split_nested_data &lt;- nested_data %&gt;% 
+  mutate(split_data = map(data, initial_split, prop = 0.8, seed = 42),
+         training = map(split_data, training),
+         test = map(split_data, testing))
+
+split_nested_data</code></pre>
+<pre><code>## # A tibble: 14 x 5
+##    department data            split_data     training        test          
+##    &lt;chr&gt;      &lt;list&gt;          &lt;list&gt;         &lt;list&gt;          &lt;list&gt;        
+##  1 DOD        &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+##  2 NASA       &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+##  3 DOE        &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+##  4 HHS        &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+##  5 NIH        &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+##  6 NSF        &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+##  7 USDA       &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+##  8 Interior   &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+##  9 DOT        &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+## 10 EPA        &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+## 11 DOC        &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+## 12 DHS        &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+## 13 VA         &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~
+## 14 Other      &lt;tibble [42 x ~ &lt;split [34/8]&gt; &lt;tibble [34 x ~ &lt;tibble [8 x ~</code></pre>
+<p>I really like this approach. We set the proportion (<code>prop = 0.8</code>) of data that we want to retain in the training set and apply the <code>initial_split</code> function to create a new column called <code>split_data</code>. Next, we map the <code>training</code> and <code>testing</code> functions to <code>split_data</code>, and hey presto, we have 14 different training and test sets.</p>
+<p>However, when forecasting, it may be more appropriate to use the most recent observations as a test set instead of a randomly sampled subset of data points. This can be accomplished by defining our own function <code>split_data</code>. In this example I hard code the time intervals, but it is fairly straightforward to generalise the function.</p>
+<pre class="r"><code># Custom data splitter
+split_data &lt;- function(df, data) {
+  
+  # Check that arguments are valid
+  if (!data %in% c(&quot;training&quot;, &quot;test&quot;)) {
+    stop(&quot;Argument data needs to be one of &#39;training&#39; or &#39;test&#39;&quot;)
+  }
+  
+  # Split data into training or test set
+  if (data == &quot;training&quot;) {
+    return(filter(df, year %in% c(1976:2012)))
+  } else if (data == &quot;test&quot;) {
+    return(filter(df, year %in% c(2013:2017)))
+  }
+}
+
+split_nested_data &lt;- nested_data %&gt;% 
+  mutate(training = map(data, split_data, data = &quot;training&quot;),
+         test = map(data, split_data, data = &quot;test&quot;))
+
+split_nested_data</code></pre>
+<pre><code>## # A tibble: 14 x 4
+##    department data              training          test            
+##    &lt;chr&gt;      &lt;list&gt;            &lt;list&gt;            &lt;list&gt;          
+##  1 DOD        &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+##  2 NASA       &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+##  3 DOE        &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+##  4 HHS        &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+##  5 NIH        &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+##  6 NSF        &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+##  7 USDA       &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+##  8 Interior   &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+##  9 DOT        &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+## 10 EPA        &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+## 11 DOC        &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+## 12 DHS        &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+## 13 VA         &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;
+## 14 Other      &lt;tibble [42 x 5]&gt; &lt;tibble [37 x 5]&gt; &lt;tibble [5 x 5]&gt;</code></pre>
+<p>(Note that we can pass arguments to <code>.f</code> in <code>map</code>.)</p>
+</div>
+<div id="resampling-with-traincontrol" class="section level2">
+<h2>Resampling with trainControl</h2>
+<p>Yet <a href="https://otexts.com/fpp2/accuracy.html">another</a> <a href="https://topepo.github.io/caret/data-splitting.html#time">approach</a> is to move the training and test sets in time. This can be achieved by using the <code>trainControl</code> function in <strong>caret</strong>, which specifies the resampling method to be used when fitting a model with the <code>train</code> function (please refer to the <a href="https://topepo.github.io/caret/model-training-and-tuning.html">caret docs</a> for details).</p>
+<p>In our case, we set <code>method = &quot;timeslice&quot;</code> to perform so-called <em>rolling forecasting origin resampling</em>. Check out the illuminating illustration in <a href="https://topepo.github.io/caret/data-splitting.html#data-splitting-for-time-series">chapter 4.3</a> of the caret documentation to get a sense of what’s happening.</p>
+</div>
+<div id="fitting-models" class="section level2">
+<h2>Fitting models</h2>
+<p>First, let’s define a <code>train_model</code> function that takes care of both the resampling and training. Next, let’s fit two highly flexible models to the data: a <a href="https://en.wikipedia.org/wiki/Gaussian_process">Gaussian process</a> and a <a href="https://en.wikipedia.org/wiki/Generalized_additive_model">generalised additive model</a> (with splines).</p>
+<pre class="r"><code># Training function
+train_model &lt;- function(df, method) {
+  # Rolling forecasting origin resampling
+  train_control &lt;- trainControl(method = &quot;timeslice&quot;,
+                              initialWindow = 5,
+                              horizon = 5,
+                              fixedWindow = FALSE)
+
+  # Training
+  train(rd_budget ~ year, data = df,
+        method = method, # Method indicates which model to use, see ch. 7 in caret docs
+        trControl = train_control) # Resampling method
+}
+
+nested_models &lt;- nested_data %&gt;% 
+  mutate(gp_models = map(data, train_model, method = &quot;gaussprRadial&quot;), # Gaussian process model
+         gam_models = map(data, train_model, method = &quot;gam&quot;)) # Generalised additive model (with splines)
+
+nested_models</code></pre>
+<pre><code>## # A tibble: 14 x 4
+##    department data              gp_models   gam_models 
+##    &lt;chr&gt;      &lt;list&gt;            &lt;list&gt;      &lt;list&gt;     
+##  1 DOD        &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+##  2 NASA       &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+##  3 DOE        &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+##  4 HHS        &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+##  5 NIH        &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+##  6 NSF        &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+##  7 USDA       &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+##  8 Interior   &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+##  9 DOT        &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+## 10 EPA        &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+## 11 DOC        &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+## 12 DHS        &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+## 13 VA         &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;
+## 14 Other      &lt;tibble [42 x 5]&gt; &lt;S3: train&gt; &lt;S3: train&gt;</code></pre>
+<p>The following function lets us plot the results.</p>
+<pre class="r"><code>plot_models &lt;- function(df, variable, title) {
+  
+  model &lt;- enquo(variable)
+  
+  df %&gt;% 
+    mutate(preds = map(!!model, predict.train)) %&gt;% 
+    unnest(data, preds) %&gt;% 
+    ggplot(aes(x = year, color = department)) +
+    geom_line(aes(y = rd_budget)) +
+    geom_line(aes(y = preds), color = &quot;black&quot;, alpha = .7) +
+    facet_wrap(~department, scales = &quot;free_y&quot;, ncol = 4) + 
+    labs(title = title, x = &quot;Year&quot;, y = &quot;Research and development budget (USD)&quot;) + 
+    scale_y_continuous(labels = scales::unit_format(unit = &quot;billion&quot;, scale = 1e-9, accuracy = 0.1)) + 
+    theme_minimal() +
+    theme(legend.position = &quot;none&quot;,
+          axis.text.x = element_text(angle = 45))
+}
+
+plot_models(nested_models, gam_models, &quot;Generalised additive models&quot;)</code></pre>
+<p><img src="/post/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre class="r"><code>plot_models(nested_models, gp_models, &quot;Gaussian processes&quot;)</code></pre>
+<p><img src="/post/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+</div>
+</div>
+<div id="evaluation" class="section level1">
+<h1>Evaluation</h1>
+<p>One way to evaluate our models is to use the <code>resamples</code> function in <strong>caret</strong>. I’m not entirely convinced that this is an appropriate strategy for time-series data, but I’ll include the following chunk nonetheless because it may be useful in a future project. Furthermore, we get to use a new function from <strong>purrr</strong>: <code>map2</code>, which iterates over multiple inputs simultaneously.</p>
+<pre class="r"><code># Helper functions to create and save evaluation plots
+plot_rsquared &lt;- function(name, df) {
+  scales &lt;- list(x = list(relation = &quot;free&quot;), y = list(relation = &quot;free&quot;))
+  bwplot(df, scales = scales, main = name)
+}
+
+save_img &lt;- function(name, img) {
+  trellis.device(device = &quot;png&quot;, filename = paste0(name, &quot;.png&quot;))
+  print(img)
+  dev.off()
+}
+
+# Gather results and create plots
+imgs_df &lt;- nested_models %&gt;% 
+  mutate(model_pairs = map2(gp_models, gam_models, ~list(GP = .x, GAM = .y)),
+         results = map(model_pairs, resamples),
+         imgs = map2(department, results, plot_rsquared))
+
+# Save images to disk
+map2(imgs_df$department, imgs_df$imgs, save_img)</code></pre>
+<p>In the chunk above, the <code>map2</code> call produces a plot using <a href="https://www.rdocumentation.org/packages/lattice/versions/0.20-38"><strong>lattice</strong></a> which summarises the <a href="https://en.wikipedia.org/wiki/Mean_absolute_error">mean absolute error (MAE)</a>, the <a href="https://en.wikipedia.org/wiki/Mean_squared_error">root mean squared error (RMSE)</a> and the <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">coefficient of determination</a> on the resampled data, like this:</p>
+<p><img src="/post/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr_files/DOE.png" /></p>
+<p>That’s it for this week’s (rather lengthy, sorry) post! Hope you enjoyed it, I certainly did. Please <a href="https://twitter.com/mattemagisk">hit me up on twitter</a> if you have any feedback or suggestions. Thanks for reading!</p>
+</div>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+            
+                <a href="/tags/r/">R</a>, 
+            
+                <a href="/tags/ggplot2/">ggplot2</a>, 
+            
+                <a href="/tags/skimr/">skimr</a>, 
+            
+                <a href="/tags/tidytuesday/">tidytuesday</a>, 
+            
+                <a href="/tags/tidyverse/">tidyverse</a>, 
+            
+                <a href="/tags/purrr/">purrr</a>, 
+            
+                <a href="/tags/caret/">caret</a>
+            
+        </p>
+    
+
+    <div class="share">
+        
+            <a class="icon-twitter" href="https://twitter.com/share?text=%23tidytuesday%3a%20Fitting%20multiple%20time-series%20models%20using%20purrr&url=%2f2019%2f02%2f16%2f2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr%2f"
+                onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fa fa-twitter"></i>
+                <span class="hidden">Twitter</span>
+            </a>
+        
+
+        
+            <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=%2f2019%2f02%2f16%2f2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr%2f"
+                onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                <i class="fa fa-facebook"></i>
+                <span class="hidden">Facebook</span>
+            </a>
+        
+
+        
+            <a class="icon-google-plus" href="https://plus.google.com/share?url=%2f2019%2f02%2f16%2f2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr%2f"
+              onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+              <i class="fa fa-google-plus"></i>
+                <span class="hidden">Google+</span>
+            </a>
+        
+        
+    </div>
+</footer>
+
+        
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Biased" href="/">Biased</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2019 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="/js/jquery-1.11.3.min.js"></script>
+        <script src="/js/jquery.fitvids.js"></script>
+        
+        
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        
+        
+        <script src="/js/scripts.js"></script>
+    </body>
+</html>
+

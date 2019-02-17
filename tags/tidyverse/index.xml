@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Sean Meling Murray</copyright>
-    <lastBuildDate>Fri, 08 Feb 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 16 Feb 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/tidyverse/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>#tidytuesday: Fitting multiple time-series models using purrr</title>
+      <link>/2019/02/16/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr/</link>
+      <pubDate>Sat, 16 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/02/16/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr/</guid>
+      <description>This week I want to try to use purrr to model many data sets efficiently. There are many great resources available; in this post we primarily rely on the following sources:
+ Managing Many Models with tidyr, purrr and broom. Purrr - tips and tricks. Many models (chapter 25 in R for Data Science).  Most of my modelling experience comes from using scikit-learn in Python. In R, the parsnip package from tidymodels seems like an extremely promising approach that I will try to explore in future posts.</description>
+    </item>
     
     <item>
       <title>#tidytuesday: Skimr, regular expressions and recessions</title>

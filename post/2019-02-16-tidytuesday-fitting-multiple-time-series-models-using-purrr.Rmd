@@ -1,0 +1,305 @@
+---
+title: '#tidytuesday: Fitting multiple time-series models using purrr'
+author: Sean
+date: '2019-02-16'
+slug: tidytuesday-fitting-multiple-time-series-models-using-purrr
+categories:
+  - data science
+  - time series
+  - predictive modelling
+tags:
+  - R
+  - ggplot2
+  - skimr
+  - tidytuesday
+  - tidyverse
+  - purrr
+  - caret
+description: ''
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
+```
+
+This week I want to try to use [**purrr**](https://purrr.tidyverse.org/) to model many data sets efficiently. There are many great resources available; in this post we primarily rely on the following sources:
+
+* [Managing Many Models with tidyr, purrr and broom](https://www.kaggle.com/timib1203/managing-many-models-with-tidyr-purrr-and-broom).
+* [Purrr - tips and tricks](https://www.hvitfeldt.me/blog/purrr-tips-and-tricks/).
+* [Many models (chapter 25 in R for Data Science)](https://r4ds.had.co.nz/many-models.html).
+
+Most of my modelling experience comes from using [**scikit-learn**](https://scikit-learn.org/stable/) in [Python](https://www.python.org/). In R, the [**parsnip**](https://github.com/tidymodels/parsnip) package from [**tidymodels**](https://www.tidyverse.org/articles/2018/08/tidymodels-0-0-1/) seems like an extremely promising approach that I will try to explore in future posts. For now we will use the excellent [**caret**](https://topepo.github.io/caret/index.html) (**c**lassification **a**nd **re**gression **t**raining) package by [Max Kuhn](https://twitter.com/topepos).
+
+```{r}
+# Setup
+library(tidyverse)
+library(broom)
+library(skimr)
+library(caret)
+library(rsample)
+```
+
+# Importing and skimming the data
+
+We import the data like we did last week, using `map`. Recall that `map` iterates over the list or vector `.x` and applies `.f` to every element. In the following chunk we use [formula notation](https://jennybc.github.io/purrr-tutorial/ls03_map-function-syntax.html) to define `.f` as `~ read_csv(file.path(PATH, .x))`. We also rename the elements of the resulting list to correspond to the names of the CSV-files, using the `set_names` function from **purrr**.
+
+```{r}
+# Importing data
+PATH <- "~/Documents/GitHub/tidytuesday/data/2019/2019-02-12"
+csvs <- list.files(PATH, pattern="*.csv")
+
+# Creating vector with file names
+file_names <- str_remove(csvs, ".csv")
+
+# Reading files
+files <- map(csvs, ~ read_csv(file.path(PATH, .x)))
+
+# Naming elements in list after file name
+data <- set_names(files, file_names)
+```
+
+[Like last week](https://smu095.github.io/2019/02/08/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions/), we `skim` the data to get a quick first impression of the different data sets:
+
+```{r eval=FALSE}
+# Skimming data
+data %>% 
+  map(skim)
+```
+
+![](/post/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr_files/Skjermbilde 2019-02-17 kl. 11.37.14.png)
+
+![](/post/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr_files/Skjermbilde 2019-02-17 kl. 11.37.24.png)
+
+![](/post/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr_files/Skjermbilde 2019-02-17 kl. 11.37.44.png)
+
+This week we'll be working with `fed_r_d_spending`, which (among other things) contains the yearly research and development budgets for different departments and branches of the US government. Let's start by plotting the time-series of budget dollars for each department:
+
+```{r}
+# Plotting time-series
+data$fed_r_d_spending %>% 
+  ggplot(aes(year, rd_budget, color = department)) +
+  geom_line() +
+  facet_wrap(~department, scales = "free_y", ncol = 4) + 
+  labs(title = "Research and development budget by department",
+       subtitle = "1976-2017",
+       x = "Year", y = "Research and development budget (USD)") + 
+  scale_y_continuous(labels = scales::unit_format(unit = "billion", scale = 1e-9, accuracy = 0.1)) + 
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45))
+```
+
+
+# Many models with purrr
+
+Remember, the purpose of this post is to try to learn how to use **purrr** to create multiple models, not to make the best possible predictions. Therefore, we won't necessarily follow best practices (like preprocessing the input) or choose the optimal models for this particular problem.
+
+With that disclaimer out of the way, let's start with a [simple linear regression](https://en.wikipedia.org/wiki/Simple_linear_regression). A linear model is obviously not sufficiently flexible to capture the complexity of the different time-series (although they may give us an idea of general trends), but starting simple is always helpful when learning new stuff.
+
+## Nested data sets
+
+In the following chunk we use the `nest` function to create a new list column. Each element in this list corresponds a tibble containing the time-series data for a given department.
+
+```{r}
+# Nesting data
+nested_data <- data$fed_r_d_spending %>% 
+  group_by(department) %>% 
+  nest()
+
+nested_data
+```
+
+From [last week](https://smu095.github.io/2019/02/08/2019-02-08-tidytuesday-skimr-regular-expressions-and-recessions/), we remember that the `map` function iterates over the elements of a list. This allows us to use `map` to fit a linear model to each data set in the `data` column.
+
+```{r}
+# Fitting linear models
+nested_models <- nested_data %>% 
+  mutate(model = map(data, ~ lm(rd_budget ~ year, data = .x)))
+
+nested_models
+```
+
+The `models` column contains a separate simple linear regression model fitted to the corresponding data set in the `data` column. We can extract meaningful information from each model and output the information in a tidy way using [**broom**](https://cran.r-project.org/web/packages/broom/vignettes/broom.html). 
+
+## Tidying up with broom
+
+The **broom** package transforms the output of `lm` into tidy data frames. For example, we can extract the estimated model parameters and their associated statistics for each department using the `tidy` function. Setting `conf.int = TRUE` returns 95 % confidence intervals for the parameter estimates. Alternatively, one could set `quick = TRUE` to return only the estimated regression coefficients. The aptly named `unnest` function lets us unpack the contents of a list column and display it as a tidy dataframe:
+
+```{r}
+# Display estimated parameters, associated statistics, confidence intervals
+nested_models %>% 
+  mutate(coefs = map(model, tidy, conf.int = TRUE)) %>% 
+  unnest(coefs)
+```
+
+We could use these parameter estimates and confidence intervals to plot the different models. In the case of linear regression, however, we can simply use `geom_smooth` and pass `method = "lm"` and **ggplot** will take care of the rest:
+
+```{r}
+# Plotting linear models
+data$fed_r_d_spending %>% 
+  ggplot(aes(year, rd_budget, color = department)) +
+  geom_line() +
+  geom_smooth(method = "lm", color = "black", lwd = .5) +
+  facet_wrap(~department, scales = "free_y", ncol = 4) + 
+  labs(title = "Simple linear regression", x = "Year", y = "Research and development budget (USD)") + 
+  scale_y_continuous(labels = scales::unit_format(unit = "billion", scale = 1e-9, accuracy = 0.1)) + 
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45))
+```
+
+Similarly, we can use the `glance` function (as [described here](https://r4ds.had.co.nz/many-models.html)) to extract different quality metrics for each model. So, for example, we can arrange the models by largest [coefficient of determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) (R squared):
+
+```{r}
+# Extracting R squared statistic for each model
+nested_models %>% 
+  mutate(metrics = map(model, glance)) %>% 
+  unnest(metrics) %>% 
+  select(department:r.squared) %>% 
+  arrange(desc(r.squared)) # Arranging by "best" R squared
+``` 
+
+# Modelling with caret
+
+Even though the simple linear model works quite well for some of the departments (e.g. NSF), more complex models will probably do a better job at capturing the wiggliness of our time-series data. In this part I'll
+
+1. Try some different approaches to [splitting the data into training and test sets](https://en.wikipedia.org/wiki/Training,_validation,_and_test_sets).
+2. Try to fit a couple of [different models](https://topepo.github.io/caret/train-models-by-tag.html) from the **caret** package.
+
+If you're unfamiliar with the reasoning behind splitting data sets into training and test sets, a good place to start is [An Introduction to Statistical Learning](https://www-bcf.usc.edu/~gareth/ISL/) (freely available online). 
+
+## Partitioning the data
+
+In R, one possible approach is to use the [**rsample**](https://tidymodels.github.io/rsample/) package (also by Max Kuhn):
+
+```{r}
+split_nested_data <- nested_data %>% 
+  mutate(split_data = map(data, initial_split, prop = 0.8, seed = 42),
+         training = map(split_data, training),
+         test = map(split_data, testing))
+
+split_nested_data
+```
+
+I really like this approach. We set the proportion (`prop = 0.8`) of data that we want to retain in the training set and apply the `initial_split` function to create a new column called `split_data`. Next, we map the `training` and `testing` functions to `split_data`, and hey presto, we have 14 different training and test sets. 
+
+However, when forecasting, it may be more appropriate to use the most recent observations as a test set instead of a randomly sampled subset of data points. This can be accomplished by defining our own function `split_data`. In this example I hard code the time intervals, but it is fairly straightforward to generalise the function.
+
+```{r}
+# Custom data splitter
+split_data <- function(df, data) {
+  
+  # Check that arguments are valid
+  if (!data %in% c("training", "test")) {
+    stop("Argument data needs to be one of 'training' or 'test'")
+  }
+  
+  # Split data into training or test set
+  if (data == "training") {
+    return(filter(df, year %in% c(1976:2012)))
+  } else if (data == "test") {
+    return(filter(df, year %in% c(2013:2017)))
+  }
+}
+
+split_nested_data <- nested_data %>% 
+  mutate(training = map(data, split_data, data = "training"),
+         test = map(data, split_data, data = "test"))
+
+split_nested_data
+```
+
+(Note that we can pass arguments to `.f` in `map`.)
+
+## Resampling with trainControl
+
+Yet [another](https://otexts.com/fpp2/accuracy.html) [approach](https://topepo.github.io/caret/data-splitting.html#time) is to move the training and test sets in time. This can be achieved by using the `trainControl` function in **caret**, which specifies the resampling method to be used when fitting a model with the `train` function (please refer to the [caret docs](https://topepo.github.io/caret/model-training-and-tuning.html) for details). 
+
+In our case, we set `method = "timeslice"` to perform so-called *rolling forecasting origin resampling*. Check out the illuminating illustration in [chapter 4.3](https://topepo.github.io/caret/data-splitting.html#data-splitting-for-time-series) of the caret documentation to get a sense of what's happening.
+
+## Fitting models
+
+First, let's define a `train_model` function that takes care of both the resampling and training. Next, let's fit two highly flexible models to the data: a [Gaussian process](https://en.wikipedia.org/wiki/Gaussian_process) and a [generalised additive model](https://en.wikipedia.org/wiki/Generalized_additive_model) (with splines).
+
+```{r}
+# Training function
+train_model <- function(df, method) {
+  # Rolling forecasting origin resampling
+  train_control <- trainControl(method = "timeslice",
+                              initialWindow = 5,
+                              horizon = 5,
+                              fixedWindow = FALSE)
+
+  # Training
+  train(rd_budget ~ year, data = df,
+        method = method, # Method indicates which model to use, see ch. 7 in caret docs
+        trControl = train_control) # Resampling method
+}
+
+nested_models <- nested_data %>% 
+  mutate(gp_models = map(data, train_model, method = "gaussprRadial"), # Gaussian process model
+         gam_models = map(data, train_model, method = "gam")) # Generalised additive model (with splines)
+
+nested_models
+```
+
+The following function lets us plot the results.
+
+```{r}
+plot_models <- function(df, variable, title) {
+  
+  model <- enquo(variable)
+  
+  df %>% 
+    mutate(preds = map(!!model, predict.train)) %>% 
+    unnest(data, preds) %>% 
+    ggplot(aes(x = year, color = department)) +
+    geom_line(aes(y = rd_budget)) +
+    geom_line(aes(y = preds), color = "black", alpha = .7) +
+    facet_wrap(~department, scales = "free_y", ncol = 4) + 
+    labs(title = title, x = "Year", y = "Research and development budget (USD)") + 
+    scale_y_continuous(labels = scales::unit_format(unit = "billion", scale = 1e-9, accuracy = 0.1)) + 
+    theme_minimal() +
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 45))
+}
+
+plot_models(nested_models, gam_models, "Generalised additive models")
+```
+
+```{r}
+plot_models(nested_models, gp_models, "Gaussian processes")
+```
+
+# Evaluation
+
+One way to evaluate our models is to use the `resamples` function in **caret**. I'm not entirely convinced that this is an appropriate strategy for time-series data, but I'll include the following chunk nonetheless because it may be useful in a future project. Furthermore, we get to use a new function from **purrr**: `map2`, which iterates over multiple inputs simultaneously.
+
+```{r eval = FALSE}
+# Helper functions to create and save evaluation plots
+plot_rsquared <- function(name, df) {
+  scales <- list(x = list(relation = "free"), y = list(relation = "free"))
+  bwplot(df, scales = scales, main = name)
+}
+
+save_img <- function(name, img) {
+  trellis.device(device = "png", filename = paste0(name, ".png"))
+  print(img)
+  dev.off()
+}
+
+# Gather results and create plots
+imgs_df <- nested_models %>% 
+  mutate(model_pairs = map2(gp_models, gam_models, ~list(GP = .x, GAM = .y)),
+         results = map(model_pairs, resamples),
+         imgs = map2(department, results, plot_rsquared))
+
+# Save images to disk
+map2(imgs_df$department, imgs_df$imgs, save_img)
+```
+
+In the chunk above, the `map2` call produces a plot using [**lattice**](https://www.rdocumentation.org/packages/lattice/versions/0.20-38) which summarises the [mean absolute error (MAE)](https://en.wikipedia.org/wiki/Mean_absolute_error), the [root mean squared error (RMSE)](https://en.wikipedia.org/wiki/Mean_squared_error) and the [coefficient of determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) on the resampled data, like this:
+
+![](/post/2019-02-16-tidytuesday-fitting-multiple-time-series-models-using-purrr_files/DOE.png)
+
+That's it for this week's (rather lengthy, sorry) post! Hope you enjoyed it, I certainly did. Please [hit me up on twitter](https://twitter.com/mattemagisk) if you have any feedback or suggestions. Thanks for reading!
