@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Sean Meling Murray</copyright>
-    <lastBuildDate>Sat, 16 Feb 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 20 Feb 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>#tidytuesday: Special binary operators and plotting PhDs</title>
+      <link>/2019/02/20/2019-02-20-tidytuesday-special-binary-operators-and-plotting-phds/</link>
+      <pubDate>Wed, 20 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/02/20/2019-02-20-tidytuesday-special-binary-operators-and-plotting-phds/</guid>
+      <description>If you’re familiar with the tidyverse, you’re most likely familiar with the pipe operator %&amp;gt;% from magrittr. The pipe operators
+ pipe their left-hand side values forward into expressions that appear on the right-hand side, i.e. one can replace f(x) with x %&amp;gt;% f(), where %&amp;gt;% is the (main) pipe-operator (https://magrittr.tidyverse.org/).
+ %&amp;gt;% is an example of a special binary operator. Now, what’s cool about special binary operators is that we can define our own!</description>
+    </item>
     
     <item>
       <title>#tidytuesday: Fitting multiple time-series models using purrr</title>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>#tidytuesday: Special binary operators and plotting PhDs &middot; Sean Meling Murray</title>
+        <meta name="description" content="If you’re familiar with the tidyverse, you’re most likely familiar with the pipe operator %&gt;% from magrittr. The pipe operators
+ pipe their left-hand side values forward into expressions that appear on the right-hand side, i.e. one can replace f(x) with x %&gt;% f(), where %&gt;% is the (main) pipe-operator (https://magrittr.tidyverse.org/).
+ %&gt;% is an example of a special binary operator. Now, what’s cool about special binary operators is that we can define our own!">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.53" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="#tidytuesday: Special binary operators and plotting PhDs">
+<meta property="og:description" content="If you’re familiar with the tidyverse, you’re most likely familiar with the pipe operator %&gt;% from magrittr. The pipe operators
+ pipe their left-hand side values forward into expressions that appear on the right-hand side, i.e. one can replace f(x) with x %&gt;% f(), where %&gt;% is the (main) pipe-operator (https://magrittr.tidyverse.org/).
+ %&gt;% is an example of a special binary operator. Now, what’s cool about special binary operators is that we can define our own!">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/2019/02/20/2019-02-20-tidytuesday-special-binary-operators-and-plotting-phds/">
+        <link rel="stylesheet" href="/dist/styles.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        
+        
+        
+    </head>
+    <body>
+        
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Biased" href="/">Biased</a>
+                            </h1>
+                        
+                        <a class="button-square" href="/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/mattemagisk">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/smu095">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/10951783/mattemagisk">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/sean-meling-murray/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Email" title="Email" href="mailto:sean.meling@gmail.com">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">#tidytuesday: Special binary operators and plotting PhDs</h1>
+    
+    <p class="post-date">
+        <span>Published <time datetime="2019-02-20" itemprop="datePublished">Wed, Feb 20, 2019</time></span>
+        <span>by</span>
+        <span itemscope="" itemprop="author" itemtype="https://schema.org/Person">
+            <span itemprop="name">
+                <a href="#" itemprop="url" rel="author">Sean</a>
+            </span>
+        </span>
+    </p>
+    
+        <p class="post-reading post-line">
+            <span>Estimated reading time: 3 min</span>
+        </p>
+    
+</header>
+
+        <div class="post-content clearfix" itemprop="articleBody">
+    
+
+    
+
+
+<p>If you’re familiar with the <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a>, you’re most likely familiar with the pipe operator <code>%&gt;%</code> from <a href="https://magrittr.tidyverse.org/"><strong>magrittr</strong></a>. The pipe operators</p>
+<blockquote>
+<p>pipe their left-hand side values forward into expressions that appear on the right-hand side, i.e. one can replace <code>f(x)</code> with <code>x %&gt;% f()</code>, where <code>%&gt;%</code> is the (main) pipe-operator (<a href="https://magrittr.tidyverse.org/" class="uri">https://magrittr.tidyverse.org/</a>).</p>
+</blockquote>
+<p><code>%&gt;%</code> is an example of a <a href="https://cran.r-project.org/doc/manuals/R-lang.html#Operators">special binary operator</a>. Now, what’s cool about special binary operators is that we can define our own! I learned about this on Twitter the other day, but unfortunately I forgot to like the tweet and consequently can’t give credit where credit’s due. I will, however, shamelessly steal the idea for <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-02-19">this week’s #tidytuesday data set</a> which chronicles awarded PhDs in the US from 2008-2017.</p>
+<pre class="r"><code># Importing packages
+library(tidyverse)
+
+# Loading data
+DIR &lt;- &quot;~/Documents/GitHub/tidytuesday/data/2019/2019-02-19&quot;
+csvs &lt;- list.files(DIR, pattern = &quot;*.csv&quot;)
+data &lt;- read_csv(file.path(DIR, csvs))</code></pre>
+<div id="creating-custom-operators" class="section level1">
+<h1>Creating custom operators</h1>
+<p>The goal for this week is to write a function that takes a tibble and a function as arguments, and have it return a plot where the name of the function is used in the subtitle and legend.</p>
+<p>We start by defining our special binary operator:</p>
+<pre class="r"><code># Custom special binary operator
+`%p%` &lt;- function(lhs, rhs) return(paste0(lhs, rhs))</code></pre>
+<p><code>%p%</code> will concatenate the left-hand string with the right-hand string. Like the pipe operator, <code>%p%</code> essentially lets us “pipe” the previously concatenated string into the next, creating a cascade of concatenations which results in a single string.</p>
+<pre class="r"><code># Example
+string &lt;- &quot;Using %p% we can &quot; %p% 
+  &quot;concatenate strings &quot; %p% 
+  &quot;a la piping in dplyr!&quot;
+
+print(string)</code></pre>
+<pre><code>## [1] &quot;Using %p% we can concatenate strings a la piping in dplyr!&quot;</code></pre>
+<p>Pretty neat! The next step is to somehow get a string representation of the name of a function. After some searching, <a href="https://stackoverflow.com/questions/1567718/getting-a-function-name-as-a-string">this post on Stack Overflow</a> offered one possible solution that uses the functions <code>deparse</code> and <code>substitute</code>:</p>
+<pre class="r"><code>whacky_function_name &lt;- function(x){
+  return(&quot;#tidytuesday is fun!&quot;)
+}
+
+function2string &lt;- deparse(substitute(whacky_function_name))
+print(function2string)</code></pre>
+<pre><code>## [1] &quot;whacky_function_name&quot;</code></pre>
+</div>
+<div id="plotting-phds" class="section level1">
+<h1>Plotting PhDs</h1>
+<p>Now we just need to put the pieces together. I’m aiming for a <a href="http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#Diverging%20Bars">diverging bars plot</a> in the style of <a href="https://github.com/bbc/bbplot"><strong>bbplot</strong></a>. Specifically, I’d like to make one that shows the number of PhDs awarded with respect to the average, and one with respect to the median. Here’s one possible approach:</p>
+<pre class="r"><code># Plotting function
+plot_phds &lt;- function(df, f) {
+  
+  # Getting string representation of function
+  f2string &lt;- deparse(substitute(f)) 
+  subtitle &lt;- &quot;Number of PhDs awarded relative to &quot; %p% f2string %p% &quot; (2008-2017)&quot;
+  
+  # Counting number of PhDs, reordering
+  data &lt;- df %&gt;% 
+    count(major_field, wt = n_phds) %&gt;% 
+    arrange(desc(n)) %&gt;%
+    mutate(diff = n - f(n), # Computing difference from mean
+           major_field = fct_reorder(major_field, diff)) 
+  
+  # Getting annotation
+  annot &lt;- &quot;US &quot; %p% f2string %p% &quot; = &quot; %p% as.character(f(data$n))
+  
+  # Creating diverging bars plot
+  data %&gt;% 
+    ggplot(aes(major_field, diff, fill = ifelse(sign(diff) &gt; 0, &quot;olivegreen&quot;, &quot;firebrickred&quot;))) + 
+    geom_bar(stat = &quot;identity&quot;) +
+    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;) +
+    labs(title = &quot;What&#39;s up Doc?&quot;, subtitle = subtitle) +
+    scale_fill_discrete(label = c(&quot;Below &quot; %p% f2string, &quot;Above &quot; %p% f2string)) +
+    geom_curve(aes(x = &quot;Teaching fields&quot;, y = 10000,
+                 xend = &quot;Economics&quot;, yend = 1000),
+             size=0.5, curvature = 0.5,
+             arrow = arrow(length = unit(0.03, &quot;npc&quot;))) +
+    annotate(geom = &quot;label&quot;, x = &quot;Teaching fields&quot;, y = 16000, label = annot, size = 5) +
+    coord_flip() +
+    bbplot::bbc_style() +
+    theme(axis.text.y = element_text(size = 12),
+          panel.grid.major.x = element_line(color=&quot;#cbcbcb&quot;),
+          legend.justification = &quot;left&quot;)
+}</code></pre>
+<p>Now we just need to call the function with the appropriate arguments, and we’re done!</p>
+<pre class="r"><code>source_str &lt;- &quot;Source: National Science Foundation&quot;
+p1 &lt;- plot_phds(data, mean)
+bbplot::finalise_plot(p1, source = source_str,
+                      save_filepath = &quot;p1.png&quot;,
+                      height = 600, width = 800,
+                      logo_image_path = &quot;logo.png&quot;)</code></pre>
+<p><img src="/post/2019-02-20-tidytuesday-special-binary-operators-and-plotting-phds_files/p1.png" /></p>
+<pre class="r"><code>p2 &lt;- plot_phds(data, median)
+bbplot::finalise_plot(p2, source = source_str,
+                      save_filepath = &quot;p2.png&quot;,
+                      height = 600, width = 800,
+                      logo_image_path = &quot;logo.png&quot;)</code></pre>
+<p><img src="/post/2019-02-20-tidytuesday-special-binary-operators-and-plotting-phds_files/p2.png" /></p>
+<p>That’s it for this week, hope you enjoyed it. As usual, <a href="https://twitter.com/mattemagisk">feedback</a> is always welcome!</p>
+</div>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+            
+                <a href="/tags/bbplot/">bbplot</a>, 
+            
+                <a href="/tags/ggplot2/">ggplot2</a>, 
+            
+                <a href="/tags/r/">R</a>, 
+            
+                <a href="/tags/tidytuesday/">tidytuesday</a>, 
+            
+                <a href="/tags/tidyverse/">tidyverse</a>
+            
+        </p>
+    
+
+    <div class="share">
+        
+            <a class="icon-twitter" href="https://twitter.com/share?text=%23tidytuesday%3a%20Special%20binary%20operators%20and%20plotting%20PhDs&url=%2f2019%2f02%2f20%2f2019-02-20-tidytuesday-special-binary-operators-and-plotting-phds%2f"
+                onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fa fa-twitter"></i>
+                <span class="hidden">Twitter</span>
+            </a>
+        
+
+        
+            <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=%2f2019%2f02%2f20%2f2019-02-20-tidytuesday-special-binary-operators-and-plotting-phds%2f"
+                onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                <i class="fa fa-facebook"></i>
+                <span class="hidden">Facebook</span>
+            </a>
+        
+
+        
+            <a class="icon-google-plus" href="https://plus.google.com/share?url=%2f2019%2f02%2f20%2f2019-02-20-tidytuesday-special-binary-operators-and-plotting-phds%2f"
+              onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+              <i class="fa fa-google-plus"></i>
+                <span class="hidden">Google+</span>
+            </a>
+        
+        
+    </div>
+</footer>
+
+        
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Biased" href="/">Biased</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2019 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="/js/jquery-1.11.3.min.js"></script>
+        <script src="/js/jquery.fitvids.js"></script>
+        
+        
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        
+        
+        <script src="/js/scripts.js"></script>
+    </body>
+</html>
+
