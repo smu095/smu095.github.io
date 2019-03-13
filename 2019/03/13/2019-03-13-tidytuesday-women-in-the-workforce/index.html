@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>#tidytuesday: Women in the workforce &middot; Sean Meling Murray</title>
-        <meta name="description" content="This week’s #tidytuesday data about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.
+        <meta name="description" content="Last week’s #tidytuesday data about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.
 As usual, we start by skimming the data to get a quick overview:
 # Setup library(tidyverse) library(skimr) # Loading data csv &lt;- &quot;~/Documents/Github/tidytuesday/data/2019/2019-03-05/jobs_gender.csv&quot; jobs_gender &lt;- read_csv(csv) jobs_gender %&gt;% skim  There are some missing values in total_earnings_female (estimated median wages for females). There are also quite a few NA’s in wage_percent_of_male (female wages as percent of male wages), which according to the #tidytuesday repo indicates small sample sizes for those occupations.">
         <meta name="HandheldFriendly" content="True">
@@ -13,7 +13,7 @@ As usual, we start by skimming the data to get a quick overview:
         <meta name="robots" content="index,follow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta property="og:title" content="#tidytuesday: Women in the workforce">
-<meta property="og:description" content="This week’s #tidytuesday data about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.
+<meta property="og:description" content="Last week’s #tidytuesday data about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.
 As usual, we start by skimming the data to get a quick overview:
 # Setup library(tidyverse) library(skimr) # Loading data csv &lt;- &quot;~/Documents/Github/tidytuesday/data/2019/2019-03-05/jobs_gender.csv&quot; jobs_gender &lt;- read_csv(csv) jobs_gender %&gt;% skim  There are some missing values in total_earnings_female (estimated median wages for females). There are also quite a few NA’s in wage_percent_of_male (female wages as percent of male wages), which according to the #tidytuesday repo indicates small sample sizes for those occupations.">
 <meta property="og:type" content="article">
@@ -111,7 +111,7 @@ As usual, we start by skimming the data to get a quick overview:
     
 
 
-<p>This week’s <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-03-05">#tidytuesday data</a> about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.</p>
+<p>Last week’s <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-03-05">#tidytuesday data</a> about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.</p>
 <p>As usual, we start by skimming the data to get a quick overview:</p>
 <pre class="r"><code># Setup
 library(tidyverse)
@@ -195,7 +195,7 @@ jobs_gender %&gt;%
 </tr>
 </tbody>
 </table>
-<p>It’s not immediately clear to me what is meant by “small sample sizes” in the context of relative wage differences. There seems to be enough underlying data to estimate the median wages for both sexes in most cases, but not for measuring relative differences. For now let’s just remove all missing values to avoid any confusion.</p>
+<p>It’s not immediately clear to me what is meant by “small sample sizes” in the context of relative wage differences. There seems to be enough underlying data to estimate the median wages for both sexes in most cases, but not for measuring relative differences. For now, let’s just remove all missing values to avoid any confusion.</p>
 <pre class="r"><code># Tidying data
 jobs_2016_tidy &lt;- jobs_gender %&gt;% 
   filter(year == 2016) %&gt;% 

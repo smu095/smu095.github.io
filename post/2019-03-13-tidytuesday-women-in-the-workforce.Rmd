@@ -13,7 +13,7 @@ tags:
 description: ''
 ---
 
-This week's [#tidytuesday data](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-03-05) about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.
+Last week's [#tidytuesday data](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-03-05) about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.
 
 As usual, we start by skimming the data to get a quick overview:
 
@@ -48,7 +48,7 @@ jobs_gender %>%
   knitr::kable()
 ```
 
-It's not immediately clear to me what is meant by "small sample sizes" in the context of relative wage differences. There seems to be enough underlying data to estimate the median wages for both sexes in most cases, but not for measuring relative differences. For now let's just remove all missing values to avoid any confusion.
+It's not immediately clear to me what is meant by "small sample sizes" in the context of relative wage differences. There seems to be enough underlying data to estimate the median wages for both sexes in most cases, but not for measuring relative differences. For now, let's just remove all missing values to avoid any confusion.
 
 ```{r}
 # Tidying data

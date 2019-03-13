@@ -18,7 +18,7 @@
       <pubDate>Wed, 13 Mar 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/03/13/2019-03-13-tidytuesday-women-in-the-workforce/</guid>
-      <description>This week’s #tidytuesday data about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.
+      <description>Last week’s #tidytuesday data about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.
 As usual, we start by skimming the data to get a quick overview:
 # Setup library(tidyverse) library(skimr) # Loading data csv &amp;lt;- &amp;quot;~/Documents/Github/tidytuesday/data/2019/2019-03-05/jobs_gender.csv&amp;quot; jobs_gender &amp;lt;- read_csv(csv) jobs_gender %&amp;gt;% skim  There are some missing values in total_earnings_female (estimated median wages for females). There are also quite a few NA’s in wage_percent_of_male (female wages as percent of male wages), which according to the #tidytuesday repo indicates small sample sizes for those occupations.</description>
     </item>
