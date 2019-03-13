@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>#tidytuesday: Women in the workforce &middot; Sean Meling Murray</title>
+        <meta name="description" content="This week’s #tidytuesday data about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.
+As usual, we start by skimming the data to get a quick overview:
+# Setup library(tidyverse) library(skimr) # Loading data csv &lt;- &quot;~/Documents/Github/tidytuesday/data/2019/2019-03-05/jobs_gender.csv&quot; jobs_gender &lt;- read_csv(csv) jobs_gender %&gt;% skim  There are some missing values in total_earnings_female (estimated median wages for females). There are also quite a few NA’s in wage_percent_of_male (female wages as percent of male wages), which according to the #tidytuesday repo indicates small sample sizes for those occupations.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.54.0" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="#tidytuesday: Women in the workforce">
+<meta property="og:description" content="This week’s #tidytuesday data about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.
+As usual, we start by skimming the data to get a quick overview:
+# Setup library(tidyverse) library(skimr) # Loading data csv &lt;- &quot;~/Documents/Github/tidytuesday/data/2019/2019-03-05/jobs_gender.csv&quot; jobs_gender &lt;- read_csv(csv) jobs_gender %&gt;% skim  There are some missing values in total_earnings_female (estimated median wages for females). There are also quite a few NA’s in wage_percent_of_male (female wages as percent of male wages), which according to the #tidytuesday repo indicates small sample sizes for those occupations.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/2019/03/13/2019-03-13-tidytuesday-women-in-the-workforce/">
+        <link rel="stylesheet" href="/dist/styles.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        
+        
+        
+    </head>
+    <body>
+        
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Biased" href="/">Biased</a>
+                            </h1>
+                        
+                        <a class="button-square" href="/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/mattemagisk">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/smu095">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/10951783/mattemagisk">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/sean-meling-murray/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Email" title="Email" href="mailto:sean.meling@gmail.com">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">#tidytuesday: Women in the workforce</h1>
+    
+    <p class="post-date">
+        <span>Published <time datetime="2019-03-13" itemprop="datePublished">Wed, Mar 13, 2019</time></span>
+        <span>by</span>
+        <span itemscope="" itemprop="author" itemtype="https://schema.org/Person">
+            <span itemprop="name">
+                <a href="#" itemprop="url" rel="author">Sean</a>
+            </span>
+        </span>
+    </p>
+    
+        <p class="post-reading post-line">
+            <span>Estimated reading time: 3 min</span>
+        </p>
+    
+</header>
+
+        <div class="post-content clearfix" itemprop="articleBody">
+    
+
+    
+
+
+<p>This week’s <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-03-05">#tidytuesday data</a> about women in the workforce is provided by the Bureau of Labor Statistics and the Census Bureau.</p>
+<p>As usual, we start by skimming the data to get a quick overview:</p>
+<pre class="r"><code># Setup
+library(tidyverse)
+library(skimr)
+
+# Loading data
+csv &lt;- &quot;~/Documents/Github/tidytuesday/data/2019/2019-03-05/jobs_gender.csv&quot;
+jobs_gender &lt;- read_csv(csv)</code></pre>
+<pre class="r"><code>jobs_gender %&gt;% 
+  skim</code></pre>
+<div class="figure">
+<img src="/post/2019-03-13-tidytuesday-women-in-the-workforce_files/Screenshot%202019-03-13%20at%2021.00.31.png" />
+
+</div>
+<p>There are some missing values in <code>total_earnings_female</code> (estimated median wages for females). There are also quite a few NA’s in <code>wage_percent_of_male</code> (female wages as percent of male wages), which according to the <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-03-05">#tidytuesday repo</a> indicates small sample sizes for those occupations.</p>
+<p>To narrow things down, let’s look at the data from 2016 and check out where the missing values are:</p>
+<pre class="r"><code># Overview of missing data
+jobs_gender %&gt;% 
+  filter(year == 2016) %&gt;% 
+  group_by(major_category) %&gt;% 
+  summarise_all(~ sum(is.na(.))) %&gt;% 
+  select_if(~ is.character(.) | (is.numeric(.) &amp;&amp; sum(.) != 0)) %&gt;% 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">major_category</th>
+<th align="right">total_earnings_male</th>
+<th align="right">total_earnings_female</th>
+<th align="right">wage_percent_of_male</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Computer, Engineering, and Science</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">21</td>
+</tr>
+<tr class="even">
+<td align="left">Education, Legal, Community Service, Arts, and Media</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">8</td>
+</tr>
+<tr class="odd">
+<td align="left">Healthcare Practitioners and Technical</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="left">Management, Business, and Financial</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Natural Resources, Construction, and Maintenance</td>
+<td align="right">0</td>
+<td align="right">11</td>
+<td align="right">63</td>
+</tr>
+<tr class="even">
+<td align="left">Production, Transportation, and Material Moving</td>
+<td align="right">0</td>
+<td align="right">5</td>
+<td align="right">75</td>
+</tr>
+<tr class="odd">
+<td align="left">Sales and Office</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">14</td>
+</tr>
+<tr class="even">
+<td align="left">Service</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">17</td>
+</tr>
+</tbody>
+</table>
+<p>It’s not immediately clear to me what is meant by “small sample sizes” in the context of relative wage differences. There seems to be enough underlying data to estimate the median wages for both sexes in most cases, but not for measuring relative differences. For now let’s just remove all missing values to avoid any confusion.</p>
+<pre class="r"><code># Tidying data
+jobs_2016_tidy &lt;- jobs_gender %&gt;% 
+  filter(year == 2016) %&gt;% 
+  na.omit() %&gt;% 
+  group_by(major_category) %&gt;% 
+  summarise(total_workers = sum(total_workers),
+            male_numworkers = sum(workers_male),
+            female_numworkers = sum(workers_female),
+            female_pay = mean(total_earnings_female),
+            male_pay = mean(total_earnings_male),
+            female_pctworkforce = mean(percent_female) / 100) %&gt;% 
+  mutate(male_pctworkforce = 1 - female_pctworkforce,
+         major_category = fct_reorder(major_category, male_pctworkforce)) %&gt;%
+  gather(&quot;gender&quot;, &quot;value&quot;, -major_category, -total_workers) %&gt;% 
+  separate(gender, c(&quot;gender&quot;, &quot;statistic&quot;), sep = &quot;_&quot;) %&gt;% 
+  mutate(statistic = fct_recode(statistic,
+                                &quot;num_workers&quot; = &quot;numworkers&quot;,
+                                &quot;pct_workers&quot; = &quot;pctworkforce&quot;
+                                )) %&gt;% 
+  ungroup() %&gt;% 
+  spread(statistic, value)</code></pre>
+<p>I’d like to visualise the proportions of males/females for each <code>major_category</code>, and I’d also like to plot the differences in wages across industries (using the wonderful <a href="https://github.com/bbc/bbplot"><strong>bbplot</strong></a> package, as usual).</p>
+<p>We start by plotting the proportion of sexes across the major categories of occupation:</p>
+<pre class="r"><code># Gender representation
+jobs_2016_tidy %&gt;% 
+  ggplot(aes(major_category, pct_workers, fill = gender)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  geom_hline(yintercept = 0) +
+  scale_y_continuous(labels = scales::percent) +
+  coord_flip() +
+  labs(title = &quot;Gender representation across industries&quot;) +
+  bbplot::bbc_style()</code></pre>
+<p><img src="/post/2019-03-13-tidytuesday-women-in-the-workforce_files/p1.png" /> Next, let’s compare the average estimated wages for both genders:</p>
+<pre class="r"><code># Average estimated pay
+jobs_2016_tidy %&gt;% 
+  group_by(major_category) %&gt;% 
+  mutate(pct_of_male = ifelse(gender == &quot;female&quot;, pay[gender == &quot;female&quot;] / pay[gender == &quot;male&quot;], 1)) %&gt;% 
+  ggplot(aes(major_category, pay, fill = gender, label = round(pct_of_male, 2))) +
+  geom_bar(stat = &quot;identity&quot;, position = &quot;dodge&quot;) +
+  geom_hline(yintercept = 0) +
+  geom_label(aes(label = ifelse(gender == &quot;female&quot;, scales::percent(pct_of_male), NA)),
+             hjust = 1, vjust = 1, 
+             colour = &quot;white&quot;, fill = NA, label.size = NA, 
+             family=&quot;Helvetica&quot;, size = 6) +
+  scale_y_continuous(labels = scales::dollar) +
+  coord_flip() +
+  labs(title = &quot;Average estimated wages for males and females&quot;, subtitle = &quot;Percentages indicate estimated female wages relative to estimated male wages in the same industry.&quot;) +
+  bbplot::bbc_style()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-13-tidytuesday-women-in-the-workforce_files/p2.png" />
+
+</div>
+<p>That’s it for now, thanks for reading!</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+            
+                <a href="/tags/bbplot/">bbplot</a>, 
+            
+                <a href="/tags/ggplot2/">ggplot2</a>, 
+            
+                <a href="/tags/r/">R</a>, 
+            
+                <a href="/tags/tidytuesday/">tidytuesday</a>
+            
+        </p>
+    
+
+    <div class="share">
+        
+            <a class="icon-twitter" href="https://twitter.com/share?text=%23tidytuesday%3a%20Women%20in%20the%20workforce&url=%2f2019%2f03%2f13%2f2019-03-13-tidytuesday-women-in-the-workforce%2f"
+                onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fa fa-twitter"></i>
+                <span class="hidden">Twitter</span>
+            </a>
+        
+
+        
+            <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=%2f2019%2f03%2f13%2f2019-03-13-tidytuesday-women-in-the-workforce%2f"
+                onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                <i class="fa fa-facebook"></i>
+                <span class="hidden">Facebook</span>
+            </a>
+        
+
+        
+            <a class="icon-google-plus" href="https://plus.google.com/share?url=%2f2019%2f03%2f13%2f2019-03-13-tidytuesday-women-in-the-workforce%2f"
+              onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+              <i class="fa fa-google-plus"></i>
+                <span class="hidden">Google+</span>
+            </a>
+        
+        
+    </div>
+</footer>
+
+        
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Biased" href="/">Biased</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2019 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="/js/jquery-1.11.3.min.js"></script>
+        <script src="/js/jquery.fitvids.js"></script>
+        
+        
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        
+        
+        <script src="/js/scripts.js"></script>
+    </body>
+</html>
+
