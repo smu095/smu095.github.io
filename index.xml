@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Sean Meling Murray</copyright>
-    <lastBuildDate>Wed, 13 Mar 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 12 Apr 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>#theriddler: Simulating spelling bees</title>
+      <link>/2019/04/12/2019-04-12-theriddler-simulating-spelling-bees/</link>
+      <pubDate>Fri, 12 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/04/12/2019-04-12-theriddler-simulating-spelling-bees/</guid>
+      <description>This week RStudio v1.2 was released. The newest version of the popular IDE has support for the supercool reticulate package which allows us to run Python chunks in R notebooks.
+Getting started is as simple as loading reticulate and replacing the chunk ```{r} # Your R code here ``` with ```{python} # Your Python code here ```. Furthermore, reticulate has support for loading Python environments. In the example below, I access a conda environment named ml that contains all my machine learning modules.</description>
+    </item>
     
     <item>
       <title>#tidytuesday: Women in the workforce</title>

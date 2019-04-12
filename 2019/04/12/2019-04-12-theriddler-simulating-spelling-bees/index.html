@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>#theriddler: Simulating spelling bees &middot; Sean Meling Murray</title>
+        <meta name="description" content="This week RStudio v1.2 was released. The newest version of the popular IDE has support for the supercool reticulate package which allows us to run Python chunks in R notebooks.
+Getting started is as simple as loading reticulate and replacing the chunk ```{r} # Your R code here ``` with ```{python} # Your Python code here ```. Furthermore, reticulate has support for loading Python environments. In the example below, I access a conda environment named ml that contains all my machine learning modules.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.54.0" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="#theriddler: Simulating spelling bees">
+<meta property="og:description" content="This week RStudio v1.2 was released. The newest version of the popular IDE has support for the supercool reticulate package which allows us to run Python chunks in R notebooks.
+Getting started is as simple as loading reticulate and replacing the chunk ```{r} # Your R code here ``` with ```{python} # Your Python code here ```. Furthermore, reticulate has support for loading Python environments. In the example below, I access a conda environment named ml that contains all my machine learning modules.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/2019/04/12/2019-04-12-theriddler-simulating-spelling-bees/">
+        <link rel="stylesheet" href="/dist/styles.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        
+        
+        
+    </head>
+    <body>
+        
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Biased" href="/">Biased</a>
+                            </h1>
+                        
+                        <a class="button-square" href="/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/mattemagisk">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/smu095">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/10951783/mattemagisk">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/sean-meling-murray/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Email" title="Email" href="mailto:sean.meling@gmail.com">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">#theriddler: Simulating spelling bees</h1>
+    
+    <p class="post-date">
+        <span>Published <time datetime="2019-04-12" itemprop="datePublished">Fri, Apr 12, 2019</time></span>
+        <span>by</span>
+        <span itemscope="" itemprop="author" itemtype="https://schema.org/Person">
+            <span itemprop="name">
+                <a href="#" itemprop="url" rel="author">Sean</a>
+            </span>
+        </span>
+    </p>
+    
+        <p class="post-reading post-line">
+            <span>Estimated reading time: 6 min</span>
+        </p>
+    
+</header>
+
+        <div class="post-content clearfix" itemprop="articleBody">
+    
+
+    
+
+
+<p>This week <a href="https://www.rstudio.com/products/RStudio/">RStudio v1.2</a> was released. The newest version of the popular IDE <a href="https://rstudio.github.io/reticulate/articles/rstudio_ide.html">has support</a> for the supercool <a href="https://rstudio.github.io/reticulate/"><strong>reticulate</strong></a> package which allows us to run Python chunks in R notebooks.</p>
+<p>Getting started is as simple as loading <strong>reticulate</strong> and replacing the chunk <code>```{r} # Your R code here ```</code> with <code>```{python} # Your Python code here ```</code>. Furthermore, <strong>reticulate</strong> has support for loading <a href="https://docs.python.org/3/tutorial/venv.html">Python environments</a>. In the example below, I access a <a href="https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">conda environment</a> named <code>ml</code> that contains all my machine learning modules.</p>
+<pre class="r"><code># This is an R chunk
+library(reticulate)
+use_condaenv(&quot;ml&quot;)</code></pre>
+<pre class="python"><code># This is a Python chunk
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from collections import OrderedDict
+sns.set_style(&#39;whitegrid&#39;)
+sns.despine(right=True, top=True)</code></pre>
+<p>In the following I’ll post my proposed solutions to <a href="https://fivethirtyeight.com/tag/the-riddler/">The Riddler</a>, the puzzle column of the data-driven news site and brain-child of celebrity-statistician <a href="https://en.wikipedia.org/wiki/Nate_Silver">Nate Silver</a>, <a href="https://fivethirtyeight.com/">FiveThirtyEight</a>. The Riddler typically consists of an “express” challenge and a “classic” challenge. I usually code these in Python, and thanks to <strong>reticulate</strong> I can now share them here. The following proposed solutions are for the <a href="https://fivethirtyeight.com/features/can-you-win-a-spelling-bee-if-you-know-99-percent-of-the-words/">March 29th</a> puzzle.</p>
+<div id="the-riddler-express" class="section level1">
+<h1>The Riddler Express</h1>
+<p><em>“You are playing your first ever game of “Ticket to Ride,” a board game in which players compete to lay down railroad while getting so competitive they risk ruining their marriages. At the start of the game, you are randomly dealt a set of three Destination Tickets out of a deck of 30 different tickets. Each reveals the two terminals you must connect with a railroad to receive points. During the game, you eventually pick up another set of three Destination Tickets, so you have now seen six of the 30 tickets in the game.</em></p>
+<p><em>Later, because you enjoyed it so much, you and your friends play a second game. The ticket cards are all returned and reshuffled. Again, you are dealt a set of three tickets to begin play. Which is more likely: that you had seen at least one of these three tickets before, or that they were all new to you?&quot;</em></p>
+<pre class="python"><code>total_cards = 30
+new_cards = 24
+prob_new_card = lambda k: (new_cards - k) / (total_cards - k)
+
+prob_all_new = 1
+for i in range(3):
+    prob_all_new *= prob_new_card(i)</code></pre>
+<pre><code>## Probability of being dealt three previously unseen cards: 0.4985</code></pre>
+<pre><code>## Probability of having seen at least one of the cards before: 0.5015</code></pre>
+</div>
+<div id="the-riddler-classic" class="section level1">
+<h1>The Riddler Classic</h1>
+<p><em>&quot;You are competing in a spelling bee alongside nine other contestants. You can each spell words perfectly from a certain portion of the dictionary but will misspell any word not in that portion of the book. Specifically, you have 99 percent of the dictionary down cold, and your opponents have 98 percent, 97 percent, 96 percent, and so on down to 90 percent memorized. The bee’s rules are simple: The contestants take turns spelling in some fixed order, which then restarts with the first surviving speller at the end of a round. Miss a word and you’re out, and the last speller standing wins. The bee words are chosen randomly from the dictionary.</em></p>
+<p><em>First, say the contestants go in decreasing order of their knowledge, so that you go first. What are your chances of winning the spelling bee? Second, say the contestants go in increasing order of knowledge, so that you go last. What are your chances of winning now?&quot;</em></p>
+<div id="original-solution" class="section level2">
+<h2>Original solution</h2>
+<p>Spelling bees aren’t really a thing where I’m from, so in the first iteration of my solution I made the assumption that a round ends when a contestant gets a word wrong. The next round then starts with the player immediately following the recently eliminated contestant. This led to some experimentation with ordered dictionaries and reshuffling lists. I also wanted to get a distribution of the estimated win rate for the best player, so I ran the multiple simulations.</p>
+<pre class="python"><code>def spelling_bee_winners(players, best_player_starts=True, num_bees=10**3, to_percent=False):
+    &#39;&#39;&#39; Simulate spelling bees and return distribution of victories.&#39;&#39;&#39;
+    
+    results = {name: 0 for name in players}
+
+    # Simulate spelling bee
+    for i in range(num_bees):
+
+        names = players.copy()
+        probs = [.9 + 0.01*i for i in range(10)]
+        
+        if best_player_starts:
+            probs = probs[::-1]
+        else:
+            names = names[::-1]
+
+        spelling_bee = OrderedDict([(name, prob) for name, prob in zip(names, probs)])
+
+        # This is a round, restarts when player gets eliminated
+        while len(spelling_bee) &gt; 1:
+
+            for player, prob in spelling_bee.items():
+
+                # Sample a word from the dictionary
+                word = np.random.uniform(size=1)
+
+                # If player doesn&#39;t know word, remove from competition, reorder contestants and start new round
+                if word &gt; prob:
+                    remove = names.index(player)
+
+                    del names[remove]
+                    del probs[remove]
+                    
+                    # Check if eliminated player is the last player
+                    if len(names) - remove == 1:
+                        spelling_bee = OrderedDict([(name, prob) for name, prob in zip(names, probs)])
+                        break
+                    else:
+                        new_players = names[remove:] + names[:remove]
+                        new_probs = probs[remove:] + probs[:remove]
+                        spelling_bee = OrderedDict([(name, prob) for name, prob in zip(new_players, new_probs)])
+                        break
+        
+        # Record victory for winning player
+        for player in spelling_bee.keys():
+            results[player] += 1
+        
+    # Convert score to percent
+    if to_percent:
+        for player in results.keys():
+            results[player] = results[player] * (1 / num_bees)
+    
+    return results
+
+
+def simulations(players, num_bees=10**3, simulations=100, best_player_starts=True, to_percent=False):
+    &#39;&#39;&#39; Simulate spelling bees to get average and std. deviations. &#39;&#39;&#39;
+    results = np.zeros(simulations)
+    
+    for i in range(simulations):
+        best_first = spelling_bee_winners(players, best_player_starts=best_player_starts, num_bees=num_bees, to_percent=to_percent)
+        results[i] = best_first[&#39;A&#39;]
+
+    return results
+
+
+def plot_results(results, bins=20, label=None):
+    &#39;&#39;&#39; Helper function to plot results of simulations.&#39;&#39;&#39;
+    average = round(np.mean(results), 4)
+    plt.hist(results, bins=bins, alpha=0.7, label=f&#39;{label} (avg.: {average})&#39;)
+    plt.axvline(average, linestyle=&quot;--&quot;, color=&#39;k&#39;)
+    
+    
+# Simulating spelling bees
+players = [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;G&quot;, &quot;H&quot;, &quot;I&quot;, &quot;J&quot;]
+best_first = simulations(players, best_player_starts=True, to_percent=True)
+best_last = simulations(players, best_player_starts=False, to_percent=True)
+
+# Plotting comparisons
+plt.figure(figsize=(8, 6))
+plot_results(best_first, label=&#39;First player&#39;)
+plot_results(best_last, label=&#39;Last player&#39;)
+plt.title(&#39;Starting first vs. starting last&#39;, size=20)
+plt.legend()
+plt.show()</code></pre>
+<p><img src="/post/2019-04-12-theriddler-simulating-spelling-bees_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
+</div>
+<div id="revised-solution" class="section level2">
+<h2>Revised solution</h2>
+<p>As it turns out, I think I overcomplicated the rules of elimination somewhat due to the fact that I don’t really know how a spelling bee works. I quite like <a href="https://github.com/jnees/riddler-spelling-bee">this approach</a> by Josh Nees, so I decided to write my own variant of it. His is a cleaner implementation than my original proposal, the only thing I added was the potential outcome where all players get a word wrong and the game ends in a tie.</p>
+<pre class="python"><code>def spelling_bee_winners(players, best_player_starts=True, num_bees=10**3, to_percent=False):
+    &#39;&#39;&#39; Simulate spelling bees and return distribution of victories.&#39;&#39;&#39;
+
+    results = {name: 0 for name in players}
+    ties = 0
+
+    # Simulate spelling bee
+    for i in range(num_bees):
+        
+        contestants = players.copy()
+        
+        if best_player_starts:
+            contestants = contestants[::-1]
+
+        # This is a round, restarts when player gets eliminated
+        while len(contestants) &gt; 1:
+            
+            for contestant in contestants:
+                
+                # Sample a word from the dictionary
+                word = np.random.randint(0, 101, size=1)
+
+                # If player doesn&#39;t know word, remove from competition, reorder contestants and start new round
+                if word &gt; contestant:
+                    contestants.remove(contestant)
+            
+        # If all contestants fail, the round ends in a tie
+        if len(contestants) == 0:
+            ties += 1
+        # Record victory for winning player
+        else:
+            results[contestants[0]] += 1
+        
+    # Convert score to percent
+    if to_percent:
+        results = {player: (score / num_bees) for player, score in results.items()}
+    
+    return results, ties
+    
+    
+# Simulating spelling bees
+players = [i for i in range(90, 100)]
+num_bees = 500000
+
+best_first, _ = spelling_bee_winners(players, best_player_starts=True, num_bees=num_bees, to_percent=True)
+best_last, _ = spelling_bee_winners(players, best_player_starts=False,  num_bees=num_bees, to_percent=True)</code></pre>
+<pre><code>##      Best first     Best last</code></pre>
+<pre><code>## 90%: 0.004906       0.003382
+## 91%: 0.007258       0.005472
+## 92%: 0.010054       0.00882
+## 93%: 0.015392       0.014058
+## 94%: 0.023646       0.02227
+## 95%: 0.037778       0.036182
+## 96%: 0.062056       0.061678
+## 97%: 0.11098        0.110632
+## 98%: 0.215368       0.217932
+## 99%: 0.512562       0.519574</code></pre>
+</div>
+</div>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+            
+                <a href="/tags/reticulate/">reticulate</a>, 
+            
+                <a href="/tags/r/">R</a>, 
+            
+                <a href="/tags/python/">python</a>
+            
+        </p>
+    
+
+    <div class="share">
+        
+            <a class="icon-twitter" href="https://twitter.com/share?text=%23theriddler%3a%20Simulating%20spelling%20bees&url=%2f2019%2f04%2f12%2f2019-04-12-theriddler-simulating-spelling-bees%2f"
+                onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fa fa-twitter"></i>
+                <span class="hidden">Twitter</span>
+            </a>
+        
+
+        
+            <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=%2f2019%2f04%2f12%2f2019-04-12-theriddler-simulating-spelling-bees%2f"
+                onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                <i class="fa fa-facebook"></i>
+                <span class="hidden">Facebook</span>
+            </a>
+        
+
+        
+            <a class="icon-google-plus" href="https://plus.google.com/share?url=%2f2019%2f04%2f12%2f2019-04-12-theriddler-simulating-spelling-bees%2f"
+              onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+              <i class="fa fa-google-plus"></i>
+                <span class="hidden">Google+</span>
+            </a>
+        
+        
+    </div>
+</footer>
+
+        
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Biased" href="/">Biased</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2019 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="/js/jquery-1.11.3.min.js"></script>
+        <script src="/js/jquery.fitvids.js"></script>
+        
+        
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        
+        
+        <script src="/js/scripts.js"></script>
+    </body>
+</html>
+
