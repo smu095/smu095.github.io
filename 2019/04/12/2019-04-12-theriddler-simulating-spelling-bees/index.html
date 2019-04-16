@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>#theriddler: Simulating spelling bees &middot; Sean Meling Murray</title>
+        <title>#theriddler: Simulating spelling bees (updated 15.04.19) &middot; Sean Meling Murray</title>
         <meta name="description" content="This week RStudio v1.2 was released. The newest version of the popular IDE has support for the supercool reticulate package which allows us to run Python chunks in R notebooks.
 Getting started is as simple as loading reticulate and replacing the chunk ```{r} # Your R code here ``` with ```{python} # Your Python code here ```. Furthermore, reticulate has support for loading Python environments. In the example below, I access a conda environment named ml that contains all my machine learning modules.">
         <meta name="HandheldFriendly" content="True">
@@ -11,7 +11,7 @@ Getting started is as simple as loading reticulate and replacing the chunk ```{r
         <meta name="generator" content="Hugo 0.54.0" />
         <meta name="robots" content="index,follow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta property="og:title" content="#theriddler: Simulating spelling bees">
+        <meta property="og:title" content="#theriddler: Simulating spelling bees (updated 15.04.19)">
 <meta property="og:description" content="This week RStudio v1.2 was released. The newest version of the popular IDE has support for the supercool reticulate package which allows us to run Python chunks in R notebooks.
 Getting started is as simple as loading reticulate and replacing the chunk ```{r} # Your R code here ``` with ```{python} # Your Python code here ```. Furthermore, reticulate has support for loading Python environments. In the example below, I access a conda environment named ml that contains all my machine learning modules.">
 <meta property="og:type" content="article">
@@ -85,7 +85,7 @@ Getting started is as simple as loading reticulate and replacing the chunk ```{r
 <div class="container">
     <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
         <header class="post-header">
-    <h1 class="post-title" itemprop="name headline">#theriddler: Simulating spelling bees</h1>
+    <h1 class="post-title" itemprop="name headline">#theriddler: Simulating spelling bees (updated 15.04.19)</h1>
     
     <p class="post-date">
         <span>Published <time datetime="2019-04-12" itemprop="datePublished">Fri, Apr 12, 2019</time></span>
@@ -98,7 +98,7 @@ Getting started is as simple as loading reticulate and replacing the chunk ```{r
     </p>
     
         <p class="post-reading post-line">
-            <span>Estimated reading time: 6 min</span>
+            <span>Estimated reading time: 8 min</span>
         </p>
     
 </header>
@@ -132,9 +132,10 @@ prob_new_card = lambda k: (new_cards - k) / (total_cards - k)
 
 prob_all_new = 1
 for i in range(3):
-    prob_all_new *= prob_new_card(i)</code></pre>
-<pre><code>## Probability of being dealt three previously unseen cards: 0.4985</code></pre>
-<pre><code>## Probability of having seen at least one of the cards before: 0.5015</code></pre>
+    prob_all_new *= prob_new_card(i)
+    
+# Probability of being dealt three previously unseen cards: 0.4985
+# Probability of having seen at least one of the cards before: 0.5015</code></pre>
 </div>
 <div id="the-riddler-classic" class="section level1">
 <h1>The Riddler Classic</h1>
@@ -228,7 +229,8 @@ plot_results(best_last, label=&#39;Last player&#39;)
 plt.title(&#39;Starting first vs. starting last&#39;, size=20)
 plt.legend()
 plt.show()</code></pre>
-<p><img src="/post/2019-04-12-theriddler-simulating-spelling-bees_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
+<p><img src="/post/2019-04-12-theriddler-simulating-spelling-bees_files/plot_dist.png" /></p>
+<p>So it turns out the the order of the contestants doesn’t really matter that much. The most knowledgable player slightly increases her probability of winning if she goes last.</p>
 </div>
 <div id="revised-solution" class="section level2">
 <h2>Revised solution</h2>
@@ -278,19 +280,60 @@ players = [i for i in range(90, 100)]
 num_bees = 500000
 
 best_first, _ = spelling_bee_winners(players, best_player_starts=True, num_bees=num_bees, to_percent=True)
-best_last, _ = spelling_bee_winners(players, best_player_starts=False,  num_bees=num_bees, to_percent=True)</code></pre>
-<pre><code>##      Best first     Best last</code></pre>
-<pre><code>## 90%: 0.004906       0.003382
-## 91%: 0.007258       0.005472
-## 92%: 0.010054       0.00882
-## 93%: 0.015392       0.014058
-## 94%: 0.023646       0.02227
-## 95%: 0.037778       0.036182
-## 96%: 0.062056       0.061678
-## 97%: 0.11098        0.110632
-## 98%: 0.215368       0.217932
-## 99%: 0.512562       0.519574</code></pre>
+# Probability of winning: 0.512562
+
+best_last, _ = spelling_bee_winners(players, best_player_starts=False,  num_bees=num_bees, to_percent=True)
+# Probability of winning: 0.519574</code></pre>
 </div>
+</div>
+<div id="other-approaches" class="section level1">
+<h1>Other approaches</h1>
+<p>I came across <a href="https://www.jtash.com/riddler-spelling-bee">this really compact and nice solution</a> by <a href="https://www.jtash.com/resume">Jason Ash</a>. He has <a href="https://www.jtash.com/riddler-baseball">some</a> <a href="https://www.jtash.com/riddler-gift-cards">other</a> very elegant Riddler-solutions, be sure to check out his blog. The following code is lifted directly from Jason’s site:</p>
+<pre class="python"><code>def single_round(spellers):
+    &quot;&quot;&quot;
+    Play a single round of the spelling bee; draw a random number for each speller,
+    then compare the number vs. their rate. Each speller that answers correctly
+    is retained in the array, while incorrect spellers are removed. Returns a new 
+    array of the spellers that advance to the next round.
+
+    NOTE : if the function would return an empty array, (in the case that every speller
+    failed to spell the word correctly) it instead returns the speller listed last in 
+    the original array, who would have won without having to spell a word.
+    &quot;&quot;&quot;
+    r = np.random.rand(len(spellers))
+    out = spellers[r &lt; spellers]
+    if len(out) &gt; 0:
+        return out
+    else:
+        return spellers[-1:]
+
+def bee(spellers):
+    &quot;&quot;&quot;
+    Run a spelling bee with as many rounds as it takes to eliminate all but one
+    speller.
+    &quot;&quot;&quot;
+    while len(spellers) &gt; 1:
+        spellers = single_round(spellers)
+    return spellers[0]
+
+def model(spellers, trials):
+    &quot;&quot;&quot;
+    Run any number of spelling bees and return the winner for each one. 
+    Results returned as a numpy array.
+    &quot;&quot;&quot;
+    return np.array([bee(spellers) for _ in range(trials)])
+
+def summary(spellers, trials):
+    &quot;&quot;&quot;
+    Return a dictionary with key=speller, value=wins from the simulated results
+
+    NOTE : the order of &quot;p&quot; matters, because the last speller has an advantage
+    each round. However, the results are shown after sorting the array from 
+    lowest to highest so that different orders of &quot;p&quot; can be compared easily.
+    &quot;&quot;&quot;
+    results = model(spellers, trials)
+    return {x: sum(results == x) / trials for x in np.sort(spellers)}</code></pre>
+<p>Very cool!</p>
 </div>
 
 </div>
@@ -312,7 +355,7 @@ best_last, _ = spelling_bee_winners(players, best_player_starts=False,  num_bees
 
     <div class="share">
         
-            <a class="icon-twitter" href="https://twitter.com/share?text=%23theriddler%3a%20Simulating%20spelling%20bees&url=%2f2019%2f04%2f12%2f2019-04-12-theriddler-simulating-spelling-bees%2f"
+            <a class="icon-twitter" href="https://twitter.com/share?text=%23theriddler%3a%20Simulating%20spelling%20bees%20%28updated%2015.04.19%29&url=%2f2019%2f04%2f12%2f2019-04-12-theriddler-simulating-spelling-bees%2f"
                 onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
                 <i class="fa fa-twitter"></i>
                 <span class="hidden">Twitter</span>

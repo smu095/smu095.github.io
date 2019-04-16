@@ -7,13 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Sean Meling Murray</copyright>
-    <lastBuildDate>Fri, 12 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 16 Apr 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/reticulate/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>#theriddler: Simulating spelling bees</title>
+      <title>#theriddler: Coffee cards and credit</title>
+      <link>/2019/04/16/2019-04-12-theriddler-coffee-cards-and-credit/</link>
+      <pubDate>Tue, 16 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/04/16/2019-04-12-theriddler-coffee-cards-and-credit/</guid>
+      <description>Last week’s Riddler classic posed the following problem:
+ “You’ve won two gift cards, each loaded with 50 free drinks from your favorite coffee shop, Riddler Caffei-Nation. The cards look identical, and because you’re not one for record-keeping, you randomly pick one of the cards to pay with each time you get a drink. One day, the clerk tells you that he can’t accept the card you presented to him because it doesn’t have any drink credits left on it.</description>
+    </item>
+    
+    <item>
+      <title>#theriddler: Simulating spelling bees (updated 15.04.19)</title>
       <link>/2019/04/12/2019-04-12-theriddler-simulating-spelling-bees/</link>
       <pubDate>Fri, 12 Apr 2019 00:00:00 +0000</pubDate>
       

@@ -1,5 +1,5 @@
 ---
-title: '#theriddler: Simulating spelling bees'
+title: '#theriddler: Simulating spelling bees (updated 15.04.19)'
 author: Sean
 date: '2019-04-12'
 slug: theriddler-simulating-spelling-bees
@@ -41,7 +41,7 @@ In the following I'll post my proposed solutions to [The Riddler](https://fiveth
 
 *Later, because you enjoyed it so much, you and your friends play a second game. The ticket cards are all returned and reshuffled. Again, you are dealt a set of three tickets to begin play. Which is more likely: that you had seen at least one of these three tickets before, or that they were all new to you?"*
 
-```{python}
+```{python eval=FALSE}
 total_cards = 30
 new_cards = 24
 prob_new_card = lambda k: (new_cards - k) / (total_cards - k)
@@ -49,11 +49,9 @@ prob_new_card = lambda k: (new_cards - k) / (total_cards - k)
 prob_all_new = 1
 for i in range(3):
     prob_all_new *= prob_new_card(i)
-```
-
-```{python echo=FALSE}
-print("Probability of being dealt three previously unseen cards:", round(prob_all_new, 4))
-print("Probability of having seen at least one of the cards before:", round(1 - prob_all_new, 4))
+    
+# Probability of being dealt three previously unseen cards: 0.4985
+# Probability of having seen at least one of the cards before: 0.5015
 ```
 
 
@@ -67,7 +65,7 @@ print("Probability of having seen at least one of the cards before:", round(1 - 
 
 Spelling bees aren't really a thing where I'm from, so in the first iteration of my solution I made the assumption that a round ends when a contestant gets a word wrong. The next round then starts with the player immediately following the recently eliminated contestant. This led to some experimentation with ordered dictionaries and reshuffling lists. I also wanted to get a distribution of the estimated win rate for the best player, so I ran the multiple simulations.
 
-```{python}
+```{python eval=FALSE}
 def spelling_bee_winners(players, best_player_starts=True, num_bees=10**3, to_percent=False):
     ''' Simulate spelling bees and return distribution of victories.'''
     
@@ -155,12 +153,15 @@ plt.legend()
 plt.show()
 ```
 
+![](/post/2019-04-12-theriddler-simulating-spelling-bees_files/plot_dist.png)
+
+So it turns out the the order of the contestants doesn't really matter that much. The most knowledgable player slightly increases her probability of winning if she goes last.
 
 ## Revised solution
 
 As it turns out, I think I overcomplicated the rules of elimination somewhat due to the fact that I don't really know how a spelling bee works. I quite like [this approach](https://github.com/jnees/riddler-spelling-bee) by Josh Nees, so I decided to write my own variant of it. His is a cleaner implementation than my original proposal, the only thing I added was the potential outcome where all players get a word wrong and the game ends in a tie.
 
-```{python}
+```{python eval=FALSE}
 def spelling_bee_winners(players, best_player_starts=True, num_bees=10**3, to_percent=False):
     ''' Simulate spelling bees and return distribution of victories.'''
 
@@ -206,11 +207,62 @@ players = [i for i in range(90, 100)]
 num_bees = 500000
 
 best_first, _ = spelling_bee_winners(players, best_player_starts=True, num_bees=num_bees, to_percent=True)
+# Probability of winning: 0.512562
+
 best_last, _ = spelling_bee_winners(players, best_player_starts=False,  num_bees=num_bees, to_percent=True)
+# Probability of winning: 0.519574
 ```
 
-```{python echo=FALSE}
-print('Best first'.rjust(15) + 'Best last'.rjust(14))
-for (player, scores_first), (_, scores_last) in zip(best_first.items(), best_last.items()):
-    print(f'{player}%:'.ljust(5) + f'{scores_first}'.ljust(15) + f'{scores_last}')
+
+# Other approaches
+
+I came across [this really compact and nice solution](https://www.jtash.com/riddler-spelling-bee) by [Jason Ash](https://www.jtash.com/resume). He has [some](https://www.jtash.com/riddler-baseball) [other](https://www.jtash.com/riddler-gift-cards) very elegant Riddler-solutions, be sure to check out his blog. The following code is lifted directly from Jason's site:
+
+```{python eval=FALSE}
+def single_round(spellers):
+    """
+    Play a single round of the spelling bee; draw a random number for each speller,
+    then compare the number vs. their rate. Each speller that answers correctly
+    is retained in the array, while incorrect spellers are removed. Returns a new 
+    array of the spellers that advance to the next round.
+
+    NOTE : if the function would return an empty array, (in the case that every speller
+    failed to spell the word correctly) it instead returns the speller listed last in 
+    the original array, who would have won without having to spell a word.
+    """
+    r = np.random.rand(len(spellers))
+    out = spellers[r < spellers]
+    if len(out) > 0:
+        return out
+    else:
+        return spellers[-1:]
+
+def bee(spellers):
+    """
+    Run a spelling bee with as many rounds as it takes to eliminate all but one
+    speller.
+    """
+    while len(spellers) > 1:
+        spellers = single_round(spellers)
+    return spellers[0]
+
+def model(spellers, trials):
+    """
+    Run any number of spelling bees and return the winner for each one. 
+    Results returned as a numpy array.
+    """
+    return np.array([bee(spellers) for _ in range(trials)])
+
+def summary(spellers, trials):
+    """
+    Return a dictionary with key=speller, value=wins from the simulated results
+
+    NOTE : the order of "p" matters, because the last speller has an advantage
+    each round. However, the results are shown after sorting the array from 
+    lowest to highest so that different orders of "p" can be compared easily.
+    """
+    results = model(spellers, trials)
+    return {x: sum(results == x) / trials for x in np.sort(spellers)}
 ```
+
+Very cool!
