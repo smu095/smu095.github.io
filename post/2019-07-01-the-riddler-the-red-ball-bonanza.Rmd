@@ -1,5 +1,5 @@
 ---
-title: '#the riddler: The Red Ball Bonanza'
+title: '#theriddler: The Red Ball Bonanza'
 author: Sean
 date: '2019-07-01'
 slug: the-riddler-the-red-ball-bonanza
@@ -29,7 +29,7 @@ math: true
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
 
-This week's [Riddler Express](https://fivethirtyeight.com/features/whats-your-best-scrabble-string/) poses the presents the following probability problem:
+This week's [Riddler Express](https://fivethirtyeight.com/features/whats-your-best-scrabble-string/) poses the following probability problem:
 
 > You have two buckets and 100 ping-pong balls, 50 of which are red and 50 of which are blue. You get to arrange the balls into the two buckets however you’d like, but each bucket needs at least one ball. Your friend will blindly choose one of the two buckets and then select a ball at random from the chosen bucket. 
 >
@@ -55,7 +55,7 @@ Again, $x_2$ denotes the number of red balls and $y_2$ denotes the number of blu
 
 The puzzle asks us to maximise the probability of drawing a red ball, given that we choose a bucket at random. This can be expressed as
 
-$$p(red) = 0.5p_1 + 0.5p_2$$.
+$$p(red) = 0.5p_1 + 0.5p_2.$$
 
 This also makes sense, right? If we choose a bucket at random, we have a 50-50 chance of selecting either bucket $A$ or $B$. The probability of selecting urn $A$ is 50%, and the probability of drawing a red ball from urn $A$ is given by $p_1$. Likewise, the probability of selecting urn $B$ is 50%, and the probability of selecting a red ball from urn $B$ is given by $p_2$. Our job is now to maximise $p(red)$. 
 

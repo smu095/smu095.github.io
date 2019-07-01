@@ -3,16 +3,16 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>#the riddler: The Red Ball Bonanza &middot; Sean Meling Murray</title>
-        <meta name="description" content="MathJax.Hub.Config({ extensions: [&#34;tex2jax.js&#34;], jax: [&#34;input/TeX&#34;, &#34;output/HTML-CSS&#34;], tex2jax: { inlineMath: [ [&#39;$&#39;,&#39;$&#39;], [&#34;\\(&#34;,&#34;\\)&#34;] ], displayMath: [ [&#39;$$&#39;,&#39;$$&#39;], [&#34;\\[&#34;,&#34;\\]&#34;] ], processEscapes: true }, &#34;HTML-CSS&#34;: { fonts: [&#34;TeX&#34;] } });   This week’s Riddler Express poses the presents the following probability problem:
+        <title>#theriddler: The Red Ball Bonanza &middot; Sean Meling Murray</title>
+        <meta name="description" content="MathJax.Hub.Config({ extensions: [&#34;tex2jax.js&#34;], jax: [&#34;input/TeX&#34;, &#34;output/HTML-CSS&#34;], tex2jax: { inlineMath: [ [&#39;$&#39;,&#39;$&#39;], [&#34;\\(&#34;,&#34;\\)&#34;] ], displayMath: [ [&#39;$$&#39;,&#39;$$&#39;], [&#34;\\[&#34;,&#34;\\]&#34;] ], processEscapes: true }, &#34;HTML-CSS&#34;: { fonts: [&#34;TeX&#34;] } });   This week’s Riddler Express poses the following probability problem:
  You have two buckets and 100 ping-pong balls, 50 of which are red and 50 of which are blue. You get to arrange the balls into the two buckets however you’d like, but each bucket needs at least one ball.">
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
         <meta name="generator" content="Hugo 0.54.0" />
         <meta name="robots" content="index,follow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta property="og:title" content="#the riddler: The Red Ball Bonanza">
-<meta property="og:description" content="MathJax.Hub.Config({ extensions: [&#34;tex2jax.js&#34;], jax: [&#34;input/TeX&#34;, &#34;output/HTML-CSS&#34;], tex2jax: { inlineMath: [ [&#39;$&#39;,&#39;$&#39;], [&#34;\\(&#34;,&#34;\\)&#34;] ], displayMath: [ [&#39;$$&#39;,&#39;$$&#39;], [&#34;\\[&#34;,&#34;\\]&#34;] ], processEscapes: true }, &#34;HTML-CSS&#34;: { fonts: [&#34;TeX&#34;] } });   This week’s Riddler Express poses the presents the following probability problem:
+        <meta property="og:title" content="#theriddler: The Red Ball Bonanza">
+<meta property="og:description" content="MathJax.Hub.Config({ extensions: [&#34;tex2jax.js&#34;], jax: [&#34;input/TeX&#34;, &#34;output/HTML-CSS&#34;], tex2jax: { inlineMath: [ [&#39;$&#39;,&#39;$&#39;], [&#34;\\(&#34;,&#34;\\)&#34;] ], displayMath: [ [&#39;$$&#39;,&#39;$$&#39;], [&#34;\\[&#34;,&#34;\\]&#34;] ], processEscapes: true }, &#34;HTML-CSS&#34;: { fonts: [&#34;TeX&#34;] } });   This week’s Riddler Express poses the following probability problem:
  You have two buckets and 100 ping-pong balls, 50 of which are red and 50 of which are blue. You get to arrange the balls into the two buckets however you’d like, but each bucket needs at least one ball.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="/2019/07/01/2019-07-01-the-riddler-the-red-ball-bonanza/">
@@ -85,7 +85,7 @@
 <div class="container">
     <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
         <header class="post-header">
-    <h1 class="post-title" itemprop="name headline">#the riddler: The Red Ball Bonanza</h1>
+    <h1 class="post-title" itemprop="name headline">#theriddler: The Red Ball Bonanza</h1>
     
     <p class="post-date">
         <span>Published <time datetime="2019-07-01" itemprop="datePublished">Mon, Jul 1, 2019</time></span>
@@ -124,7 +124,7 @@
 <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
-<p>This week’s <a href="https://fivethirtyeight.com/features/whats-your-best-scrabble-string/">Riddler Express</a> poses the presents the following probability problem:</p>
+<p>This week’s <a href="https://fivethirtyeight.com/features/whats-your-best-scrabble-string/">Riddler Express</a> poses the following probability problem:</p>
 <blockquote>
 <p>You have two buckets and 100 ping-pong balls, 50 of which are red and 50 of which are blue. You get to arrange the balls into the two buckets however you’d like, but each bucket needs at least one ball. Your friend will blindly choose one of the two buckets and then select a ball at random from the chosen bucket.</p>
 <p>How can you arrange the balls to maximize the probability that your friend chooses a red ball? What probability of success do you achieve?</p>
@@ -140,7 +140,7 @@
 <div id="finding-an-upper-bound" class="section level3">
 <h3>Finding an upper bound</h3>
 <p>The puzzle asks us to maximise the probability of drawing a red ball, given that we choose a bucket at random. This can be expressed as</p>
-<p><span class="math display">\[p(red) = 0.5p_1 + 0.5p_2\]</span>.</p>
+<p><span class="math display">\[p(red) = 0.5p_1 + 0.5p_2.\]</span></p>
 <p>This also makes sense, right? If we choose a bucket at random, we have a 50-50 chance of selecting either bucket <span class="math inline">\(A\)</span> or <span class="math inline">\(B\)</span>. The probability of selecting urn <span class="math inline">\(A\)</span> is 50%, and the probability of drawing a red ball from urn <span class="math inline">\(A\)</span> is given by <span class="math inline">\(p_1\)</span>. Likewise, the probability of selecting urn <span class="math inline">\(B\)</span> is 50%, and the probability of selecting a red ball from urn <span class="math inline">\(B\)</span> is given by <span class="math inline">\(p_2\)</span>. Our job is now to maximise <span class="math inline">\(p(red)\)</span>.</p>
 <p>First, consider urn <span class="math inline">\(A\)</span>. Which combination <span class="math inline">\((x_1, y_1)\)</span> maximises <span class="math inline">\(p_1\)</span>? Well, it seems obvious that if we set <span class="math inline">\(y_1 = 0\)</span>, then there are noe blue balls in urn <span class="math inline">\(A\)</span>. Consequently, all the balls in this urn will be red. In other words, any value of <span class="math inline">\(x_1\)</span> will yield <span class="math inline">\(p_1 = 1\)</span>. In fact, setting <span class="math inline">\(y_1 = 0\)</span> is the <em>only</em> way to get <span class="math inline">\(p_1 = 1\)</span>. Too see this, fix <span class="math inline">\(x_1\)</span> at any value between 1 and 50 (because there always has to be <em>at least</em> one ball in the urn) and try adjusting <span class="math inline">\(y_1\)</span>.</p>
 <p>Setting <span class="math inline">\(y_1 = 0\)</span> seems like a good place to start. Again, remember that <span class="math inline">\(x_1 \in [1, 50]\)</span>. There has to be <em>at least</em> one ball and <em>at most</em> 50 in urn <span class="math inline">\(A\)</span>.</p>
@@ -259,7 +259,7 @@ print_results(results)</code></pre>
 
     <div class="share">
         
-            <a class="icon-twitter" href="https://twitter.com/share?text=%23the%20riddler%3a%20The%20Red%20Ball%20Bonanza&url=%2f2019%2f07%2f01%2f2019-07-01-the-riddler-the-red-ball-bonanza%2f"
+            <a class="icon-twitter" href="https://twitter.com/share?text=%23theriddler%3a%20The%20Red%20Ball%20Bonanza&url=%2f2019%2f07%2f01%2f2019-07-01-the-riddler-the-red-ball-bonanza%2f"
                 onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
                 <i class="fa fa-twitter"></i>
                 <span class="hidden">Twitter</span>
