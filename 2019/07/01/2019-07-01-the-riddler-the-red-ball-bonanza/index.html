@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>#the riddler: The Red Ball Bonanza &middot; Sean Meling Murray</title>
+        <meta name="description" content="MathJax.Hub.Config({ extensions: [&#34;tex2jax.js&#34;], jax: [&#34;input/TeX&#34;, &#34;output/HTML-CSS&#34;], tex2jax: { inlineMath: [ [&#39;$&#39;,&#39;$&#39;], [&#34;\\(&#34;,&#34;\\)&#34;] ], displayMath: [ [&#39;$$&#39;,&#39;$$&#39;], [&#34;\\[&#34;,&#34;\\]&#34;] ], processEscapes: true }, &#34;HTML-CSS&#34;: { fonts: [&#34;TeX&#34;] } });   This week’s Riddler Express poses the presents the following probability problem:
+ You have two buckets and 100 ping-pong balls, 50 of which are red and 50 of which are blue. You get to arrange the balls into the two buckets however you’d like, but each bucket needs at least one ball.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.54.0" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="#the riddler: The Red Ball Bonanza">
+<meta property="og:description" content="MathJax.Hub.Config({ extensions: [&#34;tex2jax.js&#34;], jax: [&#34;input/TeX&#34;, &#34;output/HTML-CSS&#34;], tex2jax: { inlineMath: [ [&#39;$&#39;,&#39;$&#39;], [&#34;\\(&#34;,&#34;\\)&#34;] ], displayMath: [ [&#39;$$&#39;,&#39;$$&#39;], [&#34;\\[&#34;,&#34;\\]&#34;] ], processEscapes: true }, &#34;HTML-CSS&#34;: { fonts: [&#34;TeX&#34;] } });   This week’s Riddler Express poses the presents the following probability problem:
+ You have two buckets and 100 ping-pong balls, 50 of which are red and 50 of which are blue. You get to arrange the balls into the two buckets however you’d like, but each bucket needs at least one ball.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="/2019/07/01/2019-07-01-the-riddler-the-red-ball-bonanza/">
+        <link rel="stylesheet" href="/dist/styles.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        
+        
+        
+    </head>
+    <body>
+        
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Biased" href="/">Biased</a>
+                            </h1>
+                        
+                        <a class="button-square" href="/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/mattemagisk">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/smu095">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/10951783/mattemagisk">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/sean-meling-murray/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Email" title="Email" href="mailto:sean.meling@gmail.com">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">#the riddler: The Red Ball Bonanza</h1>
+    
+    <p class="post-date">
+        <span>Published <time datetime="2019-07-01" itemprop="datePublished">Mon, Jul 1, 2019</time></span>
+        <span>by</span>
+        <span itemscope="" itemprop="author" itemtype="https://schema.org/Person">
+            <span itemprop="name">
+                <a href="#" itemprop="url" rel="author">Sean</a>
+            </span>
+        </span>
+    </p>
+    
+        <p class="post-reading post-line">
+            <span>Estimated reading time: 7 min</span>
+        </p>
+    
+</header>
+
+        <div class="post-content clearfix" itemprop="articleBody">
+    
+
+    
+
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<p>This week’s <a href="https://fivethirtyeight.com/features/whats-your-best-scrabble-string/">Riddler Express</a> poses the presents the following probability problem:</p>
+<blockquote>
+<p>You have two buckets and 100 ping-pong balls, 50 of which are red and 50 of which are blue. You get to arrange the balls into the two buckets however you’d like, but each bucket needs at least one ball. Your friend will blindly choose one of the two buckets and then select a ball at random from the chosen bucket.</p>
+<p>How can you arrange the balls to maximize the probability that your friend chooses a red ball? What probability of success do you achieve?</p>
+<p><em>Extra credit</em>: What probability of success do you get with 25 balls of each color? 200 balls of each color?</p>
+</blockquote>
+<p>Usually I try to solve these problems by <a href="https://smu095.github.io/2019/04/12/2019-04-12-theriddler-simulating-spelling-bees/">coding up</a> <a href="https://smu095.github.io/2019/04/16/2019-04-12-theriddler-coffee-cards-and-credit/">a solution</a> in Python, which is usually really good practice. Sometimes, however, it’s nice to try to take an analytical approach as well. So I though I’d write up one possible solution suggestion for this week’s problem.</p>
+<p>Consider two buckets, <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>. Let the probability of drawing a red ball from bucket <span class="math inline">\(A\)</span> be denoted</p>
+<p><span class="math display">\[p_1 = p(red \vert A) = \dfrac{x_1}{x_1 + y_1},\]</span></p>
+<p>where <span class="math inline">\(x_1\)</span> denotes the number of red balls and <span class="math inline">\(y_1\)</span> denotes the number of blue balls. Hopefully this makes sense. The probability of drawing a red ball is the number of red balls in bucket <span class="math inline">\(A\)</span> divided by the total number of balls in bucket <span class="math inline">\(A\)</span>.</p>
+<p>Let the probability of drawing a red ball from bucket <span class="math inline">\(B\)</span> be denoted</p>
+<p><span class="math display">\[p_2 = p(red \vert B) = \dfrac{x_2}{x_2 + y_2}.\]</span></p>
+<p>Again, <span class="math inline">\(x_2\)</span> denotes the number of red balls and <span class="math inline">\(y_2\)</span> denotes the number of blue balls. The probability of drawing a red ball is the number of red balls in bucket <span class="math inline">\(B\)</span> divided by the total number of balls in bucket <span class="math inline">\(B\)</span>.</p>
+<div id="finding-an-upper-bound" class="section level3">
+<h3>Finding an upper bound</h3>
+<p>The puzzle asks us to maximise the probability of drawing a red ball, given that we choose a bucket at random. This can be expressed as</p>
+<p><span class="math display">\[p(red) = 0.5p_1 + 0.5p_2\]</span>.</p>
+<p>This also makes sense, right? If we choose a bucket at random, we have a 50-50 chance of selecting either bucket <span class="math inline">\(A\)</span> or <span class="math inline">\(B\)</span>. The probability of selecting urn <span class="math inline">\(A\)</span> is 50%, and the probability of drawing a red ball from urn <span class="math inline">\(A\)</span> is given by <span class="math inline">\(p_1\)</span>. Likewise, the probability of selecting urn <span class="math inline">\(B\)</span> is 50%, and the probability of selecting a red ball from urn <span class="math inline">\(B\)</span> is given by <span class="math inline">\(p_2\)</span>. Our job is now to maximise <span class="math inline">\(p(red)\)</span>.</p>
+<p>First, consider urn <span class="math inline">\(A\)</span>. Which combination <span class="math inline">\((x_1, y_1)\)</span> maximises <span class="math inline">\(p_1\)</span>? Well, it seems obvious that if we set <span class="math inline">\(y_1 = 0\)</span>, then there are noe blue balls in urn <span class="math inline">\(A\)</span>. Consequently, all the balls in this urn will be red. In other words, any value of <span class="math inline">\(x_1\)</span> will yield <span class="math inline">\(p_1 = 1\)</span>. In fact, setting <span class="math inline">\(y_1 = 0\)</span> is the <em>only</em> way to get <span class="math inline">\(p_1 = 1\)</span>. Too see this, fix <span class="math inline">\(x_1\)</span> at any value between 1 and 50 (because there always has to be <em>at least</em> one ball in the urn) and try adjusting <span class="math inline">\(y_1\)</span>.</p>
+<p>Setting <span class="math inline">\(y_1 = 0\)</span> seems like a good place to start. Again, remember that <span class="math inline">\(x_1 \in [1, 50]\)</span>. There has to be <em>at least</em> one ball and <em>at most</em> 50 in urn <span class="math inline">\(A\)</span>.</p>
+<p>Now consider urn <span class="math inline">\(B\)</span>. If there are more red balls in urn <span class="math inline">\(A\)</span> than in urn <span class="math inline">\(B\)</span>, then <span class="math inline">\(x_2 &lt; y_2\)</span>. In plain english, there will be more blue balls than red balls in urn <span class="math inline">\(B\)</span>. Another way of writing this is <span class="math inline">\(x_2 + 1 \leq y_2\)</span>. This reformulation is important because it gives us an expression for the upper bound of <span class="math inline">\(p_2\)</span>, the maximum value it can take. The upper bound is obtained by substituting the inequality into our expression for <span class="math inline">\(p_2\)</span>,</p>
+<p><span class="math display">\[p_2 = \dfrac{x_2}{x_2 + y_2} \leq \dfrac{x_2}{x_2 + x_2 + 1} = \dfrac{x_2}{2x_2 + 1}.\]</span></p>
+</div>
+<div id="locating-the-maximum" class="section level3">
+<h3>Locating the maximum</h3>
+<p>What else do we know about <span class="math inline">\(x_2\)</span>? Well, since we have 50 red balls, we know that the number of red balls in urn <span class="math inline">\(B\)</span> is the total number of red balls minus the number of red balls in urn <span class="math inline">\(A\)</span>,</p>
+<p><span class="math display">\[x_2 = 50 - x_1, \text{ where } x_1 \in [1, 50].\]</span></p>
+<p>Again, substituting this into <span class="math inline">\(p_2\)</span> yields</p>
+<p><span class="math display">\[p_2 \leq \dfrac{50-x_1}{2(50 - x_1) + 1} = \dfrac{50-x_1}{101 - 2 x_1}.\]</span></p>
+<p>This tells us that the upper bound of <span class="math inline">\(p_2\)</span> is given by <span class="math inline">\((50 - x_1) / (101 - 2x_1)\)</span>.</p>
+<p>Since <span class="math inline">\(p_1\)</span> is always 1 when <span class="math inline">\(y_1 = 0\)</span>, our main concern is to find the value of <span class="math inline">\(x_1\)</span> that maximises <span class="math inline">\(p_2\)</span>. We can plot these probabilities with the following code:</p>
+<pre class="python"><code>import matplotlib.pyplot as plt
+import numpy as np
+
+def p2(x1):
+    &quot;&quot;&quot;Probability of drawing a red ball from urn B given number of balls in urn A.&quot;&quot;&quot;
+    return (50 - x1) / (101 - 2*x1)
+
+# Number of balls in urn A 
+x1 = np.arange(1, 51)
+
+# Plotting probabilities
+plt.plot(x1, p2(x1))
+plt.xlabel(&quot;number of red balls in urn A&quot;)
+plt.ylabel(&quot;p(red | urn B)&quot;)
+plt.title(&quot;Drawing red balls from urn B&quot;)
+plt.show()</code></pre>
+<p><img src="/post/2019-07-01-the-riddler-the-red-ball-bonanza_files/urn-b.png" /></p>
+<p>From the figure, it seems that <span class="math inline">\(p_2\)</span> is maximised when <span class="math inline">\(x_1 = 1\)</span>. We can confirm this by analysing the derivative of the upper bound of <span class="math inline">\(p_2\)</span> (denoted <span class="math inline">\(\tilde{p}_2\)</span>) with respect to <span class="math inline">\(x_1\)</span>,</p>
+<p><span class="math display">\[\dfrac{d\tilde{p}_2}{d x_1} = \dfrac{d}{dx_1} \Bigg(\dfrac{50-x_1}{101 - 2 x_1}\Bigg) = \dfrac{-1}{(101 - 2 x_1)^2}.\]</span></p>
+<p>Note that <span class="math inline">\(d\tilde{p}_2/d x_1 &lt; 0\)</span> for all <span class="math inline">\(x_1 \in [1, 50]\)</span>. Since the derivative is always negative, <span class="math inline">\(\tilde{p}_2\)</span> is monotonically decreasing when <span class="math inline">\(x_1 \in [1, 50]\)</span>. And since <span class="math inline">\(\tilde{p}_2\)</span> is the largest value <span class="math inline">\(p_2\)</span> can take, the probability of drawing a red ball given that you choose urn <span class="math inline">\(B\)</span> is indeed maximised when <span class="math inline">\(x_1 = 1\)</span>. Strictly speaking, we could reach the same conclusion without reparameterising <span class="math inline">\(p_2\)</span> in terms of <span class="math inline">\(x_1\)</span>, but I find this approach slightly more intuitive.</p>
+</div>
+<div id="putting-it-all-together" class="section level3">
+<h3>Putting it all together</h3>
+<p>To calculate the probability of drawing a red ball when selecting an urn at random, we simply plug in <span class="math inline">\(x_1 = 1\)</span> and <span class="math inline">\(x_2 = 50 - x_1 = 50 - 1 = 49\)</span> into our expression for <span class="math inline">\(p(red)\)</span>:</p>
+<p><span class="math display">\[p(red) = 0.5\dfrac{1}{1} + 0.5\dfrac{49}{99} = 0.7474\]</span>.</p>
+<p>In other words, to maximise the probability of drawing a red ball when an urn is chosen at random, one of the urns should contain a single red ball, and the other should contain the rest.</p>
+<p>There are probably many ways to implement a pure Python solution to this problem. One approach is the following:</p>
+<pre class="python"><code>import itertools as it
+
+def p(num_red, num_blue, urn_prob=0.5, total_balls=100, red_balls=50):
+    &quot;&quot;&quot;Calculate probability of drawing a red ball after selecting an urn at random.&quot;&quot;&quot;
+    p1 = num_red / (num_red + num_blue)
+    p2 = (red_balls - num_red) / (total_balls - num_red - num_blue)
+    return urn_prob*p1 + (1 - urn_prob)*p2
+
+def print_results(results):
+    &quot;&quot;&quot;Calculate and print results of maximising p(red)&quot;&quot;&quot;
+    max_prob = max(results.values())
+    num_red, num_blue = max(results, key=results.get)
+    print(f&quot;Probability of selecting red ball: {max_prob}&quot;)
+    print(f&quot;One of the urns must contain {num_red} red balls and {num_blue} blue balls.&quot;)
+
+# Find find number of balls that maximise probability of drawing a red from a random urn
+x1 = y1 = range(1, 51)
+balls = it.product(x1, y1)
+results = {(red, blue): p(red, blue) for red, blue in balls if (red + blue) != 100}
+
+# Probability of selecting red ball: 0.7474747474747475
+# One of the urns must contain 49 red balls and 50 blue balls.
+print_results(results)</code></pre>
+<p>For extra credit, we can find the combination of colours that maximise the probability of drawing a red ball from a random urn when the when we have 25 and 200 of each colour, respectively:</p>
+<pre class="python"><code># 25 of each colour
+N = 25
+x1 = y1 = range(1, N + 1)
+balls = it.product(x1, y1)
+
+twentyfive = {
+    (red, blue): p(red, blue, red_balls=N, total_balls=2*N) 
+    for red, blue in balls 
+    if (red + blue) != 2*N
+}
+
+# Probability of selecting red ball: 0.7448979591836735
+# One of the urns must contain 24 red and 25 blue.
+print_results(twentyfive)
+
+# ---------------------------------------------------------
+
+# 200 of each colour
+N = 200
+x1 = y1 = range(1, N + 1)
+balls = it.product(x1, y1)
+
+results = {
+    (red, blue): p(red, blue, red_balls=N, total_balls=2*N) 
+    for red, blue in balls 
+    if (red + blue) != 2*N
+}
+
+# Probability of selecting red ball: 0.7493734335839599
+# One of the urns must contain 199 red and 200 blue.
+print_results(results)</code></pre>
+<p>That’s it, hope you enjoyed it as much as I did!</p>
+</div>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+            
+                <a href="/tags/fivethirtyeight/">fivethirtyeight</a>, 
+            
+                <a href="/tags/theriddler/">theriddler</a>, 
+            
+                <a href="/tags/python/">python</a>
+            
+        </p>
+    
+
+    <div class="share">
+        
+            <a class="icon-twitter" href="https://twitter.com/share?text=%23the%20riddler%3a%20The%20Red%20Ball%20Bonanza&url=%2f2019%2f07%2f01%2f2019-07-01-the-riddler-the-red-ball-bonanza%2f"
+                onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fa fa-twitter"></i>
+                <span class="hidden">Twitter</span>
+            </a>
+        
+
+        
+            <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=%2f2019%2f07%2f01%2f2019-07-01-the-riddler-the-red-ball-bonanza%2f"
+                onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                <i class="fa fa-facebook"></i>
+                <span class="hidden">Facebook</span>
+            </a>
+        
+
+        
+            <a class="icon-google-plus" href="https://plus.google.com/share?url=%2f2019%2f07%2f01%2f2019-07-01-the-riddler-the-red-ball-bonanza%2f"
+              onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+              <i class="fa fa-google-plus"></i>
+                <span class="hidden">Google+</span>
+            </a>
+        
+        
+    </div>
+</footer>
+
+        
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Biased" href="/">Biased</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2019 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="/js/jquery-1.11.3.min.js"></script>
+        <script src="/js/jquery.fitvids.js"></script>
+        
+        
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        
+        
+        <script src="/js/scripts.js"></script>
+    </body>
+</html>
+

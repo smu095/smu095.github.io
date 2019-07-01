@@ -307,6 +307,7 @@ best_last, _ = spelling_bee_winners(players, best_player_starts=False,  num_bees
     else:
         return spellers[-1:]
 
+
 def bee(spellers):
     &quot;&quot;&quot;
     Run a spelling bee with as many rounds as it takes to eliminate all but one
@@ -316,12 +317,14 @@ def bee(spellers):
         spellers = single_round(spellers)
     return spellers[0]
 
+
 def model(spellers, trials):
     &quot;&quot;&quot;
     Run any number of spelling bees and return the winner for each one. 
     Results returned as a numpy array.
     &quot;&quot;&quot;
     return np.array([bee(spellers) for _ in range(trials)])
+
 
 def summary(spellers, trials):
     &quot;&quot;&quot;
