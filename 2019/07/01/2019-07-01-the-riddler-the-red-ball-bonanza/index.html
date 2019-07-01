@@ -179,7 +179,7 @@ plt.show()</code></pre>
 <div id="putting-it-all-together" class="section level3">
 <h3>Putting it all together</h3>
 <p>To calculate the probability of drawing a red ball when selecting an urn at random, we simply plug in <span class="math inline">\(x_1 = 1\)</span> and <span class="math inline">\(x_2 = 50 - x_1 = 50 - 1 = 49\)</span> into our expression for <span class="math inline">\(p(red)\)</span>:</p>
-<p><span class="math display">\[p(red) = 0.5\dfrac{1}{1} + 0.5\dfrac{49}{99} = 0.7474\]</span>.</p>
+<p><span class="math display">\[p(red) = 0.5\dfrac{1}{1} + 0.5\dfrac{49}{99} = 0.7474.\]</span></p>
 <p>In other words, to maximise the probability of drawing a red ball when an urn is chosen at random, one of the urns should contain a single red ball, and the other should contain the rest.</p>
 <p>There are probably many ways to implement a pure Python solution to this problem. One approach is the following:</p>
 <pre class="python"><code>import itertools as it

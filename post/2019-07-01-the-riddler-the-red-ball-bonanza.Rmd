@@ -112,7 +112,7 @@ Note that $d\tilde{p}_2/d x_1 < 0$ for all $x_1 \in [1, 50]$. Since the derivati
 
 To calculate the probability of drawing a red ball when selecting an urn at random, we simply plug in $x_1 = 1$ and $x_2 = 50 - x_1 = 50 - 1 = 49$ into our expression for $p(red)$:
 
-$$p(red) = 0.5\dfrac{1}{1} + 0.5\dfrac{49}{99} = 0.7474$$.
+$$p(red) = 0.5\dfrac{1}{1} + 0.5\dfrac{49}{99} = 0.7474.$$
 
 In other words, to maximise the probability of drawing a red ball when an urn is chosen at random, one of the urns should contain a single red ball, and the other should contain the rest.
 
