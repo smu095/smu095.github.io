@@ -173,7 +173,7 @@ N = 200
 x1 = y1 = range(1, N + 1)
 balls = it.product(x1, y1)
 
-results = {
+twohundred = {
     (red, blue): p(red, blue, red_balls=N, total_balls=2*N) 
     for red, blue in balls 
     if (red + blue) != 2*N
@@ -181,7 +181,7 @@ results = {
 
 # Probability of selecting red ball: 0.7493734335839599
 # One of the urns must contain 199 red and 200 blue.
-print_results(results)
+print_results(twohundred)
 ```
 
 That's it, hope you enjoyed it as much as I did!
