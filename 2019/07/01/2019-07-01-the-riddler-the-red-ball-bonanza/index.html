@@ -200,7 +200,11 @@ def print_results(results):
 # Find find number of balls that maximise probability of drawing a red from a random urn
 x1 = y1 = range(1, 51)
 balls = it.product(x1, y1)
-results = {(red, blue): p(red, blue) for red, blue in balls if (red + blue) != 100}
+results = {
+    (red, blue): p(red, blue) 
+    for red, blue in balls 
+    if (red + blue) != 100
+}
 
 # Probability of selecting red ball: 0.7474747474747475
 # One of the urns must contain 49 red balls and 50 blue balls.
