@@ -85,7 +85,7 @@ Since $p_1$ is always 1 when $y_1 = 0$, our main concern is to find the value of
 import matplotlib.pyplot as plt
 import numpy as np
 
-def p2(x1):
+def p2_max(x1):
   	"""Probability of drawing a red ball from urn B given number of balls in urn A."""
     return (50 - x1) / (101 - 2*x1)
 
@@ -96,7 +96,7 @@ x1 = np.arange(1, 51)
 plt.figure(figsize=(10, 6))
 
 with plt.style.context("fivethirtyeight"):
-    plt.plot(x1, p2(x1))
+    plt.plot(x1, p2_max(x1))
     plt.xlabel("number of red balls in urn A")
     plt.ylabel(r"$\tilde{p}_2$")
     plt.title(r"Upper limit of $p_2$")
