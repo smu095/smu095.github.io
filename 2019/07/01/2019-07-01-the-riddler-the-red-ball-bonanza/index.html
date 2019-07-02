@@ -98,7 +98,7 @@
     </p>
     
         <p class="post-reading post-line">
-            <span>Estimated reading time: 7 min</span>
+            <span>Estimated reading time: 8 min</span>
         </p>
     
 </header>
@@ -244,6 +244,63 @@ twohundred = {
 # Probability of selecting red ball: 0.7493734335839599
 # One of the urns must contain 199 red and 200 blue.
 print_results(twohundred)</code></pre>
+</div>
+<div id="bonus-varying-the-number-of-balls-and-buckets-probabilities" class="section level3">
+<h3>Bonus: Varying the number of balls and buckets probabilities</h3>
+<p>Just for fun, let’s plot two more functions:</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(p(red)\)</span> as a function of the number of balls <span class="math inline">\(N\)</span>.</li>
+<li><span class="math inline">\(p(red)\)</span> as a function of the the probability <span class="math inline">\(\alpha\)</span> of selecting a bucket.</li>
+</ol>
+<pre class="python"><code>def get_probs(n=100, alpha=0.5, **kwargs):
+    &quot;&quot;&quot;Return probability of drawing a red ball when selecting bucket at random.&quot;&quot;&quot;
+    x1 = y1 = range(1, n + 1)
+    balls = it.product(x1, y1)
+
+    results = {
+        (red, blue): p(red, blue, urn_prob=alpha, **kwargs) 
+        for red, blue in balls 
+        if (red + blue) != 2*n
+    }
+
+    return max(results.values())</code></pre>
+<pre class="python"><code># Fixing bucket probability alpha = 0.5 and varying N
+max_probs = []
+N = [i for i in range(2, 501)]
+
+# Calculating probabilities
+for n in N:
+    max_probs.append(get_probs(n=n, total_balls=2*n, red_balls=n))
+    
+# Plotting
+plt.figure(figsize=(10, 6))
+
+with plt.style.context(&quot;fivethirtyeight&quot;):
+    plt.plot(N, max_probs)
+    plt.xlabel(&quot;$N$&quot;)
+    plt.ylabel(&quot;$p(red)$&quot;)
+    plt.title(&quot;Probability of drawing a red ball&quot;)
+    plt.show()</code></pre>
+<p><img src="/post/2019-07-01-the-riddler-the-red-ball-bonanza_files/N-urn.png" /></p>
+<pre class="python"><code># Fixing number of coloured balls N = 100 and varying alpha
+max_probs = []
+N = 100
+alpha = np.arange(0, 1.01, step=0.01)
+
+# Calculating probabilities
+for a in alpha:
+    max_probs.append(get_probs(alpha=a, total_balls=2*N, red_balls=N))
+    
+# Plotting
+plt.figure(figsize=(10, 6))
+
+with plt.style.context(&quot;fivethirtyeight&quot;):
+    plt.plot(alpha, max_probs)
+    plt.xlabel(r&quot;$\alpha$&quot;)
+    plt.ylabel(&quot;$p(red)$&quot;)
+    plt.title(&quot;Probability of drawing a red ball&quot;)
+    plt.show()</code></pre>
+<p><img src="/post/2019-07-01-the-riddler-the-red-ball-bonanza_files/alpha-urn.png" /></p>
 <p>That’s it, hope you enjoyed it as much as I did!</p>
 </div>
 
