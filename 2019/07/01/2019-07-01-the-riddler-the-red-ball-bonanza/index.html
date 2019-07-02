@@ -166,11 +166,14 @@ def p2(x1):
 x1 = np.arange(1, 51)
 
 # Plotting probabilities
-plt.plot(x1, p2(x1))
-plt.xlabel(&quot;number of red balls in urn A&quot;)
-plt.ylabel(&quot;p(red | urn B)&quot;)
-plt.title(&quot;Drawing red balls from urn B&quot;)
-plt.show()</code></pre>
+plt.figure(figsize=(10, 6))
+
+with plt.style.context(&quot;fivethirtyeight&quot;):
+    plt.plot(x1, p2(x1))
+    plt.xlabel(&quot;number of red balls in urn A&quot;)
+    plt.ylabel(r&quot;$\tilde{p}_2$&quot;)
+    plt.title(r&quot;Upper limit of $p_2$&quot;)
+    plt.show()</code></pre>
 <p><img src="/post/2019-07-01-the-riddler-the-red-ball-bonanza_files/urn-b.png" /></p>
 <p>From the figure, it seems that <span class="math inline">\(p_2\)</span> is maximised when <span class="math inline">\(x_1 = 1\)</span>. We can confirm this by analysing the derivative of the upper bound of <span class="math inline">\(p_2\)</span> (denoted <span class="math inline">\(\tilde{p}_2\)</span>) with respect to <span class="math inline">\(x_1\)</span>,</p>
 <p><span class="math display">\[\dfrac{d\tilde{p}_2}{d x_1} = \dfrac{d}{dx_1} \Bigg(\dfrac{50-x_1}{101 - 2 x_1}\Bigg) = \dfrac{-1}{(101 - 2 x_1)^2}.\]</span></p>

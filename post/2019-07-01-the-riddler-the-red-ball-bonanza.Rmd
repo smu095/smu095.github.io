@@ -93,11 +93,14 @@ def p2(x1):
 x1 = np.arange(1, 51)
 
 # Plotting probabilities
-plt.plot(x1, p2(x1))
-plt.xlabel("number of red balls in urn A")
-plt.ylabel("p(red | urn B)")
-plt.title("Drawing red balls from urn B")
-plt.show()
+plt.figure(figsize=(10, 6))
+
+with plt.style.context("fivethirtyeight"):
+    plt.plot(x1, p2(x1))
+    plt.xlabel("number of red balls in urn A")
+    plt.ylabel(r"$\tilde{p}_2$")
+    plt.title(r"Upper limit of $p_2$")
+    plt.show()
 ```
 
 ![](/post/2019-07-01-the-riddler-the-red-ball-bonanza_files/urn-b.png)
